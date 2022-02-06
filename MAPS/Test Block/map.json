@@ -1,0 +1,25 @@
+{
+  "LOCATIONS": [
+    {
+      "closest_path": {
+        "x": 93.333336,
+        "y": 77.388885
+      },
+      "coords": {
+        "x": 93.333336,
+        "y": 77.388885
+      },
+      "imageLocation": "/storage/emulated/0/Pictures/CAMPUS360/MAPS/Test Block/1644143340597.jpg",
+      "north": {
+        "x": 93.333336,
+        "y": 77.388885
+      },
+      "room": "8",
+      "type": "door"
+    }
+  ],
+  "block": "R",
+  "floor": "G",
+  "imgUri": "content://media/external_primary/images/media/6135",
+  "mapName": "Test Block"
+}
