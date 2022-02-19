@@ -9,10 +9,10 @@ controlButton = document.querySelector( '#controlButton' );
 modeButton = document.querySelector( '#modeButton' );
 videoButton = document.querySelector( '#videoButton' );
 
-panorama = new PANOLENS.ImagePanorama( 'https://chocolatevs.github.io/Campus360-JS/MAPS/Test%20Block/1644143320653.jpg' );
+panorama = new PANOLENS.ImagePanorama( 'https://chocolatevs.github.io/Campus360-JS/default_panorama.jpg' );
 
-infospot = new PANOLENS.Infospot( 350, PANOLENS.DataImage.Info );
-infospot.position.set( 0, -2000, -5000 );
+infospot = new PANOLENS.Infospot( 450, PANOLENS.DataImage.Info );
+infospot.position.set( 0, 0, -100 );
 
 panorama.add( infospot );
 
