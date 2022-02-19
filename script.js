@@ -86,5 +86,5 @@ function processData(allText) {
           lines.push(tarr);
       }
   }
-  // alert(lines);
+  console.log(lines);
 }
