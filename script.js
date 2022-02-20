@@ -1,3 +1,5 @@
+let lines = [];
+
 var panorama, viewer, container, infospot, controlButton, modeButton, videoButton;
 
 var controlIndex = PANOLENS.CONTROLS.ORBIT;
@@ -73,7 +75,7 @@ $(document).ready(function() {
 function processData(allText) {
   var allTextLines = allText.split(/\r\n|\n/);
   var headers = allTextLines[0].split(',');
-  var lines = [];
+  console.log("headers", headers);
 
   for (var i=1; i<allTextLines.length; i++) {
       var data = allTextLines[i].split(',');
@@ -86,5 +88,4 @@ function processData(allText) {
           lines.push(tarr);
       }
   }
-  console.log(lines);
 }
