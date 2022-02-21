@@ -1,4 +1,6 @@
-let lines = [];
+function id(id) { return document.getElementById(id); }
+
+let phonebook = [];
 
 var panorama, viewer, container, infospot, controlButton, modeButton, videoButton;
 
@@ -11,58 +13,51 @@ controlButton = document.querySelector( '#controlButton' );
 modeButton = document.querySelector( '#modeButton' );
 videoButton = document.querySelector( '#videoButton' );
 
-panorama = new PANOLENS.ImagePanorama( 'https://chocolatevs.github.io/Campus360-JS/default_panorama.jpg' );
+var lookAtPositions = [
+  new THREE.Vector3(-5000.00, 129.93, 1759.03)
+];
 
-//infospot = new PANOLENS.Infospot( 450, PANOLENS.DataImage.Info );
-//infospot.position.set( 0, 0, -100 );
+default_panorama = new PANOLENS.ImagePanorama( 'https://chocolatevs.github.io/Campus360-JS/default_panorama.jpg' );
+default_panorama.addEventListener( 'enter-fade-start', function(){
+  viewer.tweenControlCenter( lookAtPositions[0], 0);
+} );
 
-panorama.add( infospot );
+infospot = new PANOLENS.Infospot( 350, PANOLENS.DataImage.Info );
+infospot.position.set( 0, -2000, -5000 );
 
-viewer = new PANOLENS.Viewer( { container: container } );
-viewer.add( panorama );
+default_panorama.add( infospot );
+
+viewer = new PANOLENS.Viewer( { output: 'console', container: container } );
+viewer.add(default_panorama);
+
 
 // Method to trigger control
 controlButton.addEventListener( 'click', function(){
 
   controlIndex = controlIndex >= 1 ? 0 : controlIndex + 1;
   
-  switch ( controlIndex ) {
-      
+  switch ( controlIndex ) {   
     case 0: viewer.enableControl( PANOLENS.CONTROLS.ORBIT ); break;
     case 1: viewer.enableControl( PANOLENS.CONTROLS.DEVICEORIENTATION ); break;
-    default: break;
-      
+    default: break;   
   }
-
-} );
-
-modeButton.addEventListener( 'click', function(){
-  
+});
+modeButton.addEventListener( 'click', function(){  
   modeIndex = modeIndex >= 2 ? 0 : modeIndex + 1;
-  
-  switch ( modeIndex ) {
-      
+  switch ( modeIndex ) {   
     case 0: viewer.disableEffect(); break;
     case 1: viewer.enableEffect( PANOLENS.MODES.CARDBOARD ); break;
     case 2: viewer.enableEffect( PANOLENS.MODES.STEREO ); break;
-    default: break;
-      
+    default: break;  
   }
-
-} );
-
-// if it's video panorama
+});
 videoButton.addEventListener( 'click', function(){
-  
   videoPlaying = !videoPlaying;
   viewer.toggleVideoPlay( videoPlaying ? false : true );
-  
-} );
+});
 
 
-
-
-////GET LOCATIONS
+//Gets csv onload
 $(document).ready(function() {
   $.ajax({
       type: "GET",
@@ -71,21 +66,110 @@ $(document).ready(function() {
       success: function(data) {processData(data);}
    });
 });
-
+//Process csv
 function processData(allText) {
-  var allTextLines = allText.split(/\r\n|\n/);
-  var headers = allTextLines[0].split(',');
-  console.log("headers", headers);
+  //Split the doc into lines
+  let csvLines = allText.split(/\r\n|\n/);
+  let standard_headers = ['lastname', 'firstname', 'phone', 'username', 'location', 'room', 'other'];
 
-  for (var i=1; i<allTextLines.length; i++) {
-      var data = allTextLines[i].split(',');
-      if (data.length == headers.length) {
+  for (var i = 1; i  < csvLines.length; i++) {
+    //Split to line into values
+    let data = csvLines[i].split(',');
+    let temp = {};      
 
-          var tarr = [];
-          for (var j=0; j<headers.length; j++) {
-              tarr.push(headers[j]+":"+data[j]);
-          }
-          lines.push(tarr);
+    //If usual data
+    if (standard_headers.length == data.length) {
+      for (let j = 0; j < standard_headers.length; j++) {
+        temp[standard_headers[j]] = data[j];
       }
+      phonebook.push(temp);
+    }
+  }
+}
+
+$('#locationInput').on("input", function() {
+  var input = this.value;
+  console.log(input);
+  search(input);
+});
+
+//Adds 
+$(function() {
+  $('#locationInput').on("focus", function() {
+    $('#search_container').css('border-radius', '10px 10px 0px 0px');
+    $('#search_container').css('background-color', 'rgb(222 218 218 / 85%)');
+    id("search_results").style.display = "flex";
+  });
+});
+
+//Removes focus when using the map
+document.querySelector(".panolens-canvas").addEventListener("mousedown", function() {
+  document.activeElement.blur();
+  $('#search_container').css('border-radius', '10px');
+  $('#search_container').css('background-color', 'transparent');
+  id("search_results").style.display = "none";
+});
+
+//Searches the phonebook object for an entered query and displays results
+function search(query) {
+  let result_count = 0;
+  id("search_results").innerHTML = "";
+
+  if (query != "" && query.length > 0) {
+
+    //For each entry in the phonebook
+    phonebook.forEach(object => {
+
+      let result = false;
+
+      //For value of the entry
+      Object.values(object).forEach(value => {
+
+        //For each part of the query
+        let parts = query.split(" ");
+        parts.forEach(part => {
+          if (value.toLowerCase().includes(part.toLowerCase())) { 
+            result = true;
+          }
+        });
+      });
+
+      if (result && result_count < 5) {
+        console.log(result_count, result, object);
+
+        let search_result = document.createElement('div');
+        search_result.setAttribute("class", "search_result");
+        
+        let search_result_name = document.createElement('p');
+        search_result_name.setAttribute("class", "search_result_name p_result");
+        search_result_name.textContent = object.firstname + " " + object.lastname;
+
+        let search_location_container = document.createElement('p');
+        search_location_container.setAttribute("class", "search_location_container");
+        search_result_name.textContent = object.firstname + " " + object.lastname;
+
+        let search_result_location = document.createElement('p');
+        search_result_location.setAttribute("class", "search_result_location p_result");
+        search_result_name.textContent = object.firstname + " " + object.lastname;
+
+        let location_img = document.createElement('img');
+        location_img.src = "location.png";
+        location_img.style.width = "30px";
+        location_img.style.height = "30px";
+
+        search_location_container.appendChild(search_result_location);
+        search_location_container.appendChild(location_img);
+
+        search_result.appendChild(search_result_name);
+        search_result.appendChild(search_location_container);
+        search_result_location.textContent = object.location; 
+
+        id("search_results").appendChild(search_result);
+
+        result_count++;
+
+      }
+      
+    });
   }
 }
