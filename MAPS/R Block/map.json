@@ -1,0 +1,25 @@
+{
+  "LOCATIONS": [
+    {
+      "closest_path": {
+        "x": 86.73521,
+        "y": 85.5032
+      },
+      "coords": {
+        "x": 86.73521,
+        "y": 85.5032
+      },
+      "imageLocation": "/storage/emulated/0/Pictures/CAMPUS360/MAPS/R block/1644294333210.jpg",
+      "north": {
+        "x": 86.73521,
+        "y": 85.5032
+      },
+      "room": "06",
+      "type": "door"
+    }
+  ],
+  "block": "r",
+  "floor": "g",
+  "imgUri": "content://media/external_primary/images/media/6135",
+  "mapName": "R block"
+}

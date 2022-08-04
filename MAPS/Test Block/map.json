@@ -16,6 +16,40 @@
       },
       "room": "8",
       "type": "door"
+    },
+    {
+      "closest_path": {
+        "x": 211.66667,
+        "y": 72.94444
+      },
+      "coords": {
+        "x": 211.66667,
+        "y": 72.94444
+      },
+      "imageLocation": "/storage/emulated/0/Pictures/CAMPUS360/MAPS/Test Block/1644285239226.jpg",
+      "north": {
+        "x": 211.66667,
+        "y": 72.94444
+      },
+      "room": "T",
+      "type": "door"
+    },
+    {
+      "closest_path": {
+        "x": 175.55556,
+        "y": 142.38889
+      },
+      "coords": {
+        "x": 175.55556,
+        "y": 142.38889
+      },
+      "imageLocation": "/storage/emulated/0/Pictures/CAMPUS360/MAPS/Test Block/1644285296570.jpg",
+      "north": {
+        "x": 175.55556,
+        "y": 142.38889
+      },
+      "room": "W",
+      "type": "door"
     }
   ],
   "block": "R",

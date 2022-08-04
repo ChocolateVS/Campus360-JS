@@ -1,0 +1,45 @@
+{
+  "LOCATIONS": [
+    {
+      "coords": {
+        "x": 547.94836,
+        "y": 510.71445
+      },
+      "imageLocation": "/storage/emulated/0/Pictures/CAMPUS360/MAPS/G Block Floor 2 - Small Test/1645613513290.jpg",
+      "room": "",
+      "type": "marker"
+    },
+    {
+      "coords": {
+        "x": 317.37045,
+        "y": 521.35474
+      },
+      "imageLocation": "/storage/emulated/0/Pictures/CAMPUS360/MAPS/G Block Floor 2 - Small Test/1645613366382.jpg",
+      "room": "",
+      "type": "marker"
+    },
+    {
+      "coords": {
+        "x": 317.63348,
+        "y": 767.0008
+      },
+      "imageLocation": "/storage/emulated/0/Pictures/CAMPUS360/MAPS/G Block Floor 2 - Small Test/1645613656493.jpg",
+      "room": "",
+      "type": "marker"
+    },
+    {
+      "coords": {
+        "x": 331.01895,
+        "y": 1069.4767
+      },
+      "imageLocation": "/storage/emulated/0/Pictures/CAMPUS360/MAPS/G Block Floor 2 - Small Test/1645613733072.jpg",
+      "room": "",
+      "type": "marker"
+    }
+  ],
+  "block": "G",
+  "floor": "2",
+  "height": 1755.0,
+  "mapName": "G Block Floor 2 - Small Test",
+  "width": 1241.0
+}

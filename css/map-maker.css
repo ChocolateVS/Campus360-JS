@@ -1,0 +1,222 @@
+body, html {
+    width:100%;
+    height:100%;
+    display: flex;
+    margin:0;
+    align-items: center;
+    justify-content: center;
+    background-color:#000000bd;
+}
+
+#import_form {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    width:40%;
+    height:40%;
+    border-radius:10px;
+}
+
+#fileInput {
+    width:100%;
+    height:100%;
+    color:white;
+}
+
+#fileInput::-webkit-file-upload-button {
+    display: none;
+    visibility: hidden;
+}
+#fileInput::before {
+    content: 'Import Json Map File (Drop Here)';
+    background-color: #7a7abd;
+    border: 1px solid #999;
+    border-radius: 3px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 10pt;
+    margin-bottom:5px;
+    height:90%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#fileInput:hover::before {
+    border-color: black;
+}
+#fileInput:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+#submitBtn {
+    background-color:#696363;
+    border: 1px solid #999;
+    border-radius:3px;
+    width:40%;
+    text-align:center;
+    font-size: 10pt;
+    padding: 5px 8px;
+    font-weight: 700;
+    outline: none;
+}
+
+#submitBtn:hover {
+    border-color: black;
+    cursor:pointer;
+}
+
+#map_view {
+    height:100%;
+    overflow-y:auto;
+    display:flex;
+    justify-content:center;
+}
+
+#map_details {
+    display:flex;
+    flex-direction:row;
+    justify-content:space-evenly;
+    margin-bottom:1px solid white;
+    margin:20px;
+}
+
+.location {
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    background-color:#777777;
+    border-radius: 10px;
+    margin:10px;
+}
+
+.location:hover {
+    background-color: #666666;
+}
+
+.map_h1 {
+    text-align:center; 
+    margin:20px;
+}
+
+h1, h2, P {
+    font-family:monospace;
+    color:white;
+    margin:5px;
+}
+
+.location_img, .location_details, .location_controls{
+    margin:10px;
+    width:200px;
+}
+
+.location_controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.location_button {
+    margin:5px;
+    width:100%;
+    height:20px;
+    background-color: black;
+    color:white;
+    text-align: center;
+    border:none;
+    border-radius: 5px;
+    font-family:monospace;
+}
+
+.location_button:hover {
+    cursor:pointer;
+    background-color: #312f2f;
+}
+
+#delete_button {
+    background-color:#b71313;
+}
+
+#restore_button {
+    background-color:#13b721;
+}
+
+.preview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin:0;
+    padding: 0;
+    z-index:500;
+}
+
+.closePreviewBtn {
+    position: absolute;
+    width: 150px;
+    height: 50px;
+    bottom:0;
+    left:0;
+    margin:10px;
+    padding: 0;
+    z-index:10000;
+    border-radius:30px;
+    font-family:monospace;
+    border:none;
+}
+
+.closePreviewBtn:hover {
+    cursor:pointer;
+    border:1px solid black;
+    background-color:#efefef;
+}
+
+.floor_plan_img {
+    width:100%;
+    height:100%;
+}
+
+.floor_plan_view {
+    z-index:100000;
+    position: absolute;
+    top:0;
+    right:0;
+    z-index:100000;
+    max-width:30%;
+    max-height:50%;
+}
+
+.floor_plan_nav_arrow {
+    filter: invert(28%) sepia(24%) saturate(6340%) hue-rotate(265deg) brightness(90%) contrast(95%);
+    width:90px;
+    position:absolute;
+    top:0;
+    right:0;
+}
+
+.orientation_arrow {
+    filter: invert(21%) sepia(82%) saturate(7390%) hue-rotate(357deg) brightness(108%) contrast(121%);
+    width:90px;
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+.setOrientation {
+    width:100%;
+    height:20px;
+    background-color: rgb(80, 28, 182);
+    color:white;
+    text-align: center;
+    border:none;
+    border-radius: 5px;
+    font-family:monospace;
+}
+
+.setOrientation:hover {
+    cursor:pointer;
+    background-color: #312f2f;
+}
