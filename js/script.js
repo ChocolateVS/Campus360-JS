@@ -17,7 +17,7 @@ var lookAtPositions = [
   new THREE.Vector3(-5000.00, 129.93, 1759.03)
 ];
 
-default_panorama = new PANOLENS.ImagePanorama( 'https://chocolatevs.github.io/Campus360-JS/default_panorama.jpg' );
+default_panorama = new PANOLENS.ImagePanorama( 'https://chocolatevs.github.io/Campus360-JS/images/default_panorama.jpg' );
 default_panorama.addEventListener( 'enter-fade-start', function(){
   viewer.tweenControlCenter( lookAtPositions[0], 0);
 } );
