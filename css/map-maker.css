@@ -108,7 +108,7 @@ h1, h2, P {
     margin:5px;
 }
 
-.location_img, .location_details, .location_controls{
+.preview_img, .location_details, .location_controls{
     margin:10px;
     width:200px;
 }
