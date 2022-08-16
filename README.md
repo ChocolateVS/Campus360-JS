@@ -13,8 +13,8 @@ Install the android app on your android phone - connect to the Insta360x2 camera
 Once you have your points and everything loaded, you can then export it all the the SQL database, which can be subsequently accessed via the frontend
 
 ## How it works
-HTML5 front end - Using Panolens.js to viw 360deg
-NodeJS + MySQL backend
-
-Android App to create maps, points and manage bringing all together.
+HTML5 front end - Using Panolens.js to view 360deg    
+NodeJS + MySQL backend    
+  
+Android App to create maps, points and manage bringing all together.  
 
