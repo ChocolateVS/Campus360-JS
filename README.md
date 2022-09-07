@@ -4,10 +4,15 @@
 made to showcase student talent @ UoW.
 
 ## How to use
+SERVER:
+Navigate to docker-compose.yaml - ensure you have the skeleton.sql in SQL up to date, and the index/package.json in NODE up to date. 
+```docker-compose up```
+Setting up the SQL
+```docker exec -it campus360_mysql_1 sh```
+```cd docker-entrypoint-initdb.d```
+```mysql -u root -p waikato_db < skeleton.sql ``` - sign in, then ```exit```  
+You should now be good to go, either open 3000 on your system, or use a nginx to proxypass (We used nginx)
 
-Setup a server with NodeJS & MySQL (We used PhpMyAdmin to manage the MySQL).  
-The nodeJS must be able to connect to the MySQL, as it will be the communication point for the mobile app to send and receive data  
-Create a mysql database using the mysql.sql file  
 Install the android app on your android phone - connect to the Insta360x2 camera - and start taking photos + mapping points   
 
 Once you have your points and everything loaded, you can then export it all the the SQL database, which can be subsequently accessed via the frontend
