@@ -27,11 +27,11 @@ Once you have your points and everything loaded, you can then export it all the 
 
 ## How it works
 HTML5 - front end - Using Panolens.js to view 360deg    
-NodeJS - server side
-MySQL - database 
-PhpMyAdmin - service to edit the mySQL
-MongoDB - database (in development)
-Docker - runs the NodeJS, MySQL, PhpMyAdmin
+NodeJS - server side  
+MySQL - database   
+PhpMyAdmin - service to edit the mySQL  
+MongoDB - database (in development)  
+Docker - runs the NodeJS, MySQL, PhpMyAdmin  
   
 Android App - create maps, points and manage bringing all together - connects via Wifi to the 360deg camera.  
 
