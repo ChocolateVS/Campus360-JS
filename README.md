@@ -36,3 +36,5 @@ Docker - runs the NodeJS, MySQL, PhpMyAdmin
   
 Android App - create maps, points and manage bringing all together - connects via Wifi to the 360deg camera.  
 
+Rowan: Developed the Android app & Front end
+Alexander: Developed the server configuration & Front end
