@@ -1,0 +1,11 @@
+{
+"sql":
+{
+	host: "mysql",
+	user: "remote",
+        password: "Campus360",
+        database: "waikato_db"
+}
+
+
+}

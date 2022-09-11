@@ -1,0 +1,30 @@
+let mysql = require('mysql');
+let util = require('util');
+let settings = require('./settings.json').sql;
+
+let conn;
+
+async function connDb()
+{
+    if(conn) return util.promisify(conn.query).bind(conn);
+    
+    conn = mysql.createConnection({
+	host: settings.host,
+	user: settings.user,
+	password: settings.password,
+	database: settings.database
+    });
+    
+    await conn.connect((err)=>
+	{
+	    if(err) console.log("DB Connected usr:" + settings.user + " db:" + settings.database);
+	    else console.log(err);
+	    
+	});
+	
+	return util.promisify(conn.query).bind(conn); 
+    }
+}
+
+module.exports = connDb();
+
