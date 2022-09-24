@@ -1,0 +1,23 @@
+GET http://localhost:3000/api/campus/
+
+###
+
+POST http://localhost:3000/api/campus?name=Test
+
+###
+
+GET http://localhost:3000/api/campus/632ea6e53a5c5e1ff8df99e1/block/
+
+###
+
+POST http://localhost:3000/api/campus/632ea6e53a5c5e1ff8df99e1/block?name=TestBlock
+
+{
+"extraAttr":"test",
+"isCute":true
+}
+
+###
+
+DELETE http://localhost:3000/api/campus/632ea6e53a5c5e1ff8df99e1/block/632ea6f93a5c5e1ff8df99e6
+
