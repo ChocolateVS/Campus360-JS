@@ -1,4 +1,6 @@
-const Campus = require('./models/campus.js')
+const { ObjectId } = require('mongoose').Types;
+const {Project, Area, Level, Point} = require('./models/schema.js')
+
 
 function getCustom(req, res, next) {
     try{
@@ -14,15 +16,15 @@ async function runQuery(req, res, next) {
     let query;
     try {
         if (res.queryObj){
-            console.log("Query for " + JSON.stringify(res.queryObj))
-            query = await Campus.find(res.queryObj);
+            console.log("Query Custom for " + JSON.stringify(res.queryObj))
+            query = await Project.find(res.queryObj).populate('areas').populate('areas.levels');;
         }
         else{
             console.log("Running find on {}")
-            query = await Campus.find();
+            query = await Project.find().populate('areas').populate('areas.levels');
         }
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not get a output!' })
+            return res.status(404).json({ success: false, message: 'Result was empty!' })
         }
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
@@ -34,12 +36,12 @@ async function runQuery(req, res, next) {
 
 async function getPoint(req, res, next) {
     let query;
-    let queryObj = {"blocks.floors.points._id": (req.params.pointId ? req.params.pointId : res.pointId)};
+    let pointID = ObjectId(req.params.pointId ? req.params.pointId : res.pointId);
     try {
-        console.log("Query for " + JSON.stringify(queryObj))
-        query = await Campus.findOne(queryObj);
+        console.log("Query Point for " + pointID)
+        query = await Point.findById(pointID);
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not get a output!' })
+            return res.status(404).json({ success: false, message: 'Could not find any points!' })
         }
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
@@ -50,12 +52,18 @@ async function getPoint(req, res, next) {
 
 async function getRoom(req, res, next) {
     let query;
-    let queryObj = {"blocks.floors.rooms._id":(req.params.roomId ? req.params.roomId : res.roomId)};
+   
+    let queryObj = {"rooms._id": ObjectId(req.params.roomId ? req.params.roomId : res.roomId)};
+    let levelID = ObjectId(req.params.levelId ? req.params.levelId : res.levelId);
     try {
-        console.log("Query for " + JSON.stringify(queryObj))
-        query = await Campus.findOne(queryObj);
+        console.log("Query Level.rooms for " + JSON.stringify(queryObj))
+        query = await (res.level ? res.level : Level.findById(levelID)).aggregate([   
+            {$unwind: "$rooms"},
+            {$match: queryObj},
+            {$project: {_id: true, rooms: "$rooms"}
+        }]);
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not get a output!' })
+            return res.status(404).json({ success: false, message: 'Could not get Room by ID /or parent Level was empty!' })
         }
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
@@ -64,60 +72,62 @@ async function getRoom(req, res, next) {
     next()
 }
 
-async function getFloor(req, res, next) {
+async function getLevel(req, res, next) {
     let query;
-    let queryObj = {"blocks.floors._id": (req.params.floorId ? req.params.floorId : res.floorId)};
+    let queryObj = ObjectId(req.params.levelId ? req.params.levelId : res.levelId);
     try {
-        console.log("Query for " + JSON.stringify(queryObj))
-        query = await Campus.findOne(queryObj);
+        console.log("Query Level for " + JSON.stringify(queryObj))
+        query = await Level.findById(queryObj).populate('points');
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not get a output!' })
+            return res.status(404).json({ success: false, message: 'Could not find Level by ID!' })
         }
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
     }
-    res.floor = query;
+    res.level = query;
     next()
 }
 
-async function getBlock(req, res, next) {
+async function getArea(req, res, next) {
     let query;
-    let queryObj = {"blocks._id": (req.params.blockId ? req.params.blockId : res.blockId)};
+    let queryObj = ObjectId(req.params.areaId ? req.params.areaId : res.areaId);
     try {
-        console.log("Query for " + JSON.stringify(queryObj))
-        query = await Campus.findOne(queryObj);
+        console.log("Query Area for " + JSON.stringify(queryObj))
+        query = await Area.findById(queryObj).populate("levels");
+
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not get a output!' })
+            return res.status(404).json({ success: false, message: 'Could not find Area by ID!' })
         }
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
     }
-    res.block = query;
+    console.log(query)
+    res.area = query;
     next()
 }
 
 
-async function getCampus(req, res, next) {
+async function getProject(req, res, next) {
     let query;
-    let queryObj = {"_id":(req.params.campusId ? req.params.campusId : res.campusId)};
+    let queryObj = ObjectId(req.params.projectId ? req.params.projectId : res.projectId);
     try {
-        console.log("Query for " + JSON.stringify(queryObj))
-        query = await Campus.findOne(queryObj);
+        console.log("Query Project for " + JSON.stringify(queryObj))
+        query = await Project.findById(queryObj).populate("areas");
 
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not get a output!' })
+            return res.status(404).json({ success: false, message: 'Could not find Project by ID!' })
         }
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
     }
-    res.campus = query;
+    res.project = query;
     next()
 }
 
 module.exports = {
-    getCampus: getCampus,
-    getFloor: getFloor,
-    getBlock: getBlock,
+    getProject: getProject,
+    getLevel: getLevel,
+    getArea: getArea,
     getRoom: getRoom,
     getPoint: getPoint,
     runQuery: runQuery,

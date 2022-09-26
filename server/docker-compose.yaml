@@ -21,7 +21,10 @@ services:
       restart: 'unless-stopped'
       ports:
         - 27017:27017
+      expose:
+        - 27017
       volumes:
+        - ./MONGO:/docker-entrypoint-initdb.d
         - mon-db:/data/db
       environment:
         - MONGO_INITDB_ROOT_USERNAME=campus360
@@ -51,3 +54,4 @@ services:
         PMA_PORT: 3306
 volumes:
   my-db:
+  mon-db:

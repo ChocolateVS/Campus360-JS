@@ -3,6 +3,7 @@ const multer = require('multer');
 
 const router = express.Router();
 
+//NOTE: POST/UPDATE/GET/DELETE WILL IGNORE INCORRECT QUERY VALUES - i.e. ?nonexistant=test will be accepted, but nothing will be done with it. 
 
 //MySQL
 const util = require('util');
@@ -10,7 +11,7 @@ const conn = require('../db.js');
 const query = util.promisify(conn.query).bind(conn);
 
 //Routes
-const campus = require('./campus.js');
+const project = require('./project.js');
 
 //Middleware
 const {getCustom, runQuery} = require('../shared.js')
@@ -67,6 +68,6 @@ router.get('/query', async(request, response) => {
 
 
 
-router.use('/campus', campus);
+router.use('/project', project);
 
 module.exports = router;
