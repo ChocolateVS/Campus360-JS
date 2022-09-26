@@ -74,3 +74,24 @@ PATCH http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be1
 
 DELETE http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/point/63318deea5cd83d68a5cddfc
 
+### GET all Room
+
+GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room
+
+### GET specific Room
+
+GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room/633191e0506f58380c86b142
+
+### CREATE new Room
+
+POST http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room?name=G.5.10
+
+### Update Room
+
+PATCH ttp://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room/633193adaf1f9bfcf632baa4?owner=bazza
+
+### Del Room
+
+DELETE http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/63318e457f3d82fcf5397f0c/point/63318deea5cd83d68a5cddfc
+
+

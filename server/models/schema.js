@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const pointSchema = new mongoose.Schema({
-    type: {type: String, default:"Path"},
+    type: {type: String, default:""},
     x:{ type:Number, required:[true, 'Must specify a X value']},
     y:{ type:Number, required:[true, 'Must specify a Y value']},
     gyro_data:{type:String},
@@ -10,7 +10,7 @@ const pointSchema = new mongoose.Schema({
 
 const roomSchema = new mongoose.Schema({
     name:{ type:String, required:[true, 'Must specify Room name!']},
-    owner: { type:String},
+    owner: {type:String, default:""},
     nearest_points:[{ type:mongoose.SchemaTypes.ObjectId, ref:"Point"}]
     });
 
@@ -18,7 +18,7 @@ const levelSchema = new mongoose.Schema({
     name: { type:String, required: [true, 'Must specify a Level name!']},
     image_scale: { type:Number, default: 1, min: 0},
     local_directory: {type:String, default: "./images"},
-    floorplan: { type: String},
+    floorplan: { type: String, default:""},
     rooms:[roomSchema],
     points:[{type:mongoose.SchemaTypes.ObjectId, ref:"Point"}]
     });

@@ -53,14 +53,15 @@ async function getPoint(req, res, next) {
 async function getRoom(req, res, next) {
     let query;
    
-    let queryObj = {"rooms._id": ObjectId(req.params.roomId ? req.params.roomId : res.roomId)};
+    
     let levelID = ObjectId(req.params.levelId ? req.params.levelId : res.levelId);
+    let queryObj = {'_id':levelID, "rooms._id": ObjectId(req.params.roomId ? req.params.roomId : res.roomId)};
     try {
         console.log("Query Level.rooms for " + JSON.stringify(queryObj))
-        query = await (res.level ? res.level : Level.findById(levelID)).aggregate([   
+        query = await Level.aggregate([   
             {$unwind: "$rooms"},
             {$match: queryObj},
-            {$project: {_id: true, rooms: "$rooms"}
+            {$project: {_id: false, room:"$rooms"}
         }]);
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not get Room by ID /or parent Level was empty!' })
