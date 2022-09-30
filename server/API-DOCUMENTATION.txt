@@ -5,21 +5,21 @@ IMPORTANT - Deleting a project, will NOT delete the nested areas, levels, and po
 
 ## PROJECT
 GET /api/project/<optional ID for specific>
-POST /api/project?_id=<optional>&name=<required string>
+POST /api/project?id=<optional>&name=<required string>
 PATCH /api/project/<projectID>?name=<string>
 DELETE /api/project/<projectID>
 
 ## AREA
 
 GET /api/project/<projectID>/area/<optional ID for specific>
-POST /api/project/<projectID>/area?_id=<optional>&name=<required>
+POST /api/project/<projectID>/area?id=<optional>&name=<required>
 PATCH /api/project/<projectID>/area/<areaID>?name=<string>
 DELETE /api/project/<projectID>/area/<areaID>
 
 ## LEVEL
 
 GET /api/project/<projectID>/area/<areaID>/level/<optional ID for specific>
-POST /api/project/<projectID>/area/<areaID>/level?_id=<optional>&name=<required string>&image_scale=<default 1 number>&local_directory=<default ./images string>&floorplan=<default '' string>
+POST /api/project/<projectID>/area/<areaID>/level?id=<optional>&name=<required string>&image_scale=<default 1 number>&local_directory=<default ./images string>&floorplan=<default '' string>
 PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>?name=<string>&image_scale=<number>&local_directory=<string>&floorplan=<string>
 DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>
 
@@ -27,14 +27,14 @@ DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>
 ## Room
 
 GET /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<optional ID for specific>
-POST /api/project/<projectID>/area/<areaID>/level/<levelID>/room?_id=<optional>&name=<required string>&owner=<default '' string>
+POST /api/project/<projectID>/area/<areaID>/level/<levelID>/room?id=<optional>&name=<required string>&owner=<default '' string>
 PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<roomID>?name=<string>&owner=<string>
 DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<roomID>
 
 ## Point  - Note, Gyrodata is a placeholder until we can figure out how linking can work
 
 GET /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<optional ID for specific>
-POST /api/project/<projectID>/area/<areaID>/level/<levelID>/point?_id=<optional>&name=<required string>&x=<required number>&y=<required number>&gyro_data=<default '' string>
+POST /api/project/<projectID>/area/<areaID>/level/<levelID>/point?id=<optional>&name=<required string>&x=<required number>&y=<required number>&gyro_data=<default '' string>
 PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>?name=<string>&x=<number>&y=<number>&gyro_data=<string>
 DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>
 
