@@ -5,12 +5,12 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-
-RUN mkdir /images
-
 RUN npm install
 COPY .env ./
 COPY *.js ./
+ADD images ./
+ADD models ./
+ADD routes ./
 ADD Campus360-JS ./
 
 EXPOSE 3000
