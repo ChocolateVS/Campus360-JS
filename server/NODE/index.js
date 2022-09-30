@@ -19,17 +19,15 @@ app.use('/api', api);
 app.use('/', express.static(__dirname + '/Campus360-JS'));
 
 
-mongoose.connect(url,  {
+mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-  }).then(() => {
+}).then(() => {
     console.log('Connection to database established...')
-    
+
     let port = process.env.PORT ? process.env.PORT : 3000;
-    app.listen(port, ()=>{console.log("Listening on " + port)});
+    app.listen(port, () => { console.log("Listening on " + port) });
 
-  }).catch(err => {
+}).catch(err => {
     console.log(err);
-  });
-
-
+});

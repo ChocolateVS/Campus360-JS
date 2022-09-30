@@ -1,13 +1,18 @@
 const express = require('express');
-const util = require('util');
 const router = express.Router();
-
-//Mongo
-const { Level } = require('../models/schema.js');
+const linkAPI = require('./link.js')
+    //Mongo
+const { Level, Room } = require('../models/schema.js');
 const { getProject, getArea, getLevel, getRoom } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types
 
 let tableName = "Room";
+
+router.use('/:roomId/link', (req, res, next) => {
+    res.roomId = req.params.roomId;
+    next();
+}, linkAPI);
+
 
 router.get('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => {
     res.status(200).json({ success: true, payload: res.room })
@@ -36,8 +41,6 @@ router.post('/', getLevel, async(req, res) => {
         const saveResult = await newRoom.save();
         await res.level.save();
         res.status(201).json({ success: true, payload: saveResult })
-        let result = await res.room.save()
-        res.status(200).json({ success: true, payload: result.rooms })
     } catch (err) {
         res.status(400).json({ "success": false, message: err.message }).end()
     }
@@ -46,9 +49,9 @@ router.post('/', getLevel, async(req, res) => {
 
 router.patch('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => {
     try {
-        let resp = await res.room.updateOne({ _id: ObjectId(req.params.roomId) }, { $set: req.query }); //Only updates the attributes specified in 'query'
+        let resp = await Room.updateOne({ _id: res.room._id }, { $set: req.query }); //Only updates the attributes specified in 'query'
         res.status(200).json({ success: true, payload: resp }).end();
-    } catch (ex) {
+    } catch (err) {
         res.status(400).json({ "success": false, message: err.message }).end()
     }
 });

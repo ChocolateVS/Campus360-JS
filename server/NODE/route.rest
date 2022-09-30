@@ -2,73 +2,73 @@ GET http://localhost:3000/api/project
 
 ###Create Campus
 
-POST http://localhost:3000/api/project?name=Tauranga Campus
+POST http://localhost:3000/api/project?name=Waikato Campus
 
 ### Update Project
 
-PATCH http://localhost:3000/api/project/633165462f2e023123648a8b?name=Waikato Campus
+PATCH http://localhost:3000/api/project/633669a7248c3ceb5f09ffac?name=Waikato
 
 
 ### DELETE campus
 
-DELETE http://localhost:3000/api/project/633167ba2f2e023123648a94
+DELETE http://localhost:3000/api/project/6336699e248c3ceb5f09ffaa
 
 ### GET ALL Areas in campus
 
-GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/
 
 ### GET specific Area
 
-GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8
 
 ### CREATE new area
 
-POST http://localhost:3000/api/project/633165462f2e023123648a8b/area?name=F Block
+POST http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area?name=F Block
 
 ### Update Area
 
-PATCH http://localhost:3000/api/project/633165462f2e023123648a8b/area/63317bd7f4b68895f2059b6c?name=F Block
+PATCH http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8?name=FBlock
 
 ### DELETE area
 
-DELETE http://localhost:3000/api/project/633165462f2e023123648a8b/area/63317bd7f4b68895f2059b6c
+DELETE http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8
 
 
 ### GET all Levels
 
-GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level
 
 ### GET specific Level
 
-GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/63318447e19917b64068166a
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3
 
 ### CREATE new Level
 
-POST http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level?name=Second Floor&image_scale=2
+POST http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level?name=Second Floor&image_scale=2
 
 ### Update Level
 
-PATCH http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/63318447e19917b64068166a?name=Ground Floor&image_scale=2&local_directory=./img
+PATCH http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3?name=Ground Floor&image_scale=2&local_directory=./img
 
 ###
 
-DELETE http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/63318447e19917b64068166a
+DELETE http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366c9e248c3ceb5f0a0013
 
 ### GET all Points
 
-GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/point
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/point
 
 ### GET specific Points
 
-GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/63318447e19917b64068166a/point/
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/point/63366e24248c3ceb5f0a003a
 
 ### CREATE new Points
 
-POST http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/point?name=Second&x=5&y=10&gyro_data=testdata
+POST http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/point?x=5&y=10&gyro_data=testdata
 
 ### Update Points
 
-PATCH http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/point/63318deea5cd83d68a5cddfc?type=
+PATCH http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/point/63318deea5cd83d68a5cddfc?type=
 
 ### Del points
 
@@ -76,22 +76,39 @@ DELETE http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be
 
 ### GET all Room
 
-GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room
 
 ### GET specific Room
 
-GET http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room/633191e0506f58380c86b142
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room/63366f92509cb3ebc735a4f4
 
 ### CREATE new Room
 
-POST http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room?name=G.5.10
+POST http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room?name=G.5.10
 
 ### Update Room
 
-PATCH http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room/633191e0506f58380c86b142?owner=bazza
+PATCH http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room/63366f92509cb3ebc735a4f4?owner=bazza
 
 ### Del Room
 
-DELETE http://localhost:3000/api/project/633165462f2e023123648a8b/area/6331824be19917b640681648/level/6331877f3ab3a2b42babe8fb/room/633191e0506f58380c86b142
+DELETE http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room/633670231b6d00e572e0d478
+
+
+### LINKS
+
+GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room/63366f92509cb3ebc735a4f4/link
+
+###
+
+POST http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room/63366f92509cb3ebc735a4f4/link/63366e24248c3ceb5f0a003a
+
+### Update Room
+
+PATCH http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room/63366f92509cb3ebc735a4f4/link/63366e24248c3ceb5f0a003a?_id=63367a79360b7a09542d1acb
+
+### Del Room
+
+DELETE http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8/level/63366bc6248c3ceb5f09ffe3/room/63366f92509cb3ebc735a4f4/link/63366e24248c3ceb5f0a003a
 
 

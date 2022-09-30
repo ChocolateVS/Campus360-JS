@@ -1,25 +1,23 @@
 const { ObjectId } = require('mongoose').Types;
-const {Project, Area, Level, Point} = require('./models/schema.js')
+const { Project, Area, Level, Point, Room } = require('./models/schema.js')
 
 
 function getCustom(req, res, next) {
-    try{
-    res.queryObj = JSON.parse(req.query.query);
-    next()
-    }
-    catch(ex){
-        return res.status(400).json({success:false, message:ex.message})
+    try {
+        res.queryObj = JSON.parse(req.query.query);
+        next()
+    } catch (ex) {
+        return res.status(400).json({ success: false, message: ex.message })
     }
 }
 
 async function runQuery(req, res, next) {
     let query;
     try {
-        if (res.queryObj){
+        if (res.queryObj) {
             console.log("Query Custom for " + JSON.stringify(res.queryObj))
             query = await Project.find(res.queryObj).populate('areas').populate('areas.levels');;
-        }
-        else{
+        } else {
             console.log("Running find on {}")
             query = await Project.find().populate('areas').populate('areas.levels');
         }
@@ -52,19 +50,12 @@ async function getPoint(req, res, next) {
 
 async function getRoom(req, res, next) {
     let query;
-   
-    
-    let levelID = ObjectId(req.params.levelId ? req.params.levelId : res.levelId);
-    let queryObj = {'_id':levelID, "rooms._id": ObjectId(req.params.roomId ? req.params.roomId : res.roomId)};
+    let roomID = ObjectId(req.params.roomId ? req.params.roomId : res.roomId);
     try {
-        console.log("Query Level.rooms for " + JSON.stringify(queryObj))
-        query = await Level.aggregate([   
-            {$unwind: "$rooms"},
-            {$match: queryObj},
-            {$project: {_id: false, room:"$rooms"}
-        }]);
+        console.log("Query Point for " + roomID)
+        query = await Room.findById(roomID).populate('links');
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not get Room by ID /or parent Level was empty!' })
+            return res.status(404).json({ success: false, message: 'Could not find any rooms!' })
         }
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
@@ -78,7 +69,7 @@ async function getLevel(req, res, next) {
     let queryObj = ObjectId(req.params.levelId ? req.params.levelId : res.levelId);
     try {
         console.log("Query Level for " + JSON.stringify(queryObj))
-        query = await Level.findById(queryObj).populate('points');
+        query = await Level.findById(queryObj).populate('points').populate('rooms');
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find Level by ID!' })
         }
