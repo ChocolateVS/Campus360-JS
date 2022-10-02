@@ -1,3 +1,10 @@
+
+GET http://localhost:3000/api/mongo
+
+
+###
+
+
 GET http://localhost:3000/api/project
 
 ###Create Campus
