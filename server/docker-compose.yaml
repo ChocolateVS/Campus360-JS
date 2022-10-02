@@ -1,21 +1,5 @@
 version:  "3.3"
 services:
-   
-    mysql:
-      image: "mysql:5.7"
-      restart: "unless-stopped"
-      environment:
-        MYSQL_DATABASE: 'waikato_db'
-        MYSQL_USER: 'remote'
-        MYSQL_PASSWORD: 'Campus360'
-        MYSQL_ROOT_PASSWORD: 'SuperSecurePassword!'
-      ports:
-        - 3306:3306
-      expose:
-        - 3306
-      volumes:
-        - my-db:/var/lib/mysql
-        - ./SQL:/docker-entrypoint-initdb.d
     mongo:
       image: mongo
       restart: 'unless-stopped'
@@ -38,20 +22,8 @@ services:
       expose:
         - 3000
       depends_on:
-        - mysql
+        - mongo
       stdin_open: true
       tty: true
-    pma:
-      image: 'phpmyadmin'
-      ports:
-        - 8082:80
-      expose:
-        - 8082
-      depends_on:
-        - mysql
-      environment:
-        PMA_HOST: mysql
-        PMA_PORT: 3306
 volumes:
-  my-db:
   mon-db:

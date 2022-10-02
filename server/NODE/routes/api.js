@@ -1,20 +1,20 @@
 const express = require('express');
 const multer = require('multer');
-
+require('dotenv').config()
 const router = express.Router();
-
-//NOTE: POST/UPDATE/GET/DELETE WILL IGNORE INCORRECT QUERY VALUES - i.e. ?nonexistant=test will be accepted, but nothing will be done with it. 
-
-//MySQL
-const util = require('util');
-const conn = require('../db.js');
-const query = util.promisify(conn.query).bind(conn);
 
 //Routes
 const project = require('./project.js');
 
-//Middleware
-const {getCustom, runQuery} = require('../shared.js')
+
+//NOTE: POST/UPDATE/GET/DELETE WILL IGNORE INCORRECT QUERY VALUES - i.e. ?nonexistant=test will be accepted, but nothing will be done with it. 
+
+//Mongoose
+const { Project } = require('../models/schema.js')
+
+
+//API
+router.use('/project', project);
 
 //----File upload---
 //Set Multer storage
@@ -43,31 +43,30 @@ router.post('/upload', upload.single('file'), (req, res) => {
     res.end();
 });
 
-router.get('/mongo', getCustom, runQuery, (req, res)=>{
-    res.status(200).json({success:true, payload: req.mongoResponse}).end();
+router.get('/mongo', async(req, res) => {
+    let resp = await Project.find().populate({
+        path: 'areas',
+        populate: {
+            path: 'levels',
+            populate: [{
+                    path: 'rooms',
+                    populate: { path: 'links' }
+                },
+                {
+                    path: 'points',
+                    populate: {
+                        path: 'links'
+                    }
+                }
+            ]
+        }
+    })
+    res.status(200).json({ success: true, payload: resp }).end();
 })
 
-router.get('/query', async(request, response) => {
-    try {
-        console.log(request.headers);
-        console.log(request.query);
-        console.log('----');
-        let item = await query(request.query.query);
-
-        console.log(item);
-        console.log('--------');
-        response.json({ success: true, payload: item });
-        response.end();
-        return;
-    } catch (err) {
-        response.status(400).json({ success: false, payload: err });
-        response.end();
-        return;
-    }
-});
 
 
 
-router.use('/project', project);
+
 
 module.exports = router;
