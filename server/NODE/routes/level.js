@@ -10,10 +10,14 @@ const { getProject, getArea, getLevel } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types
 
 //Pass router on if room/point level
-router.use('/:levelId/room', (req, res, next) => { res.levelId = req.params.levelId;
-    next() }, roomAPI);
-router.use('/:levelId/point', (req, res, next) => { res.levelId = req.params.levelId;
-    next() }, pointAPI);
+router.use('/:levelId/room', (req, res, next) => {
+    res.levelId = req.params.levelId;
+    next()
+}, roomAPI);
+router.use('/:levelId/point', (req, res, next) => {
+    res.levelId = req.params.levelId;
+    next()
+}, pointAPI);
 
 router.get('/:levelId', getProject, getArea, getLevel, async(req, res) => {
     res.status(200).json({ success: true, payload: res.level }).end();
@@ -27,8 +31,9 @@ router.post('/', getProject, getArea, async(req, res) => {
     let newLevel;
     let createObj = {};
     if (req.query.id) createObj._id = ObjectId(req.query.id)
-    if (req.query.local_directory) createObj.local_directory = req.query.local_directory;
-    if (req.query.floorplan) createObj.floorplan = req.query.floorplan;
+    if (req.query.local_directory) createObj.image.directory = req.query.local_directory;
+    if (req.query.floorplan) createObj.image.name = req.query.floorplan;
+    if (req.query.scale) createObj.image.scale = req.query.scale;
     if (req.query.name) createObj.name = req.query.name;
     //Points & Rooms have specific validation required, so need to ensure they are added only via the /point or /room API
     if (res.area) {

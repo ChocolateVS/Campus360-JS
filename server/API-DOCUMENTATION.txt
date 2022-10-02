@@ -2,6 +2,10 @@ API documentation
 
 
 IMPORTANT - Deleting a project, will NOT delete the nested areas, levels, and points. That is extra functionality not yet implemented.
+## UTILITY
+
+GET /api/all - returns entire DB of projects, fully expanded
+
 
 ## PROJECT
 GET /api/project/<optional ID for specific>
@@ -20,8 +24,13 @@ DELETE /api/project/<projectID>/area/<areaID>
 
 GET /api/project/<projectID>/area/<areaID>/level/<optional ID for specific>
 POST /api/project/<projectID>/area/<areaID>/level?id=<optional>&name=<required string>&image_scale=<default 1 number>&local_directory=<default ./images string>&floorplan=<default '' string>
-PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>?name=<string>&image_scale=<number>&local_directory=<string>&floorplan=<string>
+PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>?name=<required string>&scale=<number>&local_directory=<string>&floorplan=<string>
 DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>
+
+## IMAGES - Please note, if level=<uuid> is found to be invalid, the image will be saved to folder regardless & local_directory must EXIST
+
+POST /api/upload - Saved to './images/<original filename>'
+POST /api/upload?level=<required valid-UUID>&name=<optional string>&scale=<default 1 number>&local_directory=<'./<dirname> - default './images'>
 
 ##--- Room and Point are referenced by LEVEL ---#
 ## Room

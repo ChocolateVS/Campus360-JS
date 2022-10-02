@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('dotenv').config()
 
 const pointSchema = new mongoose.Schema({
     type: { type: String, default: "" },
@@ -16,9 +17,11 @@ const roomSchema = new mongoose.Schema({
 
 const levelSchema = new mongoose.Schema({
     name: { type: String, required: [true, 'Must specify a Level name!'] },
-    image_scale: { type: Number, default: 1, min: 0 },
-    local_directory: { type: String, default: "./images" },
-    floorplan: { type: String, default: "" },
+    image: {
+        scale: { type: Number, default: process.env.DEFAULT_IMAGE_SCALE, min: 0 },
+        directory: { type: String, default: process.env.DEFAULT_IMAGE_DIR },
+        name: { type: String, default: "" }
+    },
     rooms: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Room" }],
     points: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Point" }]
 });
@@ -35,6 +38,7 @@ const projectSchema = new mongoose.Schema({
     name: { type: String, unique: true, required: [true, 'Must specify Project name!'] },
     areas: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Area" }]
 });
+
 
 let room = mongoose.model('Room', roomSchema);
 let point = mongoose.model('Point', pointSchema);
