@@ -29,8 +29,11 @@ DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>
 
 ## IMAGES - Please note, if level=<uuid> is found to be invalid, the image will be saved to folder regardless & local_directory must EXIST
 *If no id is provided, will just save file with defaults (./images & original filename)*
+
+*attach the file under key 'file'*
 POST /api/upload/panorama?id=<required valid ObjectId>&filename=<optional string>&north=<percent default 0.5 number>&local_directory=<'./<dirname>' - default ./images>
 POST /api/upload/floorplan?id=<required valid ObjectId>&filename=<optional string>&scale=<default 1 number>&local_directory=<'./<dirname> - default './images'>
+
 
 ##--- Room and Point are referenced by LEVEL ---#
 ## Room
