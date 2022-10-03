@@ -7,7 +7,7 @@ const pointSchema = new mongoose.Schema({
     y: { type: Number, required: [true, 'Must specify a Y value'] },
     image: {
         north: { type: Number, default: 0.5 },
-        directory: { type: String, default: process.env.DEFAULT_IMAGE_DIR },
+        directory: { type: String, default: '' },
         name: { type: String, default: "" }
     },
     links: [{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }]

@@ -31,8 +31,8 @@ DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>
 *If no id is provided, will just save file with defaults (./images & original filename)*
 
 *attach the file under key 'file'*
-POST /api/upload/panorama?id=<required valid ObjectId>&filename=<optional string>&north=<percent default 0.5 number>&local_directory=<'./<dirname>' - default ./images>
-POST /api/upload/floorplan?id=<required valid ObjectId>&filename=<optional string>&scale=<default 1 number>&local_directory=<'./<dirname> - default './images'>
+POST /api/upload/panorama?id=<required valid ObjectId>&filename=<optional string>&north=<percent default 0.5 number>&local_directory=<dirname string default ''>
+POST /api/upload/floorplan?id=<required valid ObjectId>&filename=<optional string>&scale=<default 1 number>&local_directory=<dirname string default ''>
 
 
 ##--- Room and Point are referenced by LEVEL ---#
