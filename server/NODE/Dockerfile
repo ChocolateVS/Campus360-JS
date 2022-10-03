@@ -8,10 +8,10 @@ COPY package*.json ./
 RUN npm install
 COPY .env ./
 COPY *.js ./
-ADD images ./
-ADD models ./
-ADD routes ./
-ADD Campus360-JS ./
+ADD images ./images
+ADD models ./models
+ADD routes ./routes
+ADD Campus360-JS ./Campus360-JS
 
 EXPOSE 3000
 CMD ["node", "index.js"]

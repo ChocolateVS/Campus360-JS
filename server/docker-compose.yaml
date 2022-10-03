@@ -25,5 +25,22 @@ services:
         - mongo
       stdin_open: true
       tty: true
+    mongo-express:
+        image: mongo-express
+        environment:
+            - ME_CONFIG_MONGODB_SERVER=mongo
+            - ME_CONFIG_MONGODB_PORT=27017
+            - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+            - ME_CONFIG_MONGODB_AUTH_DATABASE=waikato_db
+            - ME_CONFIG_MONGODB_AUTH_USERNAME=remote
+            - ME_CONFIG_MONGODB_AUTH_PASSWORD=SuperSecurePassword!
+            - ME_CONFIG_BASICAUTH_USERNAME=campus360
+            - ME_CONFIG_BASICAUTH_PASSWORD=campus360
+        depends_on:
+            - mongo
+        ports:
+          - 3002:8081 
+        expose:
+          - 3002   
 volumes:
   mon-db:

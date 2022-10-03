@@ -17,18 +17,6 @@ const { Project, Level } = require('../models/schema.js')
 //API
 router.use('/project', project);
 
-let storage = multer.diskStorage({
-        destination: function(req, file, cb) {
-            cb(null, process.env.DEFAULT_IMAGE_DIR)
-        },
-        filename: function(req, file, cb) {
-            cb(null, file.originalname)
-        }
-    })
-    //----File upload---
-let upload = multer({ storage: storage });
-
-
 router.use('/upload', uploadAPI)
 
 router.get('/objectid', (req, res) => {
