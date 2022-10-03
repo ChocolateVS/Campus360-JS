@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer')
-    //Mongo
 const { Level, Point } = require('../models/schema.js');
 
-
-//---File Upload segment-----
+//Upload images to Level objects
 router.post('/floorplan', (req, res, next) => {
-    //Check if it has information
     try {
         let storage = multer.diskStorage({
             destination: function(req, file, cb) {
@@ -18,11 +15,10 @@ router.post('/floorplan', (req, res, next) => {
             }
         })
         let upload = multer({ storage: storage })
-        return upload.single('file');
+        upload.single('file')(req, res, next)
     } catch (err) {
         res.status(400).json({ success: false, message: err.message })
     }
-
 }, async(req, res) => {
     console.log('processing file');
     if (!req.file) { res.status(400).json({ success: false, message: "Param name must be 'file'" }).end(); return; }
@@ -57,8 +53,8 @@ router.post('/floorplan', (req, res, next) => {
     }
 });
 
+//Upload image to Point object
 router.post('/panorama', (req, res, next) => {
-    //Check if it has information
     try {
         let storage = multer.diskStorage({
             destination: function(req, file, cb) {
@@ -68,8 +64,8 @@ router.post('/panorama', (req, res, next) => {
                 cb(null, req.query.filename ? req.query.filename : file.originalname)
             }
         })
-        let upload = multer({ storage: storage })
-        return upload.single('file'); //check if will call next
+        upload = multer({ storage: storage })
+        upload.single('file')(req, res, next)
     } catch (err) {
         res.status(400).json({ success: false, message: err.message })
     }

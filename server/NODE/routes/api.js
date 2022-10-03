@@ -1,5 +1,4 @@
 const express = require('express');
-const multer = require('multer');
 require('dotenv').config()
 const router = express.Router();
 const mongoose = require('mongoose')
@@ -41,12 +40,9 @@ router.get('/all', async(req, res) => {
             ]
         }
     })
+
     res.status(200).json({ success: true, payload: resp }).end();
 })
-
-
-
-
 
 
 module.exports = router;
