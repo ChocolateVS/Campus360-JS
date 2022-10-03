@@ -24,8 +24,8 @@ You should now be good to go, either open port 3000(nodejs) and 3002(mongo-expre
   then ```apt update && apt install nano && nano index.js```  
   
   To edit the mongodb: ```docker exec -it server_mongo_1 sh``` then  
-  ```mongosh -u campus360 -p SuperSecurePassword! waikato_db``` (campus360/SuperSecurePassword are the Admin details in docker-compose.yaml)
-   Otherwise if 3002 is an open port on the server ```serverip:3002/``` should allow you to access the GUI editor - remote/SuperSecurePassword (change in docker-compose.yaml)  
+  ```mongosh -u campus360 -p SuperSecurePassword! waikato_db``` (campus360/SuperSecurePassword! are the Admin details in docker-compose.yaml)
+   Otherwise if 3002 is an open port on the server ```serverip:3002/``` should allow you to access the GUI editor - remote/SuperSecurePassword! (change in docker-compose.yaml)  
 ---
 ### Android App Setup
 Install the android app on your android phone - connect to the Insta360x2 camera via wifi - and start taking photos + mapping points   
