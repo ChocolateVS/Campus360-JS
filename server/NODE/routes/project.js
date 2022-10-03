@@ -37,7 +37,7 @@ router.post('/', async(req, res) => {
         const saveResult = await newProject.save();
         res.status(201).json({ success: true, payload: saveResult })
     } catch (err) {
-        res.status(400).json({ success: true, message: err.message })
+        res.status(400).json({ success: false, message: err.message })
     }
 });
 

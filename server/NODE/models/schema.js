@@ -5,7 +5,11 @@ const pointSchema = new mongoose.Schema({
     type: { type: String, default: "" },
     x: { type: Number, required: [true, 'Must specify a X value'] },
     y: { type: Number, required: [true, 'Must specify a Y value'] },
-    gyro_data: { type: String },
+    image: {
+        north: { type: Number, default: 0.5 },
+        directory: { type: String, default: process.env.DEFAULT_IMAGE_DIR },
+        name: { type: String, default: "" }
+    },
     links: [{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }]
 });
 

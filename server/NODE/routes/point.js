@@ -30,7 +30,9 @@ router.post('/', getProject, getArea, getLevel, async(req, res) => {
         //Levels have specific referencing, so can only be added via /level API
     if (req.query.x) createObj.x = req.query.x;
     if (req.query.y) createObj.y = req.query.y;
-    if (req.query.gyro_data) createObj.gyro_data = req.query.gyro_data;
+    if (req.query.filename) createObj.image.filename = req.query.filename;
+    if (req.query.local_directory) createObj.image.directory = req.query.local_directory;
+    if (req.query.north) createObj.image.north = req.query.north;
     if (req.query.name) createObj.name = req.query.name;
     if (res.level) {
         newPoint = new Point(createObj);

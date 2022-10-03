@@ -54,10 +54,10 @@ router.patch('/:linkId', determineType, setObj, async(req, res) => {
         if (!res.linkParent) throw 'Could not identify object to update to!';
         let resp = {};
 
-        if (await Point.findOne({ _id: req.query._id })) //Check if point exists
+        if (await Point.findOne({ _id: req.query.id })) //Check if point exists
         {
             await res.linkParent.updateOne({ links: req.params.linkId }, { $pull: { links: req.params.linkId } })
-            resp = res.linkParent.links.push(req.query._id)
+            resp = res.linkParent.links.push(req.query.id)
         } else throw 'LinkID does not correspond to a point'
         res.linkParent.save();
         res.status(200).json({ success: true, payload: resp }).end();
@@ -72,7 +72,7 @@ router.delete('/:linkId', determineType, setObj, async(req, res) => {
     try {
         if (!res.linkParent) throw 'Could not identify object to delete from!';
         let modelType = res.roomId ? Room : Point
-        let deleteResponse = await modelType.updateOne({ _id: res.linkParent._id, links: req.params.linkId }, { $pull: { links: req.params.linkId } })
+        let deleteResponse = await modelType.updateOne({ _id: res.linkParent.id, links: req.params.linkId }, { $pull: { links: req.params.linkId } })
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

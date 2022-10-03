@@ -30,9 +30,10 @@ router.get('/', getProject, getArea, (req, res, next) => {
 router.post('/', getProject, getArea, async(req, res) => {
     let newLevel;
     let createObj = {};
+
     if (req.query.id) createObj._id = ObjectId(req.query.id)
     if (req.query.local_directory) createObj.image.directory = req.query.local_directory;
-    if (req.query.floorplan) createObj.image.name = req.query.floorplan;
+    if (req.query.filename) createObj.image.name = req.query.filename;
     if (req.query.scale) createObj.image.scale = req.query.scale;
     if (req.query.name) createObj.name = req.query.name;
     //Points & Rooms have specific validation required, so need to ensure they are added only via the /point or /room API
