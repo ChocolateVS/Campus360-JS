@@ -23,7 +23,7 @@ const levelSchema = new mongoose.Schema({
     name: { type: String, required: [true, 'Must specify a Level name!'] },
     image: {
         scale: { type: Number, default: process.env.DEFAULT_IMAGE_SCALE, min: 0 },
-        directory: { type: String, default: process.env.DEFAULT_IMAGE_DIR },
+        directory: { type: String, default: '' },
         name: { type: String, default: "" }
     },
     rooms: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Room" }],
