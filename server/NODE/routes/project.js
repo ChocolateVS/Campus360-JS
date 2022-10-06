@@ -52,9 +52,9 @@ router.patch('/:projectId', getProject, async(req, res) => {
     }
 });
 
-router.delete('/:projectId', getProject, async(req, res) => {
+router.delete('/:projectId', async(req, res) => {
     try {
-        let deleteResponse = await recursiveDelProject([res.project._id])
+        let deleteResponse = await recursiveDelProject([res.params.projectId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

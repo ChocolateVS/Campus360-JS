@@ -121,6 +121,7 @@ async function recursiveDelProject(ids) {
     //Find subitems to delete
     for (var id in ids) {
         let project = await Area.findById(id)
+        if (!project) continue;
         await recursiveDelArea(project.areas)
     }
 
@@ -130,6 +131,7 @@ async function recursiveDelProject(ids) {
 async function recursiveDelArea(ids) {
     for (var id in ids) {
         let area = await Area.findById(id)
+        if (!area) continue;
         await recursiveDelLevel(area.levels)
     }
     await Project.updateMany({ areas: { $in: ids } }, { $pull: { areas: { $in: ids } } });
@@ -140,6 +142,7 @@ async function recursiveDelArea(ids) {
 async function recursiveDelLevel(ids) {
     for (var id in ids) {
         let level = await Area.findById(id)
+        if (!level) continue;
         await recursiveDelPoint(level.points)
         await recursiveDelRoom(level.rooms)
     }

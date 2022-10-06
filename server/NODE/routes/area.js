@@ -57,10 +57,10 @@ router.patch('/:areaId', getProject, getArea, async(req, res) => {
     }
 });
 
-router.delete('/:areaId', getProject, getArea, async(req, res) => {
+router.delete('/:areaId', async(req, res) => {
     try {
         //Remove references
-        let deleteResponse = await recursiveDelArea([res.area._id])
+        let deleteResponse = await recursiveDelArea([res.params.areaId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end();

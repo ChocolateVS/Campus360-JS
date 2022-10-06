@@ -56,9 +56,9 @@ router.patch('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res)
     }
 });
 
-router.delete('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => {
+router.delete('/:roomId', async(req, res) => {
     try {
-        let deleteResponse = await recursiveDelRoom([res.room._id])
+        let deleteResponse = await recursiveDelRoom([res.params.roomId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

@@ -58,10 +58,10 @@ router.patch('/:pointId', getProject, getArea, getLevel, getPoint, async(req, re
     }
 });
 
-router.delete('/:pointId', getProject, getArea, getLevel, getPoint, async(req, res) => {
+router.delete('/:pointId', async(req, res) => {
     try {
         //remove references
-        let deleteResponse = await recursiveDelPoint([res.point._id])
+        let deleteResponse = await recursiveDelPoint([res.params.pointId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()
