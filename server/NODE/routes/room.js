@@ -2,11 +2,10 @@ const express = require('express');
 const router = express.Router();
 const linkAPI = require('./link.js')
     //Mongo
-const { Level, Room } = require('../models/schema.js');
-const { getProject, getArea, getLevel, getRoom } = require('../shared.js');
+const { Room } = require('../models/schema.js');
+const { getProject, getArea, getLevel, getRoom, recursiveDelRoom } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types
 
-let tableName = "Room";
 
 router.use('/:roomId/link', (req, res, next) => {
     res.roomId = req.params.roomId;
@@ -56,7 +55,7 @@ router.patch('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res)
     }
 });
 
-router.delete('/:roomId', async(req, res) => {
+router.delete('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
         let deleteResponse = await recursiveDelRoom([res.params.roomId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();

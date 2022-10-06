@@ -3,8 +3,8 @@ const router = express.Router();
 const linkAPI = require('./link.js')
     //Mongo
 const { ObjectId } = require('mongoose').Types
-const { Point, Level } = require('../models/schema.js');
-const { getProject, getArea, getLevel, getPoint } = require('../shared.js');
+const { Point } = require('../models/schema.js');
+const { getProject, getArea, getLevel, getPoint, recursiveDelPoint } = require('../shared.js');
 
 let tableName = "Point";
 
@@ -58,7 +58,7 @@ router.patch('/:pointId', getProject, getArea, getLevel, getPoint, async(req, re
     }
 });
 
-router.delete('/:pointId', async(req, res) => {
+router.delete('/:pointId', getProject, getArea, getLevel, getPoint, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
         //remove references
         let deleteResponse = await recursiveDelPoint([res.params.pointId])

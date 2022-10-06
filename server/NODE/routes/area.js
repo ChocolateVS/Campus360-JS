@@ -6,8 +6,8 @@ const levelAPI = require('./level.js');
 const { ObjectId } = require('mongoose').Types
 
 //Mongo
-const { Area, Project } = require('../models/schema.js');
-const { getProject, getArea } = require('../shared.js');
+const { Area } = require('../models/schema.js');
+const { getProject, getArea, recursiveDelArea } = require('../shared.js');
 
 let tableName = "Block";
 
@@ -57,7 +57,7 @@ router.patch('/:areaId', getProject, getArea, async(req, res) => {
     }
 });
 
-router.delete('/:areaId', async(req, res) => {
+router.delete('/:areaId', getProject, getArea, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
         //Remove references
         let deleteResponse = await recursiveDelArea([res.params.areaId])

@@ -6,7 +6,7 @@ const areaAPI = require('./area.js');
 
 //Mongo
 const { Project } = require('../models/schema.js');
-const { getProject } = require('../shared.js');
+const { getProject, recursiveDelProject } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types;
 
 router.use('/:projectId/area', (req, res, next) => {
@@ -52,7 +52,7 @@ router.patch('/:projectId', getProject, async(req, res) => {
     }
 });
 
-router.delete('/:projectId', async(req, res) => {
+router.delete('/:projectId', getProject, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
         let deleteResponse = await recursiveDelProject([res.params.projectId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();

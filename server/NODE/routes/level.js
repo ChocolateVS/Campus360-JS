@@ -5,8 +5,8 @@ const roomAPI = require('./room.js');
 const pointAPI = require('./point.js');
 
 //Mongoose Schema & shared func
-const { Level, Area } = require('../models/schema.js');
-const { getProject, getArea, getLevel } = require('../shared.js');
+const { Level } = require('../models/schema.js');
+const { getProject, getArea, getLevel, recursiveDelLevel } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types
 
 //Pass router on if room/point level
@@ -62,7 +62,7 @@ router.patch('/:levelId', getProject, getArea, getLevel, async(req, res) => {
     }
 });
 
-router.delete('/:levelId', async(req, res) => {
+router.delete('/:levelId', getProject, getArea, getLevel, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
         //Remove references
         let deleteResponse = await recursiveDelLevel([res.params.levelId])

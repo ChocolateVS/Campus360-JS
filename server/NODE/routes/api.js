@@ -7,13 +7,10 @@ const mongoose = require('mongoose')
 const project = require('./project.js');
 const uploadAPI = require('./upload.js')
 
-//NOTE: POST/UPDATE/GET/DELETE WILL IGNORE INCORRECT QUERY VALUES - i.e. ?nonexistant=test will be accepted, but nothing will be done with it. 
 
 //Mongoose
-const { Project, Level } = require('../models/schema.js')
+const { Project } = require('../models/schema.js')
 
-
-//API
 router.use('/project', project);
 
 router.use('/upload', uploadAPI)
