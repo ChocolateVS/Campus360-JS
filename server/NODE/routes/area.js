@@ -60,7 +60,7 @@ router.patch('/:areaId', getProject, getArea, async(req, res) => {
 router.delete('/:areaId', getProject, getArea, async(req, res) => {
     try {
         //Remove references
-        await Project.updateMany({ areas: this._id }, { $pull: { areas: this._id } });
+        await Project.updateMany({ areas: res.area._id }, { $pull: { areas: res.area._id } });
 
         let deleteResponse = await res.area.deleteOne();
         res.status(200).json({ success: true, payload: deleteResponse }).end();

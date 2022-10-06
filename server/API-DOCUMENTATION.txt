@@ -23,31 +23,31 @@ DELETE /api/project/<projectID>/area/<areaID>
 ## LEVEL
 
 GET /api/project/<projectID>/area/<areaID>/level/<optional ID for specific>
-POST /api/project/<projectID>/area/<areaID>/level?id=<optional>&id=<optional objectid>&name=<required string>&image_scale=<default 1 number>&local_directory=<default ./images string>&filename=<optional default '' string>
-PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>?name=<required string>&scale=<number>&local_directory=<string>&image.filename=<optional string> //note: test if image.filename works on image object - updates by just feeding query params as an object
+POST /api/project/<projectID>/area/<areaID>/level?id=<optional objectid>&name=<required string>&image_scale=<default 1 number>&local_directory=<default ./images string>&filename=<default '' string>
+PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>?name=<required string>&image.scale=<number>&image.directory=<string>&image.name=<default '' string> 
 DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>
 
 ## IMAGES - Please note, if level=<uuid> is found to be invalid, the image will be saved to folder regardless & local_directory must EXIST
 *If no id is provided, will just save file with defaults (./images & original filename)*
 
 *attach the file under key 'file'*
-POST /api/upload/panorama?id=<required valid ObjectId>&filename=<optional string>&north=<percent default 0.5 number>&local_directory=<dirname string default ''>
-POST /api/upload/floorplan?id=<required valid ObjectId>&filename=<optional string>&scale=<default 1 number>&local_directory=<dirname string default ''>
+POST /api/upload/panorama?id=<required valid ObjectId>&filename=<default '' string>&north=<percent default 0.5 number>&local_directory=<dirname string default ''>
+POST /api/upload/floorplan?id=<required valid ObjectId>&filename=<default '' string>&scale=<default 1 number>&local_directory=<dirname string default ''>
 
 
 ##--- Room and Point are referenced by LEVEL ---#
 ## Room
 
 GET /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<optional ID for specific>
-POST /api/project/<projectID>/area/<areaID>/level/<levelID>/room?id=<optional>&name=<required string>&owner=<default '' string>
-PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<roomID>?name=<string>&owner=<string>
+POST /api/project/<projectID>/area/<areaID>/level/<levelID>/room?id=<optional objectid>&name=<required string>&owner=<default '' string>&type=<default '' string>
+PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<roomID>?name=<default '' string>&owner=<default '' string>&type=<default '' string>
 DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<roomID>
 
 ## Point
 
 GET /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<optional ID for specific>
 POST /api/project/<projectID>/area/<areaID>/level/<levelID>/point?id=<optional>&name=<required string>&x=<required number>&y=<required number>
-PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>?name=<string>&x=<number>&y=<number>
+PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>?name=<string>&x=<number>&y=<number>&image.north=<number>&image.directory=<string>&image.name=<default '' string> 
 DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>
 
 ## Linking a point to a ROOM or a POINT - Append /link to end of .../room/<roomID> or .../point/<pointID>
