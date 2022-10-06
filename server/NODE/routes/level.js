@@ -65,9 +65,7 @@ router.patch('/:levelId', getProject, getArea, getLevel, async(req, res) => {
 router.delete('/:levelId', getProject, getArea, getLevel, async(req, res) => {
     try {
         //Remove references
-        await Area.updateMany({ levels: res.level._id }, { $pull: { levels: res.level._id } });
-
-        let deleteResponse = await res.level.deleteOne();
+        let deleteResponse = await recursiveDelLevel([res.level._id])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

@@ -61,11 +61,7 @@ router.patch('/:pointId', getProject, getArea, getLevel, getPoint, async(req, re
 router.delete('/:pointId', getProject, getArea, getLevel, getPoint, async(req, res) => {
     try {
         //remove references
-        await Level.updateMany({ 'points': res.point._id }, { $pull: { points: res.point._id } });
-        await Point.updateMany({ 'links': res.point._id }, { $pull: { links: res.point._id } });
-        await Level.updateMany({ 'rooms.points': res.point._id }, { $pull: { rooms: { points: res.point._id } } });
-
-        let deleteResponse = await res.point.deleteOne();
+        let deleteResponse = await recursiveDelPoint([res.point._id])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

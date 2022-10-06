@@ -116,12 +116,62 @@ async function getProject(req, res, next) {
     next()
 }
 
+
+async function recursiveDelProject(ids) {
+    //Find subitems to delete
+    for (var id in ids) {
+        let project = await Area.findById(id)
+        await recursiveDelArea(project.areas)
+    }
+
+    await Project.deleteMany({ _id: { $in: ids } })
+}
+
+async function recursiveDelArea(ids) {
+    for (var id in ids) {
+        let area = await Area.findById(id)
+        await recursiveDelLevel(area.levels)
+    }
+    await Project.updateMany({ areas: { $in: ids } }, { $pull: { areas: { $in: ids } } });
+
+    await Area.deleteMany({ _id: { $in: ids } })
+}
+
+async function recursiveDelLevel(ids) {
+    for (var id in ids) {
+        let level = await Area.findById(id)
+        await recursiveDelPoint(level.points)
+        await recursiveDelRoom(level.rooms)
+    }
+    await Area.updateMany({ levels: { $in: ids } }, { $pull: { levels: { $in: ids } } });
+
+    await Level.deleteMany({ _id: { $in: ids } })
+}
+async function recursiveDelPoint(ids) {
+    await Level.updateMany({ 'points': { $in: ids } }, { $pull: { points: { $in: ids } } });
+    await Point.updateMany({ 'links': { $in: ids } }, { $pull: { links: { $in: ids } } });
+    await Level.updateMany({ 'rooms.points': { $in: ids } }, { $pull: { rooms: { points: { $in: ids } } } });
+
+    await Point.deleteMany({ _id: { $in: ids } })
+}
+async function recursiveDelRoom(ids) {
+    await Level.updateMany({ rooms: { $in: ids } }, { $pull: { rooms: { $in: ids } } });
+
+    await Room.deleteMany({ _id: { $in: ids } })
+}
+
+
 module.exports = {
-    getProject: getProject,
-    getLevel: getLevel,
-    getArea: getArea,
-    getRoom: getRoom,
-    getPoint: getPoint,
-    runQuery: runQuery,
-    getCustom: getCustom
+    getProject,
+    getLevel,
+    getArea,
+    getRoom,
+    getPoint,
+    runQuery,
+    getCustom,
+    recursiveDelProject,
+    recursiveDelLevel,
+    recursiveDelRoom,
+    recursiveDelPoint,
+    recursiveDelArea
 }
