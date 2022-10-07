@@ -7,38 +7,43 @@ GET http://localhost:3000/api/mongo
 
 GET http://localhost:3000/api/project
 
+###
+
+
+GET http://localhost:3000/api/project/633fcc1c4296c89c752ea7b2
+
 ###Create Campus
 
 POST http://localhost:3000/api/project?name=Waikato Campus
 
 ### Update Project
 
-PATCH http://localhost:3000/api/project/633669a7248c3ceb5f09ffac?name=Waikato
+PATCH http://localhost:3000/api/project/633fcc1c4296c89c752ea7b2?name=Waikato
 
 
 ### DELETE campus
 
-DELETE http://localhost:3000/api/project/6336699e248c3ceb5f09ffaa
+DELETE http://localhost:3000/api/project/633fcc1c4296c89c752ea7b2
 
 ### GET ALL Areas in campus
 
-GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/
+GET http://localhost:3000/api/project/633fcc1c4296c89c752ea7b2/area/
 
 ### GET specific Area
 
-GET http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8
+GET http://localhost:3000/api/project/633fcc1c4296c89c752ea7b2/area/63366a41248c3ceb5f09ffc8
 
 ### CREATE new area
 
-POST http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area?name=F Block
+POST http://localhost:3000/api/project/633fcc1c4296c89c752ea7b2/area?name=F Block
 
 ### Update Area
 
-PATCH http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8?name=FBlock
+PATCH http://localhost:3000/api/project/633fcc1c4296c89c752ea7b2/area/63366a41248c3ceb5f09ffc8?name=FBlock
 
 ### DELETE area
 
-DELETE http://localhost:3000/api/project/633669a7248c3ceb5f09ffac/area/63366a41248c3ceb5f09ffc8
+DELETE http://localhost:3000/api/project/633fcc1c4296c89c752ea7b2/area/63366a41248c3ceb5f09ffc8
 
 
 ### GET all Levels
