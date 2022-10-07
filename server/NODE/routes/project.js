@@ -24,7 +24,6 @@ router.get('/:projectId', getProject, (req, res) => {
 
 router.get('/', async(req, res, next) => {
     let resp = await Project.find()
-
     res.status(200).json({ success: true, payload: resp })
 });
 

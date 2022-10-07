@@ -36,7 +36,7 @@ router.get('/all', async(req, res) => {
                 }
             ]
         }
-    })
+    })   
 
     res.status(200).json({ success: true, payload: resp }).end();
 })
