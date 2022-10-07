@@ -97,7 +97,7 @@ async function getProject(req, res, next) {
 async function recursiveDelProject(ids) {
     //Find subitems to delete
     for (var id in ids) {
-        let project = await Area.findById(id)
+        let project = await Area.findById(IDs[id])
         if (!project) continue;
         await recursiveDelArea(project.area_ids)
     }
@@ -107,7 +107,7 @@ async function recursiveDelProject(ids) {
 
 async function recursiveDelArea(ids) {
     for (var id in ids) {
-        let area = await Area.findById(id)
+        let area = await Area.findById(IDs[id])
         if (!area) continue;
         await recursiveDelLevel(area.level_ids)
     }
@@ -118,7 +118,7 @@ async function recursiveDelArea(ids) {
 
 async function recursiveDelLevel(ids) {
     for (var id in ids) {
-        let level = await Area.findById(id)
+        let level = await Area.findById(IDs[id])
         if (!level) continue;
         await recursiveDelPoint(level.point_ids)
         await recursiveDelRoom(level.room_ids)
