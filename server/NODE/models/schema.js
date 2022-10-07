@@ -15,6 +15,7 @@ const pointSchema = new mongoose.Schema({
 
 const roomSchema = new mongoose.Schema({
     name: { type: String, required: [true, 'Must specify Room name!'] },
+    type: {type: String, default: ""},
     owner: { type: String, default: "" },
     links: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Point" }]
 });

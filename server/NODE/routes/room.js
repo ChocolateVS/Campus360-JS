@@ -28,6 +28,7 @@ router.post('/', getLevel, async(req, res) => {
     let createObj = {};
     if (req.query.id) createObj._id = ObjectId(req.query.id)
     if (req.query.owner) createObj.owner = req.query.owner
+    if(req.query.type) createObj.type = req.query.type;
         //Points & Rooms have specific validation required, so need to ensure they are added only via the /point or /room API
     if (req.query.name) createObj.name = req.query.name;
     if (res.level) {
