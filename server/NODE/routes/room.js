@@ -14,11 +14,14 @@ router.use('/:roomId/link', (req, res, next) => {
 
 
 router.get('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => {
-    res.status(200).json({ success: true, payload: res.room })
+    let links = res.room.link_ids
+    let projObj = res.room.toObject({ getters: true, minimize: false, depopulate:true})
+    projObj.links = links
+    res.status(200).json({ success: true, payload: projObj }).end();
 });
 
 router.get('/', getProject, getArea, getLevel, (req, res, next) => {
-    res.status(200).json({ success: true, payload: res.level.rooms })
+    res.status(200).json({ success: true, payload: res.level.room })
 });
 
 
@@ -33,7 +36,7 @@ router.post('/', getLevel, async(req, res) => {
     if (req.query.name) createObj.name = req.query.name;
     if (res.level) {
         newRoom = new Room(createObj);
-        res.level.rooms.push(newRoom._id)
+        res.level.room_ids.push(newRoom._id)
     }
     try {
         //Save changes to DB

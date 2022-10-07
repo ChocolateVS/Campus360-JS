@@ -21,17 +21,17 @@ router.get('/objectid', (req, res) => {
 
 router.get('/all', async(req, res) => {
     let resp = await Project.find().populate({
-        path: 'areas',
+        path: 'area_ids',
         populate: {
-            path: 'levels',
+            path: 'level_ids',
             populate: [{
-                    path: 'rooms',
-                    populate: { path: 'links' }
+                    path: 'room_ids',
+                    populate: { path: 'link_ids' }
                 },
                 {
-                    path: 'points',
+                    path: 'point_ids',
                     populate: {
-                        path: 'links'
+                        path: 'link_ids'
                     }
                 }
             ]

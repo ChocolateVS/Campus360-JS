@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 require('dotenv').config()
 
+//Empty arrays, i.e. links, areas, rooms, are made to be overwritten constantly - do NOT store important info in them
+
 const pointSchema = new mongoose.Schema({
     type: { type: String, default: "" },
     x: { type: Number, required: [true, 'Must specify a X value'] },
@@ -10,14 +12,14 @@ const pointSchema = new mongoose.Schema({
         directory: { type: String, default: '' },
         name: { type: String, default: "" }
     },
-    links: [{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }]
+    link_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }],
 });
 
 const roomSchema = new mongoose.Schema({
     name: { type: String, required: [true, 'Must specify Room name!'] },
     type: {type: String, default: ""},
     owner: { type: String, default: "" },
-    links: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Point" }]
+    link_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Point" }],
 });
 
 const levelSchema = new mongoose.Schema({
@@ -27,8 +29,8 @@ const levelSchema = new mongoose.Schema({
         directory: { type: String, default: '' },
         name: { type: String, default: "" }
     },
-    rooms: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Room" }],
-    points: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Point" }]
+    room_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Room" }],
+    point_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Point" }],
 });
 
 const areaSchema = new mongoose.Schema({
@@ -36,12 +38,12 @@ const areaSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Must specify Area name!']
     },
-    levels: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Level" }]
+    level_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Level" }],
 });
 
 const projectSchema = new mongoose.Schema({
     name: { type: String, unique: true, required: [true, 'Must specify Project name!'] },
-    areas: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Area" }]
+    area_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Area" }],
 });
 
 

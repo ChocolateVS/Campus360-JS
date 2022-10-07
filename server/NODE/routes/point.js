@@ -15,7 +15,10 @@ router.use('/:pointId/link', (req, res, next) => {
 
 
 router.get('/:pointId', getProject, getArea, getLevel, getPoint, async(req, res) => {
-    res.status(200).json({ success: true, payload: res.point })
+    let links = res.point.link_ids
+    let projObj = res.point.toObject({ getters: true, minimize: false, depopulate:true})
+    projObj.links = links
+    res.status(200).json({ success: true, payload: projObj }).end();
 });
 
 router.get('/', getProject, getArea, getLevel, (req, res, next) => {
@@ -36,7 +39,7 @@ router.post('/', getProject, getArea, getLevel, async(req, res) => {
     if (req.query.name) createObj.name = req.query.name;
     if (res.level) {
         newPoint = new Point(createObj);
-        res.level.points.push(newPoint._id)
+        res.level.point_ids.push(newPoint._id)
     }
     try {
         //Save changes to DB

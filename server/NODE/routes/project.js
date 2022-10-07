@@ -15,13 +15,17 @@ router.use('/:projectId/area', (req, res, next) => {
 }, areaAPI)
 
 router.get('/:projectId', getProject, (req, res) => {
-    res.status(200).json({ success: true, payload: res.project })
+    let populatedObj = res.project.area_ids
+    let projObj = res.project.toObject({ getters: true, minimize: false, depopulate:true})
+    projObj.areas = populatedObj
+    res.status(200).json({ success: true, payload: projObj })
 });
 
 
 router.get('/', async(req, res, next) => {
-    let mongoResponse = await Project.find();
-    res.status(200).json({ success: true, payload: mongoResponse })
+    let resp = await Project.find()
+
+    res.status(200).json({ success: true, payload: resp })
 });
 
 

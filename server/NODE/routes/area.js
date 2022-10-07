@@ -17,7 +17,10 @@ router.use('/:areaId/level', (req, res, next) => {
 }, levelAPI);
 
 router.get('/:areaId', getProject, getArea, async(req, res) => {
-    res.status(200).json({ success: true, payload: res.area }).end();
+    let levels = res.area.level_ids
+    let projObj = res.area.toObject({ getters: true, minimize: false, depopulate:true})
+    projObj.levels = levels
+    res.status(200).json({ success: true, payload: projObj }).end();
 });
 
 router.get('/', getProject, (req, res, next) => {

@@ -20,7 +20,12 @@ router.use('/:levelId/point', (req, res, next) => {
 }, pointAPI);
 
 router.get('/:levelId', getProject, getArea, getLevel, async(req, res) => {
-    res.status(200).json({ success: true, payload: res.level }).end();
+    let rooms = res.level.room_ids
+    let points = res.level.point_ids
+    let projObj = res.level.toObject({ getters: true, minimize: false, depopulate:true})
+    projObj.rooms = rooms
+    projObj.points = points
+    res.status(200).json({ success: true, payload: projObj }).end();
 });
 
 router.get('/', getProject, getArea, (req, res, next) => {
@@ -39,7 +44,7 @@ router.post('/', getProject, getArea, async(req, res) => {
     //Points & Rooms have specific validation required, so need to ensure they are added only via the /point or /room API
     if (res.area) {
         newLevel = new Level(createObj);
-        res.area.levels.push(newLevel._id)
+        res.area.level_ids.push(newLevel._id)
     }
 
     try {

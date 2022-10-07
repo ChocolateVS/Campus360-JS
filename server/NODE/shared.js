@@ -2,36 +2,6 @@ const { ObjectId } = require('mongoose').Types;
 const { Project, Area, Level, Point, Room } = require('./models/schema.js')
 
 
-function getCustom(req, res, next) {
-    try {
-        res.queryObj = JSON.parse(req.query.query);
-        next()
-    } catch (ex) {
-        return res.status(400).json({ success: false, message: ex.message })
-    }
-}
-
-async function runQuery(req, res, next) {
-    let query;
-    try {
-        if (res.queryObj) {
-            console.log("Query Custom for " + JSON.stringify(res.queryObj))
-            query = await Project.find(res.queryObj).populate('areas').populate('areas.levels');;
-        } else {
-            console.log("Running find on {}")
-            query = await Project.find().populate('areas').populate('areas.levels');
-        }
-        if (query == null) {
-            return res.status(404).json({ success: false, message: 'Result was empty!' })
-        }
-    } catch (err) {
-        return res.status(500).json({ success: false, message: err.message })
-    }
-    console.log(query)
-    res.mongoResponse = query;
-    next();
-}
-
 async function getPoint(req, res, next) {
     let query;
     let pointID = ObjectId(req.params.pointId ? req.params.pointId : res.pointId);
@@ -39,8 +9,10 @@ async function getPoint(req, res, next) {
         console.log("Query Point for " + pointID)
         query = await Point.findById(pointID);
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not find any points!' })
+            return res.status(404).json({ success: false, message: 'Could not find any point by id!' })
         }
+        res.links = (await query.populate('link_ids')).link_ids
+
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
     }
@@ -53,10 +25,13 @@ async function getRoom(req, res, next) {
     let roomID = ObjectId(req.params.roomId ? req.params.roomId : res.roomId);
     try {
         console.log("Query Point for " + roomID)
-        query = await Room.findById(roomID).populate('links');
+        query = await Room.findById(roomID)
         if (query == null) {
-            return res.status(404).json({ success: false, message: 'Could not find any rooms!' })
+            return res.status(404).json({ success: false, message: 'Could not find any room by id!' })
         }
+
+        res.links = (await query.populate('link_ids')).link_ids
+
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
     }
@@ -69,10 +44,16 @@ async function getLevel(req, res, next) {
     let queryObj = ObjectId(req.params.levelId ? req.params.levelId : res.levelId);
     try {
         console.log("Query Level for " + JSON.stringify(queryObj))
-        query = await Level.findById(queryObj).populate('points').populate('rooms');
+        query = await Level.findById(queryObj)
+
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find Level by ID!' })
         }
+
+        let popVersion = await Level.populate('point_ids').populate('room_ids');
+        res.areas = popVersion.room_ids;
+        res.points = popVersion.point_ids
+
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
     }
@@ -85,15 +66,17 @@ async function getArea(req, res, next) {
     let queryObj = ObjectId(req.params.areaId ? req.params.areaId : res.areaId);
     try {
         console.log("Query Area for " + JSON.stringify(queryObj))
-        query = await Area.findById(queryObj).populate("levels");
+        query = await Area.findById(queryObj)
 
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find Area by ID!' })
         }
+
+        res.levels = (await query.populate('level_ids')).level_ids
+
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
     }
-    console.log(query)
     res.area = query;
     next()
 }
@@ -104,11 +87,14 @@ async function getProject(req, res, next) {
     let queryObj = ObjectId(req.params.projectId ? req.params.projectId : res.projectId);
     try {
         console.log("Query Project for " + JSON.stringify(queryObj))
-        query = await Project.findById(queryObj).populate("areas");
 
+        query = await Project.findById(queryObj).populate('area_ids')
+        
+        
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find Project by ID!' })
         }
+
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
     }
@@ -122,7 +108,7 @@ async function recursiveDelProject(ids) {
     for (var id in ids) {
         let project = await Area.findById(id)
         if (!project) continue;
-        await recursiveDelArea(project.areas)
+        await recursiveDelArea(project.area_ids)
     }
 
     await Project.deleteMany({ _id: { $in: ids } })
@@ -132,9 +118,9 @@ async function recursiveDelArea(ids) {
     for (var id in ids) {
         let area = await Area.findById(id)
         if (!area) continue;
-        await recursiveDelLevel(area.levels)
+        await recursiveDelLevel(area.level_ids)
     }
-    await Project.updateMany({ areas: { $in: ids } }, { $pull: { areas: { $in: ids } } });
+    await Project.updateMany({ area_ids: { $in: ids } }, { $pull: { area_ids: { $in: ids } } });
 
     await Area.deleteMany({ _id: { $in: ids } })
 }
@@ -143,22 +129,22 @@ async function recursiveDelLevel(ids) {
     for (var id in ids) {
         let level = await Area.findById(id)
         if (!level) continue;
-        await recursiveDelPoint(level.points)
-        await recursiveDelRoom(level.rooms)
+        await recursiveDelPoint(level.point_ids)
+        await recursiveDelRoom(level.room_ids)
     }
-    await Area.updateMany({ levels: { $in: ids } }, { $pull: { levels: { $in: ids } } });
+    await Area.updateMany({ level_ids: { $in: ids } }, { $pull: { level_ids: { $in: ids } } });
 
     await Level.deleteMany({ _id: { $in: ids } })
 }
 async function recursiveDelPoint(ids) {
-    await Level.updateMany({ 'points': { $in: ids } }, { $pull: { points: { $in: ids } } });
-    await Point.updateMany({ 'links': { $in: ids } }, { $pull: { links: { $in: ids } } });
-    await Level.updateMany({ 'rooms.points': { $in: ids } }, { $pull: { rooms: { points: { $in: ids } } } });
+    await Level.updateMany({ 'point_ids': { $in: ids } }, { $pull: { point_ids: { $in: ids } } });
+    await Point.updateMany({ 'link_ids': { $in: ids } }, { $pull: { link_ids: { $in: ids } } });
+    await Level.updateMany({ 'room_ids.point_ids': { $in: ids } }, { $pull: { room_ids: { point_ids: { $in: ids } } } });
 
     await Point.deleteMany({ _id: { $in: ids } })
 }
 async function recursiveDelRoom(ids) {
-    await Level.updateMany({ rooms: { $in: ids } }, { $pull: { rooms: { $in: ids } } });
+    await Level.updateMany({ room_ids: { $in: ids } }, { $pull: { room_ids: { $in: ids } } });
 
     await Room.deleteMany({ _id: { $in: ids } })
 }
@@ -170,8 +156,6 @@ module.exports = {
     getArea,
     getRoom,
     getPoint,
-    runQuery,
-    getCustom,
     recursiveDelProject,
     recursiveDelLevel,
     recursiveDelRoom,
