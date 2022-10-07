@@ -22,7 +22,7 @@ router.get('/:pointId', getProject, getArea, getLevel, getPoint, async(req, res)
 });
 
 router.get('/', getProject, getArea, getLevel, (req, res, next) => {
-    res.status(200).json({ success: true, payload: res.level.points })
+    res.status(200).json({ success: true, payload: res.level.point_ids })
 });
 
 router.post('/', getProject, getArea, getLevel, async(req, res) => {
@@ -64,7 +64,7 @@ router.patch('/:pointId', getProject, getArea, getLevel, getPoint, async(req, re
 router.delete('/:pointId', getProject, getArea, getLevel, getPoint, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
         //remove references
-        let deleteResponse = await recursiveDelPoint([res.params.pointId])
+        let deleteResponse = await recursiveDelPoint([req.params.pointId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

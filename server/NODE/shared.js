@@ -7,11 +7,10 @@ async function getPoint(req, res, next) {
     let pointID = ObjectId(req.params.pointId ? req.params.pointId : res.pointId);
     try {
         console.log("Query Point for " + pointID)
-        query = await Point.findById(pointID);
+        query = await Point.findById(pointID).populate('link_ids');
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find any point by id!' })
         }
-        res.links = (await query.populate('link_ids')).link_ids
 
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
@@ -25,12 +24,10 @@ async function getRoom(req, res, next) {
     let roomID = ObjectId(req.params.roomId ? req.params.roomId : res.roomId);
     try {
         console.log("Query Point for " + roomID)
-        query = await Room.findById(roomID)
+        query = await Room.findById(roomID).populate('link_ids')
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find any room by id!' })
         }
-
-        res.links = (await query.populate('link_ids')).link_ids
 
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
@@ -44,15 +41,11 @@ async function getLevel(req, res, next) {
     let queryObj = ObjectId(req.params.levelId ? req.params.levelId : res.levelId);
     try {
         console.log("Query Level for " + JSON.stringify(queryObj))
-        query = await Level.findById(queryObj)
+        query = await Level.findById(queryObj).populate('point_ids').populate('room_ids')
 
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find Level by ID!' })
         }
-
-        let popVersion = await Level.populate('point_ids').populate('room_ids');
-        res.areas = popVersion.room_ids;
-        res.points = popVersion.point_ids
 
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
@@ -66,13 +59,11 @@ async function getArea(req, res, next) {
     let queryObj = ObjectId(req.params.areaId ? req.params.areaId : res.areaId);
     try {
         console.log("Query Area for " + JSON.stringify(queryObj))
-        query = await Area.findById(queryObj)
+        query = await Area.findById(queryObj).populate('level_ids')
 
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find Area by ID!' })
         }
-
-        res.levels = (await query.populate('level_ids')).level_ids
 
     } catch (err) {
         return res.status(500).json({ success: false, message: err.message })
@@ -89,7 +80,7 @@ async function getProject(req, res, next) {
         console.log("Query Project for " + JSON.stringify(queryObj))
 
         query = await Project.findById(queryObj).populate('area_ids')
-        
+        console.log(query.area_ids)
         
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find Project by ID!' })

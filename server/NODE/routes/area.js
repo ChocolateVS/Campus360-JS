@@ -24,7 +24,7 @@ router.get('/:areaId', getProject, getArea, async(req, res) => {
 });
 
 router.get('/', getProject, (req, res, next) => {
-    res.status(200).json({ success: true, payload: res.project.areas })
+    res.status(200).json({ success: true, payload: res.project.area_ids })
 });
 
 
@@ -63,7 +63,7 @@ router.patch('/:areaId', getProject, getArea, async(req, res) => {
 router.delete('/:areaId', getProject, getArea, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
         //Remove references
-        let deleteResponse = await recursiveDelArea([res.params.areaId])
+        let deleteResponse = await recursiveDelArea([req.params.areaId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end();

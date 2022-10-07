@@ -21,7 +21,7 @@ router.get('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) =
 });
 
 router.get('/', getProject, getArea, getLevel, (req, res, next) => {
-    res.status(200).json({ success: true, payload: res.level.room })
+    res.status(200).json({ success: true, payload: res.level.room_ids })
 });
 
 
@@ -61,7 +61,7 @@ router.patch('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res)
 
 router.delete('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
-        let deleteResponse = await recursiveDelRoom([res.params.roomId])
+        let deleteResponse = await recursiveDelRoom([req.params.roomId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()
