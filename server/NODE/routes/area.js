@@ -37,7 +37,7 @@ router.post('/', getProject, async(req, res, next) => {
     if (req.query.name) createObj.name = req.query.name;
     if (res.project) {
         newArea = new Area(createObj);
-        res.project.areas.push(newArea._id)
+        res.project.area_ids.push(newArea._id)
     }
     try {
         if (newArea == null) throw "Could not create an 'Area' instance";
