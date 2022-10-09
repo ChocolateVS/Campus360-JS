@@ -14,8 +14,13 @@ function determineType(req, res, next) {
 }
 
 function setObj(req, res, next) {
-    if (res.roomId) res.linkParent = res.room;
-    else if (res.pointId) res.linkParent = res.point;
+    if (res.roomId) {
+        res.linkParent = res.room;
+    }
+    else if (res.pointId) {
+        res.linkParent = res.point;
+        res.twoWayLink = true;
+    }
     next()
 }
 
@@ -34,13 +39,23 @@ router.get('/', determineType, setObj, (req, res, next) => {
 
 router.post('/:linkId', determineType, setObj, async(req, res) => {
     try {
+        let otherPoint;
         if (!res.linkParent) throw 'Could not identify object to add link to!';
-        if (await Point.findOne({ _id: req.params.linkId })) //Check if point exists
+        if (otherPoint = await Point.findOne({ _id: req.params.linkId })) //Check if point exists
         {
+            //Add two ways
+            if(res.twoWayLink && !otherPoint.link_ids.includes(res.linkParent._id)){
+                otherPoint.link_ids.push(res.linkParent._id);
+                await otherPoint.save();
+            }
+
+            //Add association with ID
             if (!res.linkParent.link_ids.includes(req.params.linkId))
                 res.linkParent.link_ids.push(req.params.linkId)
+
             else throw 'ID already in link_ids'
         } else throw 'LinkID does not correspond to a point'
+
         const saveResult = await res.linkParent.save()
         res.status(201).json({ success: true, payload: saveResult })
     } catch (err) {
@@ -49,30 +64,19 @@ router.post('/:linkId', determineType, setObj, async(req, res) => {
 
 });
 
-router.patch('/:linkId', determineType, setObj, async(req, res) => {
-    try { //Delete then add instead of updating
-        if (!res.linkParent) throw 'Could not identify object to update to!';
-        let resp = {};
-
-        if (await Point.findOne({ _id: req.query.id })) //Check if point exists
-        {
-            await res.linkParent.updateOne({ link_ids: req.params.linkId }, { $pull: { link_ids: req.params.linkId } })
-            resp = res.linkParent.link_ids.push(req.query.id)
-        } else throw 'LinkID does not correspond to a point'
-        res.linkParent.save();
-        res.status(200).json({ success: true, payload: resp }).end();
-    } catch (err) {
-        res.status(400).json({ "success": false, message: err.message }).end()
-    }
-});
-
 router.delete('/:linkId', determineType, setObj, async(req, res) => {
     console.log(req.params.linkId)
     console.log('deleted')
     try {
         if (!res.linkParent) throw 'Could not identify object to delete from!';
-        let modelType = res.roomId ? Room : Point
-        let deleteResponse = await modelType.updateOne({ _id: res.linkParent.id, link_ids: req.params.linkId }, { $pull: { link_ids: req.params.linkId } })
+        let modelType = res.roomId ? Room : (res.pointId ? Point : null);
+
+        //Delete association with ID
+        let deleteResponse = await modelType.updateOne({ _id: res.linkParent._id, link_ids: req.params.linkId }, { $pull: { link_ids: req.params.linkId } })
+        
+        //Delete two way
+        if(res.twoWayLink) await Point.updateOne({ _id: req.params.linkId, link_ids: res.linkParent._id}, { $pull: { link_ids: res.linkParent._id} })
+
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()
