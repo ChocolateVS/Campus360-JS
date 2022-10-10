@@ -22,7 +22,7 @@ router.use('/:levelId/point', (req, res, next) => {
 router.get('/:levelId', getProject, getArea, getLevel, async(req, res) => {
     let rooms = res.level.room_ids
     let points = res.level.point_ids
-    let projObj = res.level.toObject({ getters: true, minimize: false, depopulate:true})
+    let projObj = res.level.toObject({ getters: true, minimize: false, depopulate: true })
     projObj.rooms = rooms
     projObj.points = points
     res.status(200).json({ success: true, payload: projObj }).end();
