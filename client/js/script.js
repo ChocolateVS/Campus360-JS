@@ -32,10 +32,11 @@ async function configPano() {
     //get LEVEL info
     let levelObj = await fetch(SERVER_API_URL + 'project/' + defaultProject + '/area/' + defaultArea + '/level/' + defaultLevel);
     if (levelObj == null) { console.log('Could not fetch Level'); return; }
-    let pointInfo = await fetch(SERVER_API_URL + 'project/' + defaultProject + '/area/' + defaultArea + '/level/' + defaultLevel + '/point/' + defaultPoint);
+    let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + defaultProject + '/area/' + defaultArea + '/level/' + defaultLevel + '/point/' + defaultPoint)).json();
     if (pointInfo == null) { console.log('Could not get Point'); return; }
+    console.log(pointInfo);
 
-
+    document.getElementById('showImg').src = 'images/' + pointInfo.payload.image.name;
     default_panorama = new PANOLENS.ImagePanorama('images/' + pointInfo.payload.image.name);
     default_panorama.addEventListener('enter-fade-start', function() {
         viewer.tweenControlCenter(lookAtPositions[0], 0);

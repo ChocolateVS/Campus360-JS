@@ -18,6 +18,7 @@ services:
       restart: 'unless-stopped'
       volumes:
         - images:/usr/src/app/images
+        - client:/usr/src/app/client
       ports:
         - 3000:3000
       expose:
@@ -44,3 +45,4 @@ services:
 volumes:
   mon-db:
   images:
+  client:
