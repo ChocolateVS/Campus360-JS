@@ -25,6 +25,8 @@ let defaultArea = 'aacddae821f1457db5b93404'
 let defaultLevel = 'cbc1190298254c868c4e5d26'
 let defaultPoint = '4e980157cd7447dc806a06c5'
 
+configPano()
+
 async function configPano() {
 
     //get LEVEL info
