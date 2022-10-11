@@ -8,7 +8,6 @@ services:
       expose:
         - 27017
       volumes:
-        - ./MONGO:/docker-entrypoint-initdb.d
         - mon-db:/data/db
       environment:
         - MONGO_INITDB_ROOT_USERNAME=campus360
@@ -25,8 +24,6 @@ services:
         - 3000
       depends_on:
         - mongo
-      stdin_open: true
-      tty: true
     mongo-express:
         image: mongo-express
         environment:
