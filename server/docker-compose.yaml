@@ -17,6 +17,8 @@ services:
     nodejs:
       build: ./NODE
       restart: 'unless-stopped'
+      volumes:
+        - images:/images
       ports:
         - 3000:3000
       expose:
@@ -44,3 +46,4 @@ services:
           - 3002   
 volumes:
   mon-db:
+  images:

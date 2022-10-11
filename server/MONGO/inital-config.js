@@ -1,4 +1,4 @@
-
+//Not really required yet??
 // db.createCollection("Campus"); 
 // db.Campus.insertOne({
 // 	name: "waikato",
