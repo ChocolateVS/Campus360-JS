@@ -15,7 +15,7 @@ const url = process.env.MONGO_URL || "mongodb://localhost:27017/waikato_db";
 //API urls
 app.use('/images', express.static(__dirname + '/images'));
 app.use('/api', api);
-app.use('/', express.static(__dirname + '/Campus360-JS'));
+app.use('/', express.static(__dirname + '/client'));
 
 
 mongoose.connect(url, {
