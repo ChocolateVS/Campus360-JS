@@ -17,7 +17,7 @@ services:
       build: ./NODE
       restart: 'unless-stopped'
       volumes:
-        - images:/images
+        - images:/usr/src/app/images
       ports:
         - 3000:3000
       expose:
