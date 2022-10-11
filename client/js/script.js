@@ -1,9 +1,9 @@
 let SERVER_API_URL = 'http://campus.rowansserver.com/api/'
-
+let SERVER_URL = 'http://campus.rowansserver.com/'
 
 function id(id) { return document.getElementById(id); }
 
-let phonebook = [];
+let roomList = [];
 
 var panorama, viewer, container, infospot, controlButton, modeButton, videoButton;
 
@@ -34,10 +34,8 @@ async function configPano() {
     if (levelObj == null) { console.log('Could not fetch Level'); return; }
     let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + defaultProject + '/area/' + defaultArea + '/level/' + defaultLevel + '/point/' + defaultPoint)).json();
     if (pointInfo == null) { console.log('Could not get Point'); return; }
-    console.log(pointInfo);
 
-    document.getElementById('showImg').src = 'images/' + pointInfo.payload.image.name;
-    default_panorama = new PANOLENS.ImagePanorama('images/' + pointInfo.payload.image.name);
+    default_panorama = new PANOLENS.ImagePanorama(SERVER_URL + 'images/' + pointInfo.payload.image.name);
     default_panorama.addEventListener('enter-fade-start', function() {
         viewer.tweenControlCenter(lookAtPositions[0], 0);
     });
@@ -45,8 +43,7 @@ async function configPano() {
     //Floating icon
     //infospot = new PANOLENS.Infospot(350, PANOLENS.DataImage.Info);
     //infospot.position.set(0, -2000, -5000);
-
-    default_panorama.add(infospot);
+    //default_panorama.add(infospot);
 
     viewer = new PANOLENS.Viewer({ output: 'console', container: container, horizontalView: false });
     viewer.add(default_panorama);
@@ -94,35 +91,17 @@ async function configPano() {
 $(document).ready(function() {
     $.ajax({
         type: "GET",
-        url: "https://chocolatevs.github.io/Campus360-JS/LOCATIONS/phonebook.csv",
+        url: SERVER_API_URL + "rooms",
         dataType: "text",
-        success: function(data) { processData(data); }
+        success: function(data) { roomList = JSON.parse(data).payload }
     });
 });
 //Process csv
-function processData(allText) {
-    //Split the doc into lines
-    let csvLines = allText.split(/\r\n|\n/);
-    let standard_headers = ['lastname', 'firstname', 'phone', 'username', 'location', 'room', 'other'];
 
-    for (var i = 1; i < csvLines.length; i++) {
-        //Split to line into values
-        let data = csvLines[i].split(',');
-        let temp = {};
-
-        //If usual data
-        if (standard_headers.length == data.length) {
-            for (let j = 0; j < standard_headers.length; j++) {
-                temp[standard_headers[j]] = data[j];
-            }
-            phonebook.push(temp);
-        }
-    }
-}
 
 $('#locationInput').on("input", function() {
-    var input = this.value;
-    search(input);
+    var user_search_text = this.value;
+    populateSearchBox(user_search_text);
 });
 
 //Adds 
@@ -143,71 +122,55 @@ document.querySelector(".panolens-canvas").addEventListener("touch", function() 
 });
 
 function removeFocus() {
-    console.log("HIII");
     document.activeElement.blur();
     $('#search_container').css('border-radius', '10px');
     $('#search_container').css('background-color', 'transparent');
     id("search_results").style.display = "none";
 }
 
-//Searches the phonebook object for an entered query and displays results
-function search(query) {
+//Searches the room_list object for an entered query and displays results
+function populateSearchBox(user_search_string) {
+    let result = [];
     let result_count = 0;
     id("search_results").innerHTML = "";
 
-    if (query != "" && query.length > 0) {
-
-        //For each entry in the phonebook
-        phonebook.forEach(object => {
-
-            let result = false;
-
-            //For value of the entry
-            Object.values(object).forEach(value => {
-
-                //For each part of the query
-                let parts = query.split(" ");
-                parts.forEach(part => {
-                    if (value.toLowerCase().includes(part.toLowerCase())) {
-                        result = true;
-                    }
-                });
-            });
-
-            if (result && result_count < 6) {
-                //console.log(result_count, result, object);
-
-                let search_result = document.createElement('div');
-                search_result.setAttribute("class", "search_result");
-
-                let search_result_name = document.createElement('p');
-                search_result_name.setAttribute("class", "search_result_name p_result");
-                search_result_name.textContent = object.firstname + " " + object.lastname;
-
-                let search_location_container = document.createElement('p');
-                search_location_container.setAttribute("class", "search_location_container");
-                search_result_name.textContent = object.firstname + " " + object.lastname;
-
-                let search_result_location = document.createElement('p');
-                search_result_location.setAttribute("class", "search_result_location p_result");
-                search_result_name.textContent = object.firstname + " " + object.lastname;
-
-                let location_img = document.createElement('img');
-                location_img.src = "images/location.png";
-                location_img.style.width = "30px";
-                location_img.style.height = "30px";
-
-                search_location_container.appendChild(search_result_location);
-                search_location_container.appendChild(location_img);
-
-                search_result.appendChild(search_result_name);
-                search_result.appendChild(search_location_container);
-                search_result_location.textContent = object.location;
-
-                id("search_results").appendChild(search_result);
-
-                result_count++;
+    if (user_search_string != "" && user_search_string.length > 0) {
+        for (var item in roomList) {
+            if (user_search_string.toLowerCase().includes(item.owner.toLowerCase()) || user_search_string.toLowerCase.includes(item.name.toLowerCase())) {
+                result.push(item);
             }
-        });
+        }
+    }
+
+    //Limit results to 6
+    if (result.length > 0 && result_count < 6) {
+        //console.log(result_count, result, object);
+
+        for (var r in result) {
+            let search_result = document.createElement('div');
+            search_result.setAttribute("class", "search_result");
+
+            let room_owner_name = document.createElement('p');
+            room_owner_name.setAttribute("class", "search_result_name p_result");
+            room_owner_name.textContent = r.owner == "" ? "None" : r.owner;
+
+            let room_location_name = document.createElement('p');
+            room_location_name.setAttribute("class", "search_result_location p_result");
+            room_location_name.textContent = r.name
+
+            let room_ID = document.createElement("input");
+            room_ID.setAttribute("type", "hidden");
+            room_ID.setAttribute("name", "roomId");
+            room_ID.setAttribute("value", r._id);
+
+            search_result.appendChild(room_owner_name);
+            search_result.appendChild(room_location_name);
+
+            search_result.appendChild(room_ID)
+
+            id("search_results").appendChild(search_result);
+
+            result_count++;
+        }
     }
 }
