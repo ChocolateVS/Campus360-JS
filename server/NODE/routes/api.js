@@ -17,7 +17,7 @@ router.get('/rooms', async(req, res) => {
     res.status(200).json({ success: true, payload: resp });
 })
 
-router.get('/roomloc/:roomId', async(req, res) {
+router.get('/roomlocation/:roomId', async(req, res) => {
     let area;
     let level;
     outObj = {};
@@ -36,7 +36,7 @@ router.get('/roomloc/:roomId', async(req, res) {
 });
 
 
-router.get('/pointloc/:pointId', async(req, res) => {
+router.get('/pointlocation/:pointId', async(req, res) => {
     let area;
     let level;
     outObj = {};
