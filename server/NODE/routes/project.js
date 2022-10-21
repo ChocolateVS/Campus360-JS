@@ -3,11 +3,15 @@ const router = express.Router();
 
 const areaAPI = require('./area.js');
 
-
 //Mongo
 const { Project } = require('../models/schema.js');
 const { getProject, recursiveDelProject } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types;
+
+router.get('/pointInfo/:pointId', (req, res, next) =>{
+
+
+})
 
 router.use('/:projectId/area', (req, res, next) => {
     res.projectId = req.params.projectId;
@@ -15,6 +19,8 @@ router.use('/:projectId/area', (req, res, next) => {
 }, areaAPI)
 
 router.get('/:projectId', getProject, (req, res) => {
+
+    //Separates populated data into separate attribute - preserving IDs array
     let populatedObj = res.project.area_ids
     let projObj = res.project.toObject({ getters: true, minimize: false, depopulate:true})
     projObj.areas = populatedObj

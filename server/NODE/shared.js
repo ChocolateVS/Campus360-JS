@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 const { Project, Area, Level, Point, Room } = require('./models/schema.js')
-
+require('dotenv').config()
 
 async function getPoint(req, res, next) {
     let query;

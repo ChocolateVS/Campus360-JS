@@ -1,3 +1,9 @@
+/**
+ * Handles Area API - CRUD of area object
+ * 
+ */
+
+
 const express = require('express');
 const router = express.Router();
 
