@@ -1,29 +1,53 @@
 import * as Marzipano from 'marzipano';
-import React from "react";
+import React, {useEffect, useState, useRef} from "react";
+import $ from 'jquery';
+import './Pano.css'
 
 function Pano(props) {
-  const [image, setImage] = React.useState(null);
+  const [image, setImage] = useState(null);
+  const viewerRef = useRef(null);
 
-  React.useEffect(() => {
-    fetch("http://campus.rowansserver.com/images/" + props.imageName)
-      .then((res) => res.blob())
-      .then((data) => {
-        let objURL = URL.createObjectURL(data);
-        setImage(objURL)
-      });
-  }, []);
+  useEffect(() => {
+      fetch("http://campus.rowansserver.com/images/" + props.level.points[0].image.name)
+        .then((res) => res.blob())
+        .then((data) => {
+          let objURL = URL.createObjectURL(data);
+          setImage(objURL)
+
+          let panoElement = viewerRef.current;
+        let viewerOpts = {
+          controls: {
+            mouseViewMode: 'drag'    // drag
+          }
+        };
+        
+        
+        let viewer = new Marzipano.Viewer(panoElement, viewerOpts)
+        
+        var source = Marzipano.ImageUrlSource.fromString(image);
+        var view = new Marzipano.RectilinearView();
+        
+        let geometry = new Marzipano.EquirectGeometry([{width: image.width}]);
 
 
-  var panoElement = document.getElementById('panoviewer');
-    var viewerOpts = {
-      controls: {
-        mouseViewMode: 'drag'    // drag|qtvr
-      }
-    };
-var viewer = new Marzipano.Viewer(panoElement, viewerOpts)
+        var scene = viewer.createScene({
+          source: source,
+          view: view,
+          geometry:geometry
+        });
+        
+        
+        });
+
+
+        
+    }, []);
+
+   
 
   return (
-        <div id="panoviewer">{!image ? "Loading..." : "Viewer should show now"}</div>
+        <img id="panoviewer" src={image}/>
+
   );
 }
 

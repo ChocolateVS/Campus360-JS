@@ -5,9 +5,9 @@ import Map from './components/Map.js';
 import "./App.css";
 
 
-const hardcodedProject = "dfde9b0c81dc4e81a91e7b24";
-const hardcodedArea = "706f8b03f1364b7d96f79400";
-const hardcodedLevel = "6c780aaa2b13426a89802c6d";
+const hardcodedProject = "485b3c31c3d347ae84108de9";
+const hardcodedArea = "cea7fe83458047069d96a023";
+const hardcodedLevel = "c4ab1e8fb11047eda6a47b7a";
 
 
 function App() {
@@ -27,12 +27,14 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{!data ? "Loading..." : JSON.stringify(currLevel)}</p>
-        <div id="panoviewer"></div>
         {
           currLevel ? 
         (<Map id="mapImage" imageName={currLevel.image.name}/>)
+        : null
+        }
+        {
+          currLevel ? 
+        (<Pano id="panoImage" level={currLevel}/>)
         : null
         }
       </header>
