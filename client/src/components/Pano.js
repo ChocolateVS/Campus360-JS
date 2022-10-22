@@ -1,4 +1,5 @@
 import * as Marzipano from 'marzipano';
+import * as Pannellum from 'pannellum';
 import React, {useEffect, useState, useRef} from "react";
 import $ from 'jquery';
 import './Pano.css'
@@ -22,19 +23,19 @@ function Pano(props) {
         };
         
         
-        let viewer = new Marzipano.Viewer(panoElement, viewerOpts)
+        // let viewer = new Marzipano.Viewer(panoElement, viewerOpts)
+
+        // var source = Marzipano.ImageUrlSource.fromString(image);
+        // var view = new Marzipano.RectilinearView();
         
-        var source = Marzipano.ImageUrlSource.fromString(image);
-        var view = new Marzipano.RectilinearView();
-        
-        let geometry = new Marzipano.EquirectGeometry([{width: image.width}]);
+        // let geometry = new Marzipano.EquirectGeometry([{width: image.width}]);
 
 
-        var scene = viewer.createScene({
-          source: source,
-          view: view,
-          geometry:geometry
-        });
+        // var scene = viewer.createScene({
+        //   source: source,
+        //   view: view,
+        //   geometry:geometry
+        // });
         
         
         });
