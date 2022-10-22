@@ -14,15 +14,15 @@ services:
         - MONGO_INITDB_ROOT_PASSWORD=SuperSecurePassword!
         - MONGO_INITDB_DATABASE=waikato_db
     nodejs:
-      build: ./NODE
+      build: ./
       restart: 'unless-stopped'
       volumes:
         - images:/usr/src/app/images
-        - client:/usr/src/app/client
+        - client:/usr/src/client
       ports:
-        - 3000:3000
+        - 3001:3001
       expose:
-        - 3000
+        - 3001
       depends_on:
         - mongo
     mongo-express:
