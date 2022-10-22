@@ -7,7 +7,7 @@ import "./App.css";
 
 const hardcodedProject = "485b3c31c3d347ae84108de9";
 const hardcodedArea = "cea7fe83458047069d96a023";
-const hardcodedLevel = "c4ab1e8fb11047eda6a47b7a";
+const hardcodedLevel = "e369094e7fbd4fe7a01ccaa9";
 
 
 function App() {
