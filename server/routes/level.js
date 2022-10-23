@@ -36,18 +36,21 @@ router.post('/', getProject, getArea, async(req, res) => {
     let newLevel;
     let createObj = {};
 
-    if (req.query.id) createObj._id = ObjectId(req.query.id)
-    if (req.query.local_directory) createObj.image.directory = req.query.local_directory;
-    if (req.query.filename) createObj.image.name = req.query.filename;
-    if (req.query.scale) createObj.image.scale = req.query.scale;
-    if (req.query.name) createObj.name = req.query.name;
-    //Points & Rooms have specific validation required, so need to ensure they are added only via the /point or /room API
-    if (res.area) {
+    
+
+    try {
+        if (req.query.id) createObj._id = ObjectId(req.query.id)
+        if (req.query.local_directory) createObj.image.directory = req.query.local_directory;
+        if (req.query.filename) createObj.image.name = req.query.filename;
+        if (req.query.scale) createObj.image.scale = req.query.scale;
+        if (req.query.name) createObj.name = req.query.name;
+        //Points & Rooms have specific validation required, so need to ensure they are added only via the /point or /room API
+        if (res.area) {
         newLevel = new Level(createObj);
         res.area.level_ids.push(newLevel._id)
     }
 
-    try {
+
         if (newLevel == null) throw 'Could not make Level object';
         const saveResult = await newLevel.save()
         await res.area.save(); //Must save AFTER incase the 'newLevel' is invalid

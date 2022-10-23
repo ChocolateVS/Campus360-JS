@@ -1,7 +1,5 @@
-import * as Marzipano from 'marzipano';
-import * as Pannellum from 'pannellum';
 import React, {useEffect, useState, useRef} from "react";
-import $ from 'jquery';
+
 import './Pano.css'
 
 function Pano(props) {
@@ -13,38 +11,11 @@ function Pano(props) {
         .then((res) => res.blob())
         .then((data) => {
           let objURL = URL.createObjectURL(data);
-          setImage(objURL)
-
-          let panoElement = viewerRef.current;
-        let viewerOpts = {
-          controls: {
-            mouseViewMode: 'drag'    // drag
-          }
-        };
-        
-        
-        // let viewer = new Marzipano.Viewer(panoElement, viewerOpts)
-
-        // var source = Marzipano.ImageUrlSource.fromString(image);
-        // var view = new Marzipano.RectilinearView();
-        
-        // let geometry = new Marzipano.EquirectGeometry([{width: image.width}]);
-
-
-        // var scene = viewer.createScene({
-        //   source: source,
-        //   view: view,
-        //   geometry:geometry
-        // });
-        
-        
+          setImage(objURL);
         });
-
-
+    
         
     }, []);
-
-   
 
   return (
         <img id="panoviewer" src={image}/>

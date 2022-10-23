@@ -15,6 +15,9 @@
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1",
     "three": "^0.145.0",
+    "three.js": "^0.77.1",
+    "tween": "^0.9.0",
+    "tween.js": "^16.6.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

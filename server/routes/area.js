@@ -38,14 +38,16 @@ router.get('/', getProject, (req, res, next) => {
 router.post('/', getProject, async(req, res, next) => {
     let newArea;
     let createObj = {};
-    if (req.query.id) createObj._id = ObjectId(req.query.id)
-        //Levels have specific referencing, so can only be added via /level API
-    if (req.query.name) createObj.name = req.query.name;
-    if (res.project) {
-        newArea = new Area(createObj);
-        res.project.area_ids.push(newArea._id)
-    }
+    
     try {
+        if (req.query.id) createObj._id = ObjectId(req.query.id)
+        //Levels have specific referencing, so can only be added via /level API
+        if (req.query.name) createObj.name = req.query.name;
+        if (res.project) {
+            newArea = new Area(createObj);
+            res.project.area_ids.push(newArea._id)
+        }
+
         if (newArea == null) throw "Could not create an 'Area' instance";
         const saveResult = await newArea.save();
         await res.project.save(); //Must save after incase newArea is invalid

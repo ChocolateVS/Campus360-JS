@@ -8,10 +8,6 @@ const { Project } = require('../models/schema.js');
 const { getProject, recursiveDelProject } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types;
 
-router.get('/pointInfo/:pointId', (req, res, next) =>{
-
-
-})
 
 router.use('/:projectId/area', (req, res, next) => {
     res.projectId = req.params.projectId;
@@ -37,11 +33,12 @@ router.get('/', async(req, res, next) => {
 router.post('/', async(req, res) => {
     let newProject;
     let createObj = {};
-    if (req.query.id) createObj._id = ObjectId(req.query.id)
-        //Areas have specific referencing, so can only be added via /level API
-    if (req.query.name) createObj.name = req.query.name;
-    newProject = new Project(createObj);
+    
     try {
+        if (req.query.id) createObj._id = ObjectId(req.query.id)
+        //Areas have specific referencing, so can only be added via /level API
+        if (req.query.name) createObj.name = req.query.name;
+        newProject = new Project(createObj);
         if (newProject == null) throw 'Could not make Project object';
         const saveResult = await newProject.save();
         res.status(201).json({ success: true, payload: saveResult })
