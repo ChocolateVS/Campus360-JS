@@ -76,7 +76,7 @@ function Map(props) {
           console.log("Run")
         }}></area>
       </map>
-      <canvas ref={canvasRef} id="mapCanvas" className="imageMap"></canvas>
+      <canvas ref={canvasRef} id="mapCanvas" className="imageMap" pointerEvents='none'></canvas>
       </>
   );
 }
