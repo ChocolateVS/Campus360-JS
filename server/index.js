@@ -8,7 +8,7 @@ const api = require('./routes/api.js');
 const app = express();
 
 
-
+const clientDir = path.join(__dirname, '../client', 'build')
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,10 +20,8 @@ app.use(express.static(clientDir));
 app.use('/images', express.static(__dirname + '/images'));
 app.use('/api', api);
 
-
-const clientDir = path.join(__dirname, '../client', 'build')
 //Serve client side
-app.get('*', (req, res)=>{
+app.get('/', (req, res)=>{
     res.sendFile('index.html', {clientDir})
 })
 

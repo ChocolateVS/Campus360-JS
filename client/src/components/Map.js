@@ -1,36 +1,23 @@
 import React, {useEffect, useRef, useState, Image} from "react";
+import $ from 'jquery'
 import './Map.css'
 
 
 function Map(props) {
-  const [currPoint, setCurrPoint] = useState(null);
-
-
+  const [currPoint, setCurrPoint] = useState(() => {
+    return props.level.points[0]
+  });
   const [image, setImage] = useState(null);
-  const [imgSize, setImgSize] = useState(null);
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
-  const fakePoints = [[0,0],[0.1, 0.5], [0.2345, 0.2345]]
 
 
-  let returnAreas = (coords, width, height) => {
-    let pointSize = 30;
-    return (
-      <>
-      {
-        coords.map((coord, i) =>{
-          
-        return (<area key={i+""+coord[0]+""+coord[1]} shape="circle" onClick={()=>{
-          console.log('Called ' + coord[0] + " " + coord[1])
-        }} coords={coord[0]*width + ", " + coord[1]*height + ", " + pointSize}></area>)
-      })
-    }</>)}
+  
 
 
-  const [mapAreas, setMapAreas] = useState(()=>{
-    return returnAreas(fakePoints, 200, 300)
-  });
+  const [mapAreas, setMapAreas] = useState(null);
 
+  //get image from API and apply to tag
   useEffect(() => {
   
     fetch("http://campus.rowansserver.com/images/" + props.imageName)
@@ -38,45 +25,92 @@ function Map(props) {
       .then((data) => {
         let objURL = URL.createObjectURL(data);
         setImage(objURL)
+        
       })
-      const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    for (var coord in fakePoints){
-      let pointSize = 30;
-    
-      ctx.fillStyle = "#ff2626"; // Red color
-  
-      ctx.beginPath();
-      ctx.arc(coord[0]*200, coord[1]*300, pointSize, 0, Math.PI * 2, true);
-      ctx.fill();
-    }
+     
 
-  }, []);
-  
+  }, [props.imageName]);
 
-//Update on
+
+
+//Update canvas width to exactly overlay img
   useEffect(() => {
-   let canvas = canvasRef.current;
-   let ctx = canvas.getContext('2d');
-   canvas.width = document.getElementById('mapImage').width;
-   canvas.height = document.getElementById('mapImage').height;
-   ctx.width = canvas.width;
-   ctx.height = canvas.height; 
-
+    let canvas = canvasRef.current;
+    let ctx = canvas.getContext('2d');
+    canvas.width = document.getElementById('mapImage').width;
+    canvas.height = document.getElementById('mapImage').height;
+    ctx.width = canvas.width;
+    ctx.height = canvas.height; 
   }, [image]);
   
 
 
+  let returnAreas = (coords, width, height) => {
+    let pointSize = width*0.04;
+    return (
+      <>
+      {
+        coords.map((coord, i) =>{
+          
+        return (<area alt="Point To Click" key={i+""+coord[0]+""+coord[1]} shape="circle" coords={coord[0]*width + ", " + coord[1]*height + ", " + pointSize} href="click.html" ></area>)
+      })
+    }</>)}
+
+    //Update canvas with points
+  useEffect(()=>{
+    const ctx = document.getElementById('mapCanvas').getContext('2d')
+    ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height)
+    let pointSize = ctx.canvas.width * 0.02;
+    
+    for (var coord in props.level.points){
+      ctx.fillStyle = "red"; // Red color
+      ctx.beginPath();
+      ctx.arc(props.level.points[coord].x*ctx.canvas.width, props.level.points[coord].y*ctx.canvas.height, pointSize, 0, Math.PI * 2, true);
+      ctx.fill();
+    }
+ 
+    if(currPoint){
+      ctx.fillStyle = "blue";
+      ctx.beginPath();
+      ctx.arc(currPoint.x*ctx.canvas.width, currPoint.y*ctx.canvas.height, pointSize, 0, Math.PI * 2, true);
+      ctx.fill();
+    }
+    setMapAreas(returnAreas(props.level.points, ctx.canvas.width, ctx.canvas.height))
+  }, [props.level, image, currPoint])
+
+  //Getsize of shape to influence coordinate decisions
+  // useEffect(()=>{
+  //   let widthOfImgMapper = document.getElementById('imageMap').width
+  //   let heightOfImgMapper = document.getElementById('imageMap').height
+
+  //   setMapAreas({
+  //     id:'currLevelFloorplanClicks',
+  //     name: "Floorplan",
+  //     areas: returnAreas(props.level.points, widthOfImgMapper, he)
+  //     });
+  // }, [image, props.level.points])
+  //-------------------
+  // let returnAreas = (coords, width, height) => {
+  //   let pointSize = width*0.04;
+  //   return (
+  //       coords.map((coord, i) =>{
+  //       return {id:i+coord[0]+""+coord[1],  
+  //       shape:"circle", 
+  //       coords:[coord.x*width, coord.y*height, pointSize],
+  //       preFillColor: 'red'}
+
+  //    })
+  //    )
+  //   }
+
   return (
     <>
     
-      <img id="mapImage" ref={imageRef} src={image} map="#mapMap" className="imageMap"/>
+      <img id="mapImage" ref={imageRef} src={image} map="#mapMap" alt="mapOfLevel" className="imageMap"/>
       <map id="mapMap">
-        <area shape="rect" coords="0,0,400,400" href="/api" onClick={()=>{
-          console.log("Run")
-        }}></area>
+       {mapAreas}
       </map>
-      <canvas ref={canvasRef} id="mapCanvas" className="imageMap" pointerEvents='none'></canvas>
+      <canvas ref={canvasRef} id="mapCanvas" className="imageMap"  pointerEvents='none' style={{zIndex: 3}}></canvas>
       </>
   );
 }

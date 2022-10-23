@@ -11,16 +11,18 @@ const hardcodedLevel = "49337c5c0aac47919a5ab35c";
 
 
 function App() {
+  const builtURL = "http://campus.rowansserver.com/api/project/"+hardcodedProject+ "/area/" + hardcodedArea + "/level/" + hardcodedLevel
   const [data, setData] = React.useState(null);
   const [currLevel, setCurrLevel] = React.useState(null);
+  
   React.useEffect(() => {
-    fetch("http://campus.rowansserver.com/api/project/"+hardcodedProject+ "/area/" + hardcodedArea + "/level/" + hardcodedLevel)
+    fetch(builtURL)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
         setCurrLevel(data.payload)
       });
-  }, []);
+  }, [builtURL]);
 
 
 
@@ -29,12 +31,12 @@ function App() {
       <header className="App-header">
         {
           currLevel ? 
-        (<Map id="mapImage" imageName={currLevel.image.name}/>)
+        (<Map id="mapImage" currURL={builtURL} imageName={currLevel.image.name} level={currLevel}/>)
         : null
         }
         {
           currLevel ? 
-        (<Pano id="panoImage" level={currLevel}/>)
+        (<Pano id="panoImage" currURL={builtURL} level={currLevel}/>)
         : null
         }
       </header>
