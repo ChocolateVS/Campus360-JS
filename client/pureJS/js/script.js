@@ -20,22 +20,22 @@ var lookAtPositions = [
     new THREE.Vector3(0, 0, 0)
 ];
 
-let defaultProject = '0fff776e13504b01a37af13b'
-let defaultArea = 'aacddae821f1457db5b93404'
-let defaultLevel = 'cbc1190298254c868c4e5d26'
-let defaultPoint = '4e980157cd7447dc806a06c5'
+const hardcodedProject = "485b3c31c3d347ae84108de9";
+const hardcodedArea = "cea7fe83458047069d96a023";
+const hardcodedLevel = "49337c5c0aac47919a5ab35c";
 
 configPano()
 
 async function configPano() {
-
+    console.log("Config pano")
     //get LEVEL info
-    let levelObj = await fetch(SERVER_API_URL + 'project/' + defaultProject + '/area/' + defaultArea + '/level/' + defaultLevel);
+    let levelObj = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel)).json();
     if (levelObj == null) { console.log('Could not fetch Level'); return; }
-    let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + defaultProject + '/area/' + defaultArea + '/level/' + defaultLevel + '/point/' + defaultPoint)).json();
+    console.log(levelObj)
+    let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel + '/point/' + levelObj.payload.points[0]._id)).json();
     if (pointInfo == null) { console.log('Could not get Point'); return; }
 
-    default_panorama = new PANOLENS.ImagePanorama(SERVER_URL + 'images/' + pointInfo.payload.image.name);
+    default_panorama = await( new PANOLENS.ImagePanorama(SERVER_URL + 'images/' + pointInfo.payload.image.name));
     default_panorama.addEventListener('enter-fade-start', function() {
         viewer.tweenControlCenter(lookAtPositions[0], 0);
     });
@@ -88,15 +88,18 @@ async function configPano() {
 }
 
 //Gets csv onload
-$(document).ready(function() {
+jQuery(function($) {
     $.ajax({
         type: "GET",
         url: SERVER_API_URL + "rooms",
         dataType: "text",
-        success: function(data) { roomList = JSON.parse(data).payload }
+        success: function(data) { 
+            roomList = JSON.parse(data).payload;
+        console.log("Response!")}
     });
 });
-//Process csv
+
+
 
 
 $('#locationInput').on("input", function() {
