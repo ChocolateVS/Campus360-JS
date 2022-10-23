@@ -7,7 +7,9 @@ PATCH works by passing the object made from the 'query' params is passed to be d
 ## UTILITY
 
 GET /api/all - returns entire DB of projects, fully expanded
-
+GET /api/rooms - returns all rooms
+GET /api/roomlocation/<roomID> - will return {level:<levelobj>, area:<areaObj>} for given ID
+GET /api/pointlocation/<pointID> - will return {level:<levelobj>, area:<areaObj>} for given ID
 
 ## PROJECT
 GET /api/project/<optional ID for specific>
@@ -48,8 +50,8 @@ DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<roomID>
 ## Point
 
 GET /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<optional ID for specific>
-POST /api/project/<projectID>/area/<areaID>/level/<levelID>/point?id=<optional>&name=<required string>&x=<required number>&y=<required number>&north=<default 0.5 number>&local_directory=<default '' string>&filename=<default '' string> 
-PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>?name=<optional string>&x=<optional number>&y=<optional number>&image.north=<optional number>&image.directory=<optional string>&image.name=<optional string> 
+POST /api/project/<projectID>/area/<areaID>/level/<levelID>/point?id=<optional>&name=<required string>&x=<required number>&y=<required number>&north=<default 0.5 number>&type=<default '' string>&local_directory=<default '' string>&filename=<default '' string> 
+PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>?name=<optional string>&x=<optional number>&y=<optional number>&type=<optional string>&image.north=<optional number>&image.directory=<optional string>&image.name=<optional string> 
 DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>
 
 ## Linking a point to a ROOM or a POINT - Append /link to end of .../room/<roomID> or .../point/<pointID>
