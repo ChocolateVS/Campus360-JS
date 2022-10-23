@@ -30,9 +30,6 @@ function Map(props) {
   const [mapAreas, setMapAreas] = useState(()=>{
     return returnAreas(fakePoints, 200, 300)
   });
-  
-
-
 
   useEffect(() => {
   
@@ -42,21 +39,34 @@ function Map(props) {
         let objURL = URL.createObjectURL(data);
         setImage(objURL)
       })
+      const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    for (var coord in fakePoints){
+      let pointSize = 30;
     
-    //   const canvas = canvasRef.current;
-    // const ctx = canvas.getContext('2d');
-    // for (var coord in fakePoints){
-    //   let pointSize = 30;
-    
-    //   ctx.fillStyle = "#ff2626"; // Red color
+      ctx.fillStyle = "#ff2626"; // Red color
   
-    //   ctx.beginPath();
-    //   ctx.arc(coord[0]*200, coord[1]*300, pointSize, 0, Math.PI * 2, true);
-    //   ctx.fill();
-    // }
+      ctx.beginPath();
+      ctx.arc(coord[0]*200, coord[1]*300, pointSize, 0, Math.PI * 2, true);
+      ctx.fill();
+    }
 
   }, []);
   
+
+//Update on
+  useEffect(() => {
+   let canvas = canvasRef.current;
+   let ctx = canvas.getContext('2d');
+   canvas.width = document.getElementById('mapImage').width;
+   canvas.height = document.getElementById('mapImage').height;
+   ctx.width = canvas.width;
+   ctx.height = canvas.height; 
+
+  }, [image]);
+  
+
+
   return (
     <>
     
@@ -66,6 +76,7 @@ function Map(props) {
           console.log("Run")
         }}></area>
       </map>
+      <canvas ref={canvasRef} id="mapCanvas" className="imageMap"></canvas>
       </>
   );
 }
