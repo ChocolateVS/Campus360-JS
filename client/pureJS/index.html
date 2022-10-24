@@ -11,16 +11,22 @@
     <!-- 180×180 -->
 
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <script src="js/three.min.js"></script>
-    <script src="js/panolens.min.js"></script>
-    <script src="js/jquery-3.6.0.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js" defer></script>
+    <script src="js/three.min.js" defer></script>
+    <!--<script src="js/panolens.min.js" defer></script>-->
+    <script src="js/jquery-3.6.0.js" defer></script>
+    <script src="js/search.js" defer></script>
+    <script src="js/angle.js" defer></script>
+    <script src="js/pannellum-script.js" defer></script>
 </head>
 
 <body>
     <div id="logo" class="logo">
         <img src="https://www.waikato.ac.nz/favicon-32x32.png?v=QE50XMk2oY">
     </div>
-    <div id="container"></div>
+   
+    <div id="panorama"></div>
 
     <div id="search_container">
         <input type="search" id="locationInput" class="input" placeholder="Search Waikato Campus" data-room-search>
@@ -31,7 +37,6 @@
     <button id="modeButton" class="button">Mode Toggle</button>
     <button id="videoButton" class="button">Video Toggle</button>
 </body>
-<script src=js/script.js></script>
 <template template-room>
     <span class="roomInfo">
     <div class="name" template-room-name>

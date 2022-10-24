@@ -72,9 +72,9 @@ function setupViewer(panoramas) {
     
     viewer = new PANOLENS.Viewer({ output: 'console', container: container, horizontalView: false });
 
-    panoramas.forEach(panorama => {
-        viewer.add(panorama.panorama);
-    }) 
+    for (p in panoramas) {
+        viewer.add(panoramas[p].panorama);
+    }
 }
 
 async function createScene(project, area, level) {
@@ -160,81 +160,8 @@ function findPanoramaById(panoramas, link_id) {
     return panoramas.find(panorama => panorama.point._id == link_id);
 }
 
-/**
- * Determines angle between current point and linked point  
- * returns supposed Yaw
- */
-function angleBetweenPoints(currPointx, currPointy, point2x, point2y, widthOfPano) {    
-    let rad = find_angle({x:currPointx, y: 0}, {x:currPointx,y:currPointy}, {x:point2x, y:point2y}) //Angle
-    let arc = widthOfPano * ( rad / Math.PI ) //Find arc length of the 'north' facing angle differennce, to give YAW
-    return arc
-}
-/**
- * Gets Radians between A & C, rotating about B  
- * A - point 1  
- * B - Centre point  
- * C - point 2  
- * Returns - Radians angle
- */
-function find_angle(A,B,C) {
-    var AB = Math.sqrt(Math.pow(B.x-A.x,2)+ Math.pow(B.y-A.y,2));    
-    var BC = Math.sqrt(Math.pow(B.x-C.x,2)+ Math.pow(B.y-C.y,2)); 
-    var AC = Math.sqrt(Math.pow(C.x-A.x,2)+ Math.pow(C.y-A.y,2));
-    return Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB));
-}
 
 
-/***************** Search Stuff ******************/
-
-//Focuses Searchbox
-document.getElementById("locationInput").addEventListener("focus", function() {
-        $('#search_container').css('border-radius', '10px 10px 0px 0px');
-        $('#search_container').css('background-color', 'rgb(222 218 218 / 85%)');
-        id("search_results").style.display = "flex";
-    });
-
-
-//Defocuses searchbox
-document.getElementById("container").addEventListener("mousedown", function() {
-    removeFocusFromSearch();
-});
-document.getElementById("container").addEventListener("touch", function() {
-    removeFocusFromSearch();
-});
-
-function removeFocusFromSearch() {
-    document.activeElement.blur();
-    $('#search_container').css('border-radius', '10px');
-    $('#search_container').css('background-color', 'transparent');
-    id("search_results").style.display = "none";
-}
-
-//Filters & Populates searchbox
-let roomSearchEntries = []
-const roomEntryTemplate = document.querySelector("[template-room]")
-const roomEntryResults = document.querySelector("[data-room-results]")
-const roomSearch = document.querySelector("[data-room-search]")
-
-roomSearch.addEventListener('input', e =>{
-    const value = e.target.value.toLowerCase();
-    roomSearchEntries.forEach(room =>{
-        const isVisible = room.name.toLowerCase().includes(value) || room.owner.toLowerCase().includes(value)
-        room.element.classList.toggle('hide', !isVisible)
-    })
-});
-
-fetch('http://campus.rowansserver.com/api/rooms').then(res => res.json())
-.then(data => {
-    roomSearchEntries = data.payload.map(room =>{
-        const roomObj = roomEntryTemplate.content.cloneNode(true).children[0]
-        const name = roomObj.querySelector('[template-room-name]')
-        const owner = roomObj.querySelector('[template-room-owner]')
-        name.textContent = room.name;
-        owner.textContent = room.owner;
-        roomEntryResults.append(roomObj)
-        return {name: room.name, owner: room.owner, element: roomObj}
-    })
-})
 
 
 
