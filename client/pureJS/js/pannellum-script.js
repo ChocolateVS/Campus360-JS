@@ -66,7 +66,8 @@ async function createScene(project, area, level) {
                     console.log("Internal Link");
                     console.log(linked_point);
 
-                    let yaw = angleBetweenPoints(point.x, point.y, linked_point.x, linked_point.y, 5000)
+                    let yaw = findAngleBetweenPoints(point, linked_point, 1919);
+                    console.log(yaw);
 
                     //Add Link
                     hotSpots.push(new newHotSpot(0, yaw, linked_point.image.name, linked_point._id, 0, 0));
@@ -77,7 +78,7 @@ async function createScene(project, area, level) {
                 }
             });
 
-            scenes[point._id] = newSceneObject(point.image.name, url, hotSpots);
+            scenes[point._id] = newSceneObject("Waikato Virtual Tour!", url, hotSpots);
         }
 
         //let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel + '/point/' + levelObj.payload.points[0]._id)).json();

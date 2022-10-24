@@ -20,3 +20,15 @@ function find_angle(A,B,C) {
     var AC = Math.sqrt(Math.pow(C.x-A.x,2)+ Math.pow(C.y-A.y,2));
     return Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB));
 }
+
+function findAngleBetweenPoints(A, B) {
+
+    let width = 1919;
+    let height = 959; 
+    let x1 = (A.x * width)
+    let x2 = (B.x * width)
+    let y1 = (A.y * height)
+    let y2 = (B.y * height)
+
+    return Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+}
