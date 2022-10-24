@@ -3,9 +3,10 @@ let SERVER_URL = 'http://campus.rowansserver.com/'
 
 function id(id) { return document.getElementById(id); }
 
-let roomList = [];
+let panoramas = [];
 
-var panorama, viewer, container, infospot, controlButton, modeButton, videoButton;
+
+var viewer, container, infospot, controlButton, modeButton, videoButton;
 
 var controlIndex = PANOLENS.CONTROLS.ORBIT;
 var modeIndex = 0;
@@ -24,33 +25,12 @@ const hardcodedProject = "485b3c31c3d347ae84108de9";
 const hardcodedArea = "cea7fe83458047069d96a023";
 const hardcodedLevel = "49337c5c0aac47919a5ab35c";
 
-configPano()
+initialize()
+createScene(hardcodedProject, hardcodedArea, hardcodedLevel)
 
-async function configPano() {
-    console.log("Config pano")
-    //get LEVEL info
-    let levelObj = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel)).json();
-    if (levelObj == null) { console.log('Could not fetch Level'); return; }
-    console.log(levelObj)
-    let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel + '/point/' + levelObj.payload.points[0]._id)).json();
-    if (pointInfo == null) { console.log('Could not get Point'); return; }
-
-    default_panorama = await( new PANOLENS.ImagePanorama(SERVER_URL + 'images/' + pointInfo.payload.image.name));
-    default_panorama.addEventListener('enter-fade-start', function() {
-        viewer.tweenControlCenter(lookAtPositions[0], 0);
-    });
-
-    //Floating icon
-    //infospot = new PANOLENS.Infospot(350, PANOLENS.DataImage.Info);
-    //infospot.position.set(0, -2000, -5000);
-    //default_panorama.add(infospot);
-
-    viewer = new PANOLENS.Viewer({ output: 'console', container: container, horizontalView: false });
-    viewer.add(default_panorama);
-
-
-    // Method to trigger control
-    controlButton.addEventListener('click', function() {
+function initialize() {
+     // Method to trigger control
+     controlButton.addEventListener('click', function() {
 
         controlIndex = controlIndex >= 1 ? 0 : controlIndex + 1;
 
@@ -65,6 +45,8 @@ async function configPano() {
                 break;
         }
     });
+
+    //Viewer Controls to change view type
     modeButton.addEventListener('click', function() {
         modeIndex = modeIndex >= 2 ? 0 : modeIndex + 1;
         switch (modeIndex) {
@@ -81,99 +63,184 @@ async function configPano() {
                 break;
         }
     });
+
+
     videoButton.addEventListener('click', function() {
         videoPlaying = !videoPlaying;
         viewer.toggleVideoPlay(videoPlaying ? false : true);
     });
 }
 
-//Gets csv onload
-jQuery(function($) {
-    $.ajax({
-        type: "GET",
-        url: SERVER_API_URL + "rooms",
-        dataType: "text",
-        success: function(data) { 
-            roomList = JSON.parse(data).payload;
-        console.log("Response!")}
+function setupViewer(panoramas) {
+    console.log("Config pano")
+    
+    viewer = new PANOLENS.Viewer({ output: 'console', container: container, horizontalView: false });
+
+    panoramas.forEach(panorama => {
+        viewer.add(panorama.panorama);
+    }) 
+}
+
+async function createScene(project, area, level) {
+    panoramas = []
+    //Get Level
+    let levelObj = await (await fetch(SERVER_API_URL + 
+            'project/' + project + 
+            '/area/' + area + 
+            '/level/' + level))
+        .json();
+    
+    console.log("Level:", levelObj)
+    
+    if (levelObj == null) { 
+        console.log('Could not fetch Level'); 
+        return; 
+    }
+    
+    //Add Each Panorama to an array
+    levelObj.payload.points.forEach(point => {
+        panorama = new PANOLENS.ImagePanorama(SERVER_URL + 'images/' + point.image.name);
+
+        //Set the orientation of the panorama? This probably hardcodes a position, not what we want
+        panorama.addEventListener('enter-fade-start', function() {
+            viewer.tweenControlCenter(lookAtPositions[0], 0);
+        });
+        
+        panoramas.push({'point': point, 'panorama': panorama});
     });
-});
+
+    setupViewer(panoramas);
+    
+    console.log(panoramas)
+
+    //Link Panoramas
+    panoramas.forEach(panorama => {
+        console.log("\n Checking Links for Point:", panorama);
+
+        //If the panorama should be linked
+        if (panorama.point.link_ids != null) {
+
+            console.log("Links:", panorama.point.link_ids);
+
+            //For each link
+            panorama.point.link_ids.forEach(link => {
+                
+                let linked_panorama = findPanoramaById(panoramas, link);
+                
+                console.log(linked_panorama);
+                
+                //If link is internal
+                if (linked_panorama != null) {
+                    //Link was internal
+                    console.log("Internal Link");
+
+                    //Add Link
+                    panorama.panorama.link(linked_panorama, new THREE.Vector3(-100, -500, -5000));
+                }
+                else {
+                    //Link was external - add flag for when this link is used to jump to / create new scene
+                    console.log("External Link");
+                }
+            });
+        }
+
+        //let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel + '/point/' + levelObj.payload.points[0]._id)).json();
+        //if (pointInfo == null) { console.log('Could not get Point'); return; }
+    
+        
+    });
+    
 
 
+    //Add Links
+    //infospot = new PANOLENS.Infospot(350, PANOLENS.DataImage.Info);
+    //infospot.position.set(0, -2000, -5000);
+    //default_panorama.add(infospot);
+}
+
+function findPanoramaById(panoramas, link_id) {
+    //panoramas = [{_id, panorama}, {id, panorama}]
+    console.log(panoramas)
+   return panoramas.find(panorama => panorama.point._id == link_id);
+}
+
+/**
+ * Determines angle between current point and linked point  
+ * returns supposed Yaw
+ */
+function angleBetweenPoints(currPointx, currPointy, point2x, point2y, widthOfPano) {    
+    let rad = find_angle({x:currPointx, y: 0}, {x:currPointx,y:currPointy}, {x:point2x, y:point2y}) //Angle
+    let arc = widthOfPano * ( rad / Math.PI ) //Find arc length of the 'north' facing angle differennce, to give YAW
+    return arc
+}
+/**
+ * Gets Radians between A & C, rotating about B  
+ * A - point 1  
+ * B - Centre point  
+ * C - point 2  
+ * Returns - Radians angle
+ */
+function find_angle(A,B,C) {
+    var AB = Math.sqrt(Math.pow(B.x-A.x,2)+ Math.pow(B.y-A.y,2));    
+    var BC = Math.sqrt(Math.pow(B.x-C.x,2)+ Math.pow(B.y-C.y,2)); 
+    var AC = Math.sqrt(Math.pow(C.x-A.x,2)+ Math.pow(C.y-A.y,2));
+    return Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB));
+}
 
 
-$('#locationInput').on("input", function() {
-    var user_search_text = this.value;
-    populateSearchBox(user_search_text);
-});
+/***************** Search Stuff ******************/
 
-//Adds 
-$(function() {
-    $('#locationInput').on("focus", function() {
+//Focuses Searchbox
+document.getElementById("locationInput").addEventListener("focus", function() {
         $('#search_container').css('border-radius', '10px 10px 0px 0px');
         $('#search_container').css('background-color', 'rgb(222 218 218 / 85%)');
         id("search_results").style.display = "flex";
     });
+
+
+//Defocuses searchbox
+document.getElementById("container").addEventListener("mousedown", function() {
+    removeFocusFromSearch();
+});
+document.getElementById("container").addEventListener("touch", function() {
+    removeFocusFromSearch();
 });
 
-//Removes focus when using the map
-document.querySelector(".panolens-canvas").addEventListener("mousedown", function() {
-    removeFocus();
-});
-document.querySelector(".panolens-canvas").addEventListener("touch", function() {
-    removeFocus();
-});
-
-function removeFocus() {
+function removeFocusFromSearch() {
     document.activeElement.blur();
     $('#search_container').css('border-radius', '10px');
     $('#search_container').css('background-color', 'transparent');
     id("search_results").style.display = "none";
 }
 
-//Searches the room_list object for an entered query and displays results
-function populateSearchBox(user_search_string) {
-    let result = [];
-    let result_count = 0;
-    id("search_results").innerHTML = "";
+//Filters & Populates searchbox
+let roomSearchEntries = []
+const roomEntryTemplate = document.querySelector("[template-room]")
+const roomEntryResults = document.querySelector("[data-room-results]")
+const roomSearch = document.querySelector("[data-room-search]")
 
-    if (user_search_string != "" && user_search_string.length > 0) {
-        for (var item in roomList) {
-            if (user_search_string.toLowerCase().includes(item.owner.toLowerCase()) || user_search_string.toLowerCase.includes(item.name.toLowerCase())) {
-                result.push(item);
-            }
-        }
-    }
+roomSearch.addEventListener('input', e =>{
+    const value = e.target.value.toLowerCase();
+    roomSearchEntries.forEach(room =>{
+        const isVisible = room.name.toLowerCase().includes(value) || room.owner.toLowerCase().includes(value)
+        room.element.classList.toggle('hide', !isVisible)
+    })
+});
 
-    //Limit results to 6
-    if (result.length > 0 && result_count < 6) {
-        //console.log(result_count, result, object);
+fetch('http://campus.rowansserver.com/api/rooms').then(res => res.json())
+.then(data => {
+    roomSearchEntries = data.payload.map(room =>{
+        const roomObj = roomEntryTemplate.content.cloneNode(true).children[0]
+        const name = roomObj.querySelector('[template-room-name]')
+        const owner = roomObj.querySelector('[template-room-owner]')
+        name.textContent = room.name;
+        owner.textContent = room.owner;
+        roomEntryResults.append(roomObj)
+        return {name: room.name, owner: room.owner, element: roomObj}
+    })
+})
 
-        for (var r in result) {
-            let search_result = document.createElement('div');
-            search_result.setAttribute("class", "search_result");
 
-            let room_owner_name = document.createElement('p');
-            room_owner_name.setAttribute("class", "search_result_name p_result");
-            room_owner_name.textContent = r.owner == "" ? "None" : r.owner;
 
-            let room_location_name = document.createElement('p');
-            room_location_name.setAttribute("class", "search_result_location p_result");
-            room_location_name.textContent = r.name
 
-            let room_ID = document.createElement("input");
-            room_ID.setAttribute("type", "hidden");
-            room_ID.setAttribute("name", "roomId");
-            room_ID.setAttribute("value", r._id);
-
-            search_result.appendChild(room_owner_name);
-            search_result.appendChild(room_location_name);
-
-            search_result.appendChild(room_ID)
-
-            id("search_results").appendChild(search_result);
-
-            result_count++;
-        }
-    }
-}
+  
