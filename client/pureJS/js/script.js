@@ -17,10 +17,6 @@ controlButton = document.querySelector('#controlButton');
 modeButton = document.querySelector('#modeButton');
 videoButton = document.querySelector('#videoButton');
 
-var lookAtPositions = [
-    new THREE.Vector3(0, 0, 0)
-];
-
 const hardcodedProject = "485b3c31c3d347ae84108de9";
 const hardcodedArea = "cea7fe83458047069d96a023";
 const hardcodedLevel = "49337c5c0aac47919a5ab35c";
@@ -97,35 +93,34 @@ async function createScene(project, area, level) {
         return; 
     }
     
-    //Add Each Panorama to an array
-    levelObj.payload.points.forEach(point => {
-        panorama = new PANOLENS.ImagePanorama(SERVER_URL + 'images/' + point.image.name);
+    //Add each Panorama to an array
+    for (point in levelObj.payload.points) {
+        var panorama;
+        panorama = new PANOLENS.ImagePanorama(SERVER_URL + 'images/' + levelObj.payload.points[point].image.name);
 
         //Set the orientation of the panorama? This probably hardcodes a position, not what we want
         panorama.addEventListener('enter-fade-start', function() {
-            viewer.tweenControlCenter(lookAtPositions[0], 0);
+            viewer.tweenControlCenter(new THREE.Vector3(0, 0, 0), 0);
         });
         
-        panoramas.push({'point': point, 'panorama': panorama});
-    });
+        panoramas.push({'point': levelObj.payload.points[point], 'panorama': panorama});
+    }
 
     setupViewer(panoramas);
-    
-    console.log(panoramas)
 
     //Link Panoramas
-    panoramas.forEach(panorama => {
-        console.log("\n Checking Links for Point:", panorama);
+    for (p in panoramas) {
+        console.log("\n Checking Links for Point:", panoramas[p].point.link_ids);
 
         //If the panorama should be linked
-        if (panorama.point.link_ids != null) {
+        if (panoramas[p].point.link_ids != null) {
 
-            console.log("Links:", panorama.point.link_ids);
+            console.log("Links:", panoramas[p].point.link_ids);
 
             //For each link
-            panorama.point.link_ids.forEach(link => {
+            for (link in panoramas[p].point.link_ids) {
                 
-                let linked_panorama = findPanoramaById(panoramas, link);
+                let linked_panorama = findPanoramaById(panoramas, panoramas[p].point.link_ids[link]);
                 
                 console.log(linked_panorama);
                 
@@ -135,20 +130,21 @@ async function createScene(project, area, level) {
                     console.log("Internal Link");
 
                     //Add Link
-                    panorama.panorama.link(linked_panorama, new THREE.Vector3(-100, -500, -5000));
+                    panoramas[p].panorama.link(linked_panorama, new THREE.Vector3(-100, -500, -5000));
+                    //panoramas[p].panorama.link(linked_panorama, new THREE.Vector3(0, 0, -Number.MAX_SAFE_INTEGER));
                 }
                 else {
                     //Link was external - add flag for when this link is used to jump to / create new scene
                     console.log("External Link");
                 }
-            });
+            }
         }
 
         //let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel + '/point/' + levelObj.payload.points[0]._id)).json();
         //if (pointInfo == null) { console.log('Could not get Point'); return; }
     
         
-    });
+    }
     
 
 
@@ -161,7 +157,7 @@ async function createScene(project, area, level) {
 function findPanoramaById(panoramas, link_id) {
     //panoramas = [{_id, panorama}, {id, panorama}]
     console.log(panoramas)
-   return panoramas.find(panorama => panorama.point._id == link_id);
+    return panoramas.find(panorama => panorama.point._id == link_id);
 }
 
 /**
