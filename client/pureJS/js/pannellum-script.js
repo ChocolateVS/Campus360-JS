@@ -16,7 +16,8 @@ function setupViewer(scenes, first_scene) {
         "default": {
             "firstScene": first_scene,
             "author": "Waikato Students",
-            "sceneFadeDuration": 1000
+            "sceneFadeDuration": 500,
+            "autoLoad": true
         },
         scenes
     });
@@ -65,8 +66,10 @@ async function createScene(project, area, level) {
                     console.log("Internal Link");
                     console.log(linked_point);
 
+                    let yaw = angleBetweenPoints(point.x, point.y, linked_point.x, linked_point.y, 5000)
+
                     //Add Link
-                    hotSpots.push(new newHotSpot(0, 0, linked_point.name, point._id, 0, 0));
+                    hotSpots.push(new newHotSpot(0, yaw, linked_point.image.name, linked_point._id, 0, 0));
                 }
                 else {
                     //Link was external - add flag for when this link is used to jump to / create new scene
@@ -74,7 +77,7 @@ async function createScene(project, area, level) {
                 }
             });
 
-            scenes[point._id] = newSceneObject(point.point_name, url, hotSpots);
+            scenes[point._id] = newSceneObject(point.image.name, url, hotSpots);
         }
 
         //let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel + '/point/' + levelObj.payload.points[0]._id)).json();
@@ -100,8 +103,8 @@ function newSceneObject(title, url, hotspots) {
     return {
             "title": title,
             "hfov": 110,
-            "pitch": -3,
-            "yaw": 117,
+            "pitch": 0,
+            "yaw": 0,
             "type": "equirectangular",
             "panorama": url,
             "hotSpots": hotspots
