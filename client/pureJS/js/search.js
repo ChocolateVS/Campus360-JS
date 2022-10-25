@@ -9,12 +9,12 @@ document.getElementById("locationInput").addEventListener("focus", function() {
 
 
 //Defocuses searchbox
-document.getElementById("container").addEventListener("mousedown", function() {
-    removeFocusFromSearch();
-});
-document.getElementById("container").addEventListener("touch", function() {
-    removeFocusFromSearch();
-});
+// document.getElementById("container").addEventListener("mousedown", function() {
+//     removeFocusFromSearch();
+// });
+// document.getElementById("container").addEventListener("touch", function() {
+//     removeFocusFromSearch();
+// });
 
 function removeFocusFromSearch() {
 document.activeElement.blur();

@@ -26,16 +26,27 @@
         <img src="https://www.waikato.ac.nz/favicon-32x32.png?v=QE50XMk2oY">
     </div>
    
+    <!-- Panorama object -->
     <div id="panorama"></div>
 
+    <!-- Search Box -->
     <div id="search_container">
         <input type="search" id="locationInput" class="input" placeholder="Search Waikato Campus" data-room-search>
         <div id="search_results" data-room-results></div>
     </div>
 
+    <!-- Controls for Pano -->
     <button id="controlButton" class="button">Control Toggle</button>
     <button id="modeButton" class="button">Mode Toggle</button>
     <button id="videoButton" class="button">Video Toggle</button>
+
+    <!-- Bottom corner map -->
+    <div id="cornerMap">
+        <img id="mapImage" src="images/mapdefault.jpg" map="#mapMap" alt="mapOfLevel" class="imageMap"/>
+        <map id="mapMap">
+        </map>
+        <canvas id="mapCanvas" class="imageMap"  pointerEvents='none' style='z-index: 3;'></canvas>
+    </div>
 </body>
 <template template-room>
     <span class="roomInfo">

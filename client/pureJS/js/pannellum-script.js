@@ -3,11 +3,29 @@ let SERVER_URL = 'http://campus.rowansserver.com/'
 
 function id(id) { return document.getElementById(id); }
 
+const emptyImagePath = "/client/pureJS/images/default.jpg";
 const hardcodedProject = "485b3c31c3d347ae84108de9";
-const hardcodedArea = "cea7fe83458047069d96a023";
-const hardcodedLevel = "49337c5c0aac47919a5ab35c";
+const hardcodedArea = "d56b5b91eb4b4faab2ff4a4a";
+const hardcodedLevel = "8535bdd97dd844289e3f2936";
 
 createScene(hardcodedProject, hardcodedArea, hardcodedLevel)
+setupMap()
+
+
+function setupMap(imgLoc, points, currPoint){
+    const img = document.getElementById("mapImage");
+    const imgClickMap = document.getElementById("mapMap");
+    const canvas = document.getElementById("mapCanvas");
+
+    img.src = imgLoc;
+    let ctx = canvas.getContext('2d');
+
+}
+
+
+
+
+
 
 function setupViewer(scenes, first_scene) {
     console.log("Config pano", scenes, first_scene)
@@ -53,7 +71,8 @@ async function createScene(project, area, level) {
 
             console.log("Links:", point.link_ids);
 
-            let url = SERVER_URL + "images/" + point.image.name;
+            let url = emptyImagePath;
+            if(point.image.name != "") url = SERVER_URL + "images/" + point.image.name;
 
             //For each link
             point.link_ids.forEach(link => {
@@ -66,9 +85,8 @@ async function createScene(project, area, level) {
                     console.log("Internal Link");
                     console.log(linked_point);
 
-                    let yaw = findAngleBetweenPoints(point, linked_point, 1919);
+                    let yaw = angleBetweenPoints(point, linked_point);
                     console.log(yaw);
-
                     //Add Link
                     hotSpots.push(new newHotSpot(0, yaw, linked_point.image.name, linked_point._id, 0, 0));
                 }
@@ -77,7 +95,7 @@ async function createScene(project, area, level) {
                     console.log("External Link");
                 }
             });
-
+            hotSpots.push(new newHotSpot(0, 0, "Middle", hotSpots[0].text))
             scenes[point._id] = newSceneObject("Waikato Virtual Tour!", url, hotSpots);
         }
 
