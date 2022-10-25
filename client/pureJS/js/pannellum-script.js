@@ -113,7 +113,6 @@ function newHotSpot(pitch, yaw, point_name, scene_id, targetYaw, targetPitch) {
         "type": "scene",
         "text": point_name,
         "sceneId": scene_id,
-    
     }
 
     //"targetYaw": targetYaw,
