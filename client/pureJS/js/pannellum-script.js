@@ -95,7 +95,7 @@ async function createScene(project, area, level) {
                     console.log("External Link");
                 }
             });
-            hotSpots.push(new newHotSpot(0, 0, "Middle", hotSpots[0].text))
+           
             scenes[point._id] = newSceneObject("Waikato Virtual Tour!", url, hotSpots);
         }
 
