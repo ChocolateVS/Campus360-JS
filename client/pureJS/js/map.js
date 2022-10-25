@@ -1,9 +1,10 @@
 function setupMap(imgLoc, points, currPointID){
     const img = document.getElementById("mapImage");
     const imgClickMap = document.getElementById("mapMap");
-        img.src = "http://campus.rowansserver.com/images/" +imgLoc;
-    drawPoints(points, currPointID)
+    img.src = "http://campus.rowansserver.com/images/" +imgLoc;
+    //ToDo: Create clickable areas to move to.
 }
+
 
 
 function drawPoints(points, currPointID){
@@ -21,3 +22,4 @@ function drawPoints(points, currPointID){
         ctx.fill();
     }
 }
+
