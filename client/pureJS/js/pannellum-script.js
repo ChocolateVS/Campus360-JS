@@ -1,30 +1,30 @@
 let SERVER_API_URL = 'http://campus.rowansserver.com/api/'
 let SERVER_URL = 'http://campus.rowansserver.com/'
 
-function id(id) { return document.getElementById(id); }
 
-const emptyImagePath = "/client/pureJS/images/default.jpg";
 const hardcodedProject = "485b3c31c3d347ae84108de9";
 const hardcodedArea = "d56b5b91eb4b4faab2ff4a4a";
 const hardcodedLevel = "8535bdd97dd844289e3f2936";
 
-createScene(hardcodedProject, hardcodedArea, hardcodedLevel)
-setupMap()
+let LOCALSTORAGE_LEVEL = 'currLevel';
+let LOCALSTORAGE_AREA = 'currArea';
+let LOCALSTORAGE_PROJECT = 'currProject';
+let LOCALSTORAGE_POINT = 'currPoint'
 
-
-function setupMap(imgLoc, points, currPoint){
-    const img = document.getElementById("mapImage");
-    const imgClickMap = document.getElementById("mapMap");
-    const canvas = document.getElementById("mapCanvas");
-
-    img.src = imgLoc;
-    let ctx = canvas.getContext('2d');
-
+if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item above is not set, should completely redo
+    localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
+    localStorage.setItem(LOCALSTORAGE_AREA, hardcodedArea)
+    localStorage.setItem(LOCALSTORAGE_LEVEL, hardcodedLevel)
+    localStorage.removeItem(LOCALSTORAGE_POINT);//Reset
 }
 
 
+function id(id) { return document.getElementById(id); }
+
+const emptyImagePath = "/client/pureJS/images/default.jpg";
 
 
+createScene(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
 
 
 function setupViewer(scenes, first_scene) {
@@ -48,8 +48,7 @@ async function createScene(project, area, level) {
     let levelObj = await (await fetch(SERVER_API_URL + 
             'project/' + project + 
             '/area/' + area + 
-            '/level/' + level))
-        .json();
+            '/level/' + level)).json();
     
     console.log("Level:", levelObj)
     
@@ -58,8 +57,11 @@ async function createScene(project, area, level) {
         return; 
     }
 
-    let firstScene = levelObj.payload.points[0]._id
-
+    if(!localStorage.getItem(LOCALSTORAGE_POINT))
+        localStorage.setItem(LOCALSTORAGE_POINT, levelObj.payload.points[0]._id);
+    
+    setupMap(levelObj.payload.image.name, levelObj.payload.points, localStorage.getItem(LOCALSTORAGE_POINT));
+    
     //Link Panoramas
     levelObj.payload.points.forEach(point => {
         console.log("\n Getting Links for Point:", point);
@@ -103,7 +105,7 @@ async function createScene(project, area, level) {
         //if (pointInfo == null) { console.log('Could not get Point'); return; }
     });
 
-    setupViewer(scenes, firstScene);
+    setupViewer(scenes, localStorage.getItem(LOCALSTORAGE_POINT));
 }
 
 function newHotSpot(pitch, yaw, point_name, scene_id, targetYaw, targetPitch) {
