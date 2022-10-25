@@ -4,10 +4,9 @@ import Pano from './components/Pano.js';
 import Map from './components/Map.js';
 import "./App.css";
 
-
 const hardcodedProject = "485b3c31c3d347ae84108de9";
-const hardcodedArea = "cea7fe83458047069d96a023";
-const hardcodedLevel = "49337c5c0aac47919a5ab35c";
+const hardcodedArea = "d56b5b91eb4b4faab2ff4a4a";
+const hardcodedLevel = "8535bdd97dd844289e3f2936";
 
 
 function App() {

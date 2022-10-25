@@ -4,7 +4,7 @@
 	(global = global || self, factory(global.PANOLENS = {}, global.THREE));
 }(this, function (exports, THREE) { 'use strict';
 
-	const version="0.11.0";const devDependencies={"@tweenjs/tween.js":"^17.4.0",ava:"^2.1.0","browser-env":"^3.2.6",concurrently:"^4.1.0",coveralls:"^3.0.4",docdash:"^1.1.1",eslint:"^5.16.0","google-closure-compiler":"^20190528.0.0","http-server":"^0.11.1",jsdoc:"^3.6.2",nyc:"^14.1.1",rollup:"^1.15.1","rollup-plugin-commonjs":"^10.0.0","rollup-plugin-inject":"^2.2.0","rollup-plugin-json":"^4.0.0","rollup-plugin-node-resolve":"^5.0.1",three:"^0.105.2",xmlhttprequest:"^1.8.0"};
+	const version="0.12.1";const dependencies={three:"^0.105.2"};
 
 	/**
 	 * REVISION
@@ -28,7 +28,7 @@
 	 * @example PANOLENS.THREE_REVISION
 	 * @type {string} threejs revision
 	 */
-	const THREE_REVISION = devDependencies.three.split( '.' )[ 1 ];
+	const THREE_REVISION = dependencies.three.split( '.' )[ 1 ];
 
 	/**
 	 * THREEJS VERSION
@@ -36,7 +36,7 @@
 	 * @example PANOLENS.THREE_VERSION
 	 * @type {string} threejs version
 	 */
-	const THREE_VERSION = devDependencies.three.replace( /[^0-9.]/g, '' );
+	const THREE_VERSION = dependencies.three.replace( /[^0-9.]/g, '' );
 
 	/**
 	 * CONTROLS
@@ -57,15 +57,6 @@
 	 * @property {number} STEREO 3
 	 */
 	const MODES = { UNKNOWN: 0, NORMAL: 1, CARDBOARD: 2, STEREO: 3 };
-
-	/**
-	 * STEREOFORMAT
-	 * @module STEREOFORMAT
-	 * @example PANOLENS.STEREOFORMAT.TAB
-	 * @property {number} TAB 0
-	 * @property {number} SBS 1
-	 */
-	const STEREOFORMAT = { TAB: 0, SBS: 1 };
 
 	/**
 	 * Data URI Images
@@ -118,63 +109,70 @@
 	        THREE.Cache.enabled = true;
 
 	        let cached, request, arrayBufferView, blob, urlCreator, image, reference;
-		
+
 	        // Reference key
-	        for ( let iconName in DataImage ) {
-		
-	            if ( DataImage.hasOwnProperty( iconName ) && url === DataImage[ iconName ] ) {
-		
+	        for (let iconName in DataImage) {
+
+	            if (DataImage.hasOwnProperty(iconName) && url === DataImage[iconName]) {
+
 	                reference = iconName;
-		
+
 	            }
-		
+
 	        }
-		
+
 	        // Cached
-	        cached = THREE.Cache.get( reference ? reference : url );
-		
-	        if ( cached !== undefined ) {
-		
-	            if ( onLoad ) {
-		
-	                setTimeout( function () {
-		
-	                    onProgress( { loaded: 1, total: 1 } );
-	                    onLoad( cached );
-		
-	                }, 0 );
-		
+	        cached = THREE.Cache.get(reference ? reference : url);
+
+	        if (cached !== undefined) {
+
+	            if (onLoad) {
+
+	                setTimeout(function () {
+
+	                    onProgress({loaded: 1, total: 1});
+	                    onLoad(cached);
+
+	                }, 0);
+
 	            }
-		
+
 	            return cached;
-		
+
 	        }
-			
+
 	        // Construct a new XMLHttpRequest
 	        urlCreator = window.URL || window.webkitURL;
-	        image = document.createElementNS( 'http://www.w3.org/1999/xhtml', 'img' );
-		
+	        image = document.createElementNS('http://www.w3.org/1999/xhtml', 'img');
+
 	        // Add to cache
-	        THREE.Cache.add( reference ? reference : url, image );
-		
+	        THREE.Cache.add(reference ? reference : url, image);
+
 	        const onImageLoaded = () => {
-		
-	            urlCreator.revokeObjectURL( image.src );
-	            onLoad( image );
-		
+
+	            urlCreator.revokeObjectURL(image.src);
+	            onLoad(image);
+
 	        };
 
-	        if ( url.indexOf( 'data:' ) === 0 ) {
+	        if (url.indexOf('data:') === 0) {
 
-	            image.addEventListener( 'load', onImageLoaded, false );
+	            image.addEventListener('load', onImageLoaded, false);
 	            image.src = url;
 	            return image;
 	        }
-		
+
 	        image.crossOrigin = this.crossOrigin !== undefined ? this.crossOrigin : '';
-		
+
 	        request = new window.XMLHttpRequest();
-	        request.open( 'GET', url, true );
+	        request.open('GET', url, true);
+	        if (process.env.npm_lifecycle_event !== 'test') {
+	            request.onreadystatechange = function () {
+	                if (this.readyState === 4 && this.status >= 400) {
+	                    onError();
+	                }
+	            };
+	        }
 	        request.responseType = 'arraybuffer';
 	        request.addEventListener( 'error', onError );
 	        request.addEventListener( 'progress', event => {
@@ -228,7 +226,7 @@
 	     */
 	    load: function ( url, onLoad = () => {}, onProgress, onError ) {
 
-	        const texture = new THREE.Texture(); 
+	        var texture = new THREE.Texture(); 
 
 	        ImageLoader.load( url, function ( image ) {
 
@@ -268,7 +266,7 @@
 	     */
 	    load: function ( urls, onLoad = () => {}, onProgress = () => {}, onError ) {
 
-		   let texture, loaded, progress, all, loadings;
+		   var texture, loaded, progress, all, loadings;
 
 		   texture = new THREE.CubeTexture( [] );
 
@@ -300,7 +298,7 @@
 				   all.total = 0;
 				   loadings = 0;
 
-				   for ( let i in progress ) {
+				   for ( var i in progress ) {
 
 					   loadings++;
 					   all.loaded += progress[ i ].loaded;
@@ -666,81 +664,6 @@
 	            }
 
 	        }
-
-	    }
-
-	} );
-
-	/**
-	 * @classdesc Stereo Mixin - format based on {@link https://opticalflow.wordpress.com/2010/09/19/side-by-side-versus-top-and-bottom-3d-formats/} will be determined by image width:height ratio (TAB is 1:1, SBS is 4:1)
-	 * @constructor
-	 * @param {number} [eyeSep=0.064] - eye separation distance
-	 */
-	function Stereo ( eyeSep = 0.064 ){
-
-	    this.format = null;
-	    this.eyeSep = eyeSep;
-
-	    this.loffset = new THREE.Vector2();
-	    this.roffset = new THREE.Vector2();
-
-	}
-
-	Object.assign( Stereo.prototype, {
-
-	    constructor: Stereo,
-
-	    /**
-	     * Update unifroms by stereo format
-	     * @param {integer} format - { @see STEREOFORMAT }
-	     * @param {object} uniforms
-	     */
-	    updateUniformByFormat: function( format, uniforms ) {
-
-	        this.format = format;
-
-	        const repeat = uniforms.repeat.value;
-	        const offset = uniforms.offset.value;
-	        const loffset = this.loffset;
-	        const roffset = this.roffset;
-
-	        switch ( format ) {
-
-	        case STEREOFORMAT.TAB:
-	            repeat.set( 1.0, 0.5 );
-	            offset.set( 0.0, 0.5 );
-	            loffset.set( 0.0, 0.5 );
-	            roffset.set( 0.0, 0.0 );
-	            break;
-
-	        case STEREOFORMAT.SBS:
-	            repeat.set( 0.5, 1.0 );
-	            offset.set( 0.0, 0.0 );
-	            loffset.set( 0.0, 0.0 );
-	            roffset.set( 0.5, 0.0 );
-	            break;
-
-	        default: break;
-
-	        }
-
-	    },
-
-	    /**
-	     * Update Texture for Stereo Left Eye
-	     */
-	    updateTextureToLeft: function( offset ) {
-
-	        offset.copy( this.loffset );
-
-	    },
-
-	    /**
-	     * Update Texture for Stereo Right Eye
-	     */
-	    updateTextureToRight: function( offset ) {
-
-	        offset.copy( this.roffset );
 
 	    }
 
@@ -2142,9 +2065,6 @@
 	     */
 	    onClick: function ( event ) {
 
-			//We Want to get the offset from the set origin...
-			current_angle = viewer.OrbitControls.getAzimuthalAngle();
-
 	        if ( this.element && this.getContainer() ) {
 
 	            this.onHoverStart( event );
@@ -2584,7 +2504,12 @@
 	     */
 	    hide: function ( delay = 0 ) {
 
-	        const { animated, hideAnimation, showAnimation, material } = this;
+	        const { animated, hideAnimation, showAnimation, material, element } = this;
+
+	        if ( element ) {
+	            const { style } = element;
+	            style.display = 'none';
+	        }
 
 	        if ( animated ) {
 
@@ -2713,10 +2638,11 @@
 	            return; 
 	        }
 
-	        const scope = this;
-	        const gradientStyle = 'linear-gradient(bottom, rgba(0,0,0,0.2), rgba(0,0,0,0))';
+	        var scope = this, bar, styleTranslate, styleOpacity, gradientStyle;
 
-	        const bar = document.createElement( 'div' );
+	        gradientStyle = 'linear-gradient(bottom, rgba(0,0,0,0.2), rgba(0,0,0,0))';
+
+	        bar = document.createElement( 'div' );
 	        bar.style.width = '100%';
 	        bar.style.height = '44px';
 	        bar.style.float = 'left';
@@ -2731,19 +2657,19 @@
 	        bar.isHidden = false;
 	        bar.toggle = function () {
 	            bar.isHidden = !bar.isHidden;
-	            const styleTranslate = bar.isHidden ? 'translateY(0)' : 'translateY(-100%)';
-	            const styleOpacity = bar.isHidden ? 0 : 1;
+	            styleTranslate = bar.isHidden ? 'translateY(0)' : 'translateY(-100%)';
+	            styleOpacity = bar.isHidden ? 0 : 1;
 	            bar.style.transform = bar.style.webkitTransform = bar.style.msTransform = styleTranslate;
 	            bar.style.opacity = styleOpacity;
 	        };
 
 	        // Menu
-	        const menu = this.createDefaultMenu();
+	        var menu = this.createDefaultMenu();
 	        this.mainMenu = this.createMainMenu( menu );
 	        bar.appendChild( this.mainMenu );
 
 	        // Mask
-	        const mask = this.createMask();
+	        var mask = this.createMask();
 	        this.mask = mask;
 	        this.container.appendChild( mask );
 
@@ -2806,8 +2732,9 @@
 	     */
 	    createDefaultMenu: function () {
 
-	        const scope = this;
-	        const handler = function ( method, data ) {
+	        var scope = this, handler;
+
+	        handler = function ( method, data ) {
 
 	            return function () {
 
@@ -3579,9 +3506,9 @@
 	            window.requestAnimationFrame( onNextTick );
 
 	        }
-	        for ( let i = 0; i < menus.length; i++ ) {
+	        for ( var i = 0; i < menus.length; i++ ) {
 
-	            const item = menu.addItem( menus[ i ].title );
+	            var item = menu.addItem( menus[ i ].title );
 
 	            item.style.paddingLeft = '20px';
 
@@ -3590,7 +3517,7 @@
 
 	            if ( menus[ i ].subMenu && menus[ i ].subMenu.length > 0 ) {
 
-	                const title = menus[ i ].subMenu[ 0 ].title;
+	                var title = menus[ i ].subMenu[ 0 ].title;
 
 	                item.addSelection( title )
 	                    .addSubMenu( menus[ i ].title, menus[ i ].subMenu );
@@ -3912,76 +3839,14 @@
 	} );
 
 	/**
-	 * Equirectangular shader
-	 * based on three.js equirect shader
-	 * @author pchen66
-	 */
-
-	/**
-	 * @description Equirectangular Shader
-	 * @module EquirectShader
-	 * @property {object} uniforms
-	 * @property {THREE.Texture} uniforms.tEquirect diffuse map
-	 * @property {number} uniforms.opacity image opacity
-	 * @property {string} vertexShader vertex shader
-	 * @property {string} fragmentShader fragment shader
-	 */
-	const EquirectShader = {
-
-	    uniforms: {
-
-	        'tEquirect': { value: new THREE.Texture() },
-	        'repeat': { value: new THREE.Vector2( 1.0, 1.0 ) },
-	        'offset': { value: new THREE.Vector2( 0.0, 0.0 ) },
-	        'opacity': { value: 1.0 }
-
-	    },
-
-	    vertexShader: `
-        varying vec3 vWorldDirection;
-        #include <common>
-        void main() {
-            vWorldDirection = transformDirection( position, modelMatrix );
-            #include <begin_vertex>
-            #include <project_vertex>
-        }
-    `,
-
-	    fragmentShader: `
-        uniform sampler2D tEquirect;
-        uniform vec2 repeat;
-        uniform vec2 offset;
-        uniform float opacity;
-        varying vec3 vWorldDirection;
-        #include <common>
-        void main() {
-            vec3 direction = normalize( vWorldDirection );
-            vec2 sampleUV;
-            sampleUV.y = asin( clamp( direction.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;
-            sampleUV.x = atan( direction.z, direction.x ) * RECIPROCAL_PI2 + 0.5;
-            sampleUV *= repeat;
-            sampleUV += offset;
-            vec4 texColor = texture2D( tEquirect, sampleUV );
-            gl_FragColor = mapTexelToLinear( texColor );
-            gl_FragColor.a *= opacity;
-            #include <tonemapping_fragment>
-            #include <encodings_fragment>
-        }
-    `
-
-	};
-
-	/**
 	 * @classdesc Base Panorama
 	 * @constructor
 	 * @param {THREE.Geometry} geometry - The geometry for this panorama
 	 * @param {THREE.Material} material - The material for this panorama
 	 */
-	function Panorama () {
+	function Panorama ( geometry, material ) {
 
-	    this.edgeLength = 10000;
-
-	    THREE.Mesh.call( this, this.createGeometry( this.edgeLength ), this.createMaterial() );
+	    THREE.Mesh.call( this, geometry, material );
 
 	    this.type = 'panorama';
 
@@ -4006,6 +3871,10 @@
 	    this.linkingImageURL = undefined;
 	    this.linkingImageScale = undefined;
 
+	    this.material.side = THREE.BackSide;
+	    this.material.opacity = 0;
+
+	    this.scale.x *= -1;
 	    this.renderOrder = -1;
 
 	    this.active = false;
@@ -4025,58 +3894,20 @@
 	    constructor: Panorama,
 
 	    /**
-	     * Create a skybox geometry
-	     * @memberOf Panorama
-	     * @instance
-	     */
-	    createGeometry: function ( edgeLength ) {
-
-	        return new THREE.BoxBufferGeometry( edgeLength, edgeLength, edgeLength );
-
-	    },
-
-	    /**
-	     * Create equirectangular shader material
-	     * @param {THREE.Vector2} [repeat=new THREE.Vector2( 1, 1 )] - Texture Repeat
-	     * @param {THREE.Vector2} [offset=new THREE.Vector2( 0, 0 )] - Texture Offset
-	     * @memberOf Panorama
-	     * @instance
-	     */
-	    createMaterial: function ( repeat = new THREE.Vector2( 1, 1 ), offset = new THREE.Vector2( 0, 0 ) ) {
-
-	        const { fragmentShader, vertexShader } = EquirectShader;
-	        const uniforms = THREE.UniformsUtils.clone( EquirectShader.uniforms );
-	        
-	        uniforms.repeat.value.copy( repeat );
-	        uniforms.offset.value.copy( offset );
-	        uniforms.opacity.value = 0.0;
-
-	        const material = new THREE.ShaderMaterial( {
-
-	            fragmentShader,
-	            vertexShader,
-	            uniforms,
-	            side: THREE.BackSide,
-	            transparent: true,
-	            opacity: 0
-	    
-	        } );
-
-	        return material;
-
-	    },
-
-	    /**
 	     * Adding an object
+	     * To counter the scale.x = -1, it will automatically add an 
+	     * empty object with inverted scale on x
 	     * @memberOf Panorama
 	     * @instance
 	     * @param {THREE.Object3D} object - The object to be added
 	     */
 	    add: function ( object ) {
 
+	        let invertedObject;
+
 	        if ( arguments.length > 1 ) {
 
-	            for ( let i = 0; i < arguments.length; i ++ ) {
+	            for ( var i = 0; i < arguments.length; i ++ ) {
 
 	                this.add( arguments[ i ] );
 
@@ -4089,37 +3920,40 @@
 	        // In case of infospots
 	        if ( object instanceof Infospot ) {
 
-	            const { container } = this;
+	            invertedObject = object;
 
-	            if ( container ) { 
-	                
-	                object.dispatchEvent( { type: 'panolens-container', container } ); 
-	            
+	            if ( object.dispatchEvent ) {
+
+	                const { container } = this;
+
+	                if ( container ) { object.dispatchEvent( { type: 'panolens-container', container } ); }
+					
+	                object.dispatchEvent( { type: 'panolens-infospot-focus', method: function ( vector, duration, easing ) {
+
+	                    /**
+	                     * Infospot focus handler event
+	                     * @type {object}
+	                     * @event Panorama#panolens-viewer-handler
+	                     * @property {string} method - Viewer function name
+	                     * @property {*} data - The argument to be passed into the method
+	                     */
+	                    this.dispatchEvent( { type: 'panolens-viewer-handler', method: 'tweenControlCenter', data: [ vector, duration, easing ] } );
+
+
+	                }.bind( this ) } );
 	            }
-	            
-	            object.dispatchEvent( { type: 'panolens-infospot-focus', method: function ( vector, duration, easing ) {
 
-	                /**
-	                 * Infospot focus handler event
-	                 * @type {object}
-	                 * @event Panorama#panolens-viewer-handler
-	                 * @property {string} method - Viewer function name
-	                 * @property {*} data - The argument to be passed into the method
-	                 */
-	                this.dispatchEvent( { type: 'panolens-viewer-handler', method: 'tweenControlCenter', data: [ vector, duration, easing ] } );
+	        } else {
 
-
-	            }.bind( this ) } );
+	            // Counter scale.x = -1 effect
+	            invertedObject = new THREE.Object3D();
+	            invertedObject.scale.x = -1;
+	            invertedObject.scalePlaceHolder = true;
+	            invertedObject.add( object );
 
 	        }
 
-	        THREE.Object3D.prototype.add.call( this, object );
-
-	    },
-
-	    getTexture: function(){
-
-	        return this.material.uniforms.tEquirect.value;
+	        THREE.Object3D.prototype.add.call( this, invertedObject );
 
 	    },
 
@@ -4298,7 +4132,8 @@
 	     */
 	    updateTexture: function ( texture ) {
 
-	        this.material.uniforms.tEquirect.value = texture;
+	        this.material.map = texture;
+	        this.material.needsUpdate = true;
 
 	    },
 
@@ -4570,13 +4405,6 @@
 	    onEnter: function () {
 
 	        const duration = this.animationDuration;
-	        
-	        /**
-	         * Enter panorama event
-	         * @event Panorama#enter
-	         * @type {object} 
-	         */
-	        this.dispatchEvent( { type: 'enter' } );
 
 	        this.leaveTransition.stop();
 	        this.enterTransition
@@ -4602,6 +4430,13 @@
 					
 	            }.bind( this ) )
 	            .start();
+
+	        /**
+	         * Enter panorama event
+	         * @event Panorama#enter
+	         * @type {object} 
+	         */
+	        this.dispatchEvent( { type: 'enter' } );
 
 	        this.children.forEach( child => {
 
@@ -4665,10 +4500,6 @@
 	     */
 	    dispose: function () {
 
-	        const { material } = this;
-
-	        if ( material && material.uniforms && material.uniforms.tEquirect ) material.uniforms.tEquirect.value.dispose();
-
 	        this.infospotAnimation.stop();
 	        this.fadeInAnimation.stop();
 	        this.fadeOutAnimation.stop();
@@ -4689,7 +4520,7 @@
 
 	            const { geometry, material } = object;
 
-	            for ( let i = object.children.length - 1; i >= 0; i-- ) {
+	            for ( var i = object.children.length - 1; i >= 0; i-- ) {
 
 	                recursiveDispose( object.children[i] );
 	                object.remove( object.children[i] );
@@ -4724,12 +4555,16 @@
 	 * @constructor
 	 * @param {string} image - Image url or HTMLImageElement
 	 */
-	function ImagePanorama ( image ) {
+	function ImagePanorama ( image, _geometry, _material ) {
 
-	    Panorama.call( this );
+	    const radius = 5000;
+	    const geometry = _geometry || new THREE.SphereBufferGeometry( radius, 60, 40 );
+	    const material = _material || new THREE.MeshBasicMaterial( { opacity: 0, transparent: true } );
+
+	    Panorama.call( this, geometry, material );
 
 	    this.src = image;
-	    this.type = 'image_panorama';
+	    this.radius = radius;
 
 	}
 
@@ -4800,8 +4635,12 @@
 	     */
 	    dispose: function () {
 
+	        const { material: { map } } = this;
+
 	        // Release cached image
 	        THREE.Cache.remove( this.src );
+
+	        if ( map ) { map.dispose(); }
 
 	        Panorama.prototype.dispose.call( this );
 
@@ -4815,45 +4654,18 @@
 	 */
 	function EmptyPanorama () {
 
-	    Panorama.call( this );
+	    const geometry = new THREE.BufferGeometry();
+	    const material = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0, transparent: true } );
 
-	    this.type = 'empty_panorama';
+	    geometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(), 1 ) );
+
+	    Panorama.call( this, geometry, material );
 
 	}
 
 	EmptyPanorama.prototype = Object.assign( Object.create( Panorama.prototype ), {
 
-	    constructor: EmptyPanorama,
-
-	    /**
-	     * Create a skybox geometry
-	     * @memberOf EmptyPanorama
-	     * @instance
-	     */
-	    createGeometry: function() {
-
-	        const geometry = new THREE.BufferGeometry();
-	        geometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(), 1 ) );
-	        return geometry;
-
-	    },
-
-	    /**
-	     * Create material
-	     * @memberOf EmptyPanorama
-	     * @instance
-	     */
-	    createMaterial: function() {
-
-	        new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0, transparent: true } );
-
-	    },
-
-	    getTexture: function () {
-
-	        return null;
-
-	    }
+	    constructor: EmptyPanorama
 
 	} );
 
@@ -4864,43 +4676,30 @@
 	 */
 	function CubePanorama ( images = [] ){
 
-	    Panorama.call( this );
+	    const edgeLength = 10000;
+	    const shader = Object.assign( {}, THREE.ShaderLib[ 'cube' ] );
+	    const geometry = new THREE.BoxBufferGeometry( edgeLength, edgeLength, edgeLength );
+	    const material = new THREE.ShaderMaterial( {
+
+	        fragmentShader: shader.fragmentShader,
+	        vertexShader: shader.vertexShader,
+	        uniforms: shader.uniforms,
+	        side: THREE.BackSide,
+	        transparent: true
+
+	    } );
+
+	    Panorama.call( this, geometry, material );
 
 	    this.images = images;
-	    this.type = 'cube_panorama';
+	    this.edgeLength = edgeLength;
+	    this.material.uniforms.opacity.value = 0;
 
 	}
 
 	CubePanorama.prototype = Object.assign( Object.create( Panorama.prototype ), {
 
 	    constructor: CubePanorama,
-
-	    /**
-	     * Create material
-	     * @memberOf CubePanorama
-	     * @instance
-	     */
-	    createMaterial: function() {
-
-	        const { fragmentShader, vertexShader, uniforms: _uniforms } = THREE.ShaderLib[ 'cube' ];
-	        const uniforms = THREE.UniformsUtils.clone( _uniforms );
-	        
-	        uniforms.opacity.value = 0;
-
-	        const material = new THREE.ShaderMaterial( {
-
-	            fragmentShader,
-	            vertexShader,
-	            uniforms,
-	            side: THREE.BackSide,
-	            transparent: true,
-	            opacity: 0
-
-	        } );
-
-	        return material;
-
-	    },
 
 	    /**
 	     * Load 6 images and bind listeners
@@ -4932,12 +4731,6 @@
 	        this.material.uniforms[ 'tCube' ].value = texture;
 
 	        Panorama.prototype.onLoad.call( this );
-
-	    },
-
-	    getTexture: function () {
-
-	        return this.material.uniforms.tCube.value;
 
 	    },
 
@@ -4980,8 +4773,6 @@
 
 	    CubePanorama.call( this, images );
 
-	    this.type = 'basic_panorama';
-
 	}
 
 	BasicPanorama.prototype = Object.assign( Object.create( CubePanorama.prototype ), {
@@ -5005,10 +4796,15 @@
 	 */
 	function VideoPanorama ( src, options = {} ) {
 
-	    Panorama.call( this );
+	    const radius = 5000;
+	    const geometry = new THREE.SphereBufferGeometry( radius, 60, 40 );
+	    const material = new THREE.MeshBasicMaterial( { opacity: 0, transparent: true } );
+
+	    Panorama.call( this, geometry, material );
 
 	    this.src = src;
-	    this.options = Object.assign( {
+
+	    this.options = {
 
 	        videoElement: document.createElement( 'video' ),
 	        loop: true,
@@ -5017,12 +4813,13 @@
 	        playsinline: true,
 	        crossOrigin: 'anonymous'
 
-	    }, options );
+	    };
+
+	    Object.assign( this.options, options );
 
 	    this.videoElement = this.options.videoElement;
 	    this.videoProgress = 0;
-
-	    this.type = 'video_panorama';
+	    this.radius = radius;
 
 	    this.addEventListener( 'leave', this.pauseVideo.bind( this ) );
 	    this.addEventListener( 'enter-fade-start', this.resumeVideoProgress.bind( this ) );
@@ -5052,6 +4849,7 @@
 
 	        const { muted, loop, autoplay, playsinline, crossOrigin } = this.options;
 	        const video = this.videoElement;
+	        const material = this.material;
 	        const onProgress = this.onProgress.bind( this );
 	        const onLoad = this.onLoad.bind( this );
 
@@ -5070,7 +4868,7 @@
 
 	        const onloadeddata = function() {
 
-	            const videoTexture = this.setVideoTexture( video );
+	            this.setVideoTexture( video );
 
 	            if ( autoplay ) {
 
@@ -5115,8 +4913,11 @@
 
 	            const loaded = () => {
 
+	                // Fix for threejs r89 delayed update
+	                material.map.needsUpdate = true;
+
 	                onProgress( { loaded: 1, total: 1 } );
-	                onLoad( videoTexture );
+	                onLoad();
 
 	            };
 
@@ -5178,12 +4979,6 @@
 
 	    },
 
-	    onLoad: function () {
-
-	        Panorama.prototype.onLoad.call( this );
-
-	    },
-
 	    /**
 	     * Set video texture
 	     * @memberOf VideoPanorama
@@ -5201,8 +4996,6 @@
 	        videoTexture.format = THREE.RGBFormat;
 
 	        this.updateTexture( videoTexture );
-
-	        return videoTexture;
 		
 	    },
 
@@ -5463,12 +5256,16 @@
 	     */
 	    dispose: function () {
 
+	        const { material: { map } } = this;
+
 	        this.pauseVideo();
 			
 	        this.removeEventListener( 'leave', this.pauseVideo.bind( this ) );
 	        this.removeEventListener( 'enter-fade-start', this.resumeVideoProgress.bind( this ) );
 	        this.removeEventListener( 'video-toggle', this.toggleVideo.bind( this ) );
 	        this.removeEventListener( 'video-time', this.setVideoCurrentTime.bind( this ) );
+
+	        if ( map ) { map.dispose(); }
 
 	        Panorama.prototype.dispose.call( this );
 
@@ -5733,11 +5530,12 @@
 	    ImagePanorama.call( this );
 
 	    this.panoId = panoId;
-	    this.gsvLoader = null;
-	    this.loadRequested = false;
-	    this.setupGoogleMapAPI( apiKey );
 
-	    this.type = 'google_streetview_panorama';
+	    this.gsvLoader = null;
+
+	    this.loadRequested = false;
+
+	    this.setupGoogleMapAPI( apiKey );
 
 	}
 
@@ -5890,52 +5688,55 @@
 
 	    },
 
-	    vertexShader: `
+	    vertexShader: [
 
-        varying vec2 vUv;
+	        'varying vec2 vUv;',
 
-        void main() {
+	        'void main() {',
 
-            vUv = uv;
-            gl_Position = vec4( position, 1.0 );
+	        'vUv = uv;',
+	        'gl_Position = vec4( position, 1.0 );',
 
-        }
+	        '}' 
 
-    `,
+	    ].join( '\n' ),
 
-	    fragmentShader: `
+	    fragmentShader: [
 
-        uniform sampler2D tDiffuse;
-        uniform float resolution;
-        uniform mat4 transform;
-        uniform float zoom;
-        uniform float opacity;
+	        'uniform sampler2D tDiffuse;',
+	        'uniform float resolution;',
+	        'uniform mat4 transform;',
+	        'uniform float zoom;',
+	        'uniform float opacity;',
 
-        varying vec2 vUv;
+	        'varying vec2 vUv;',
 
-        const float PI = 3.141592653589793;
+	        'const float PI = 3.141592653589793;',
 
-        void main(){
+	        'void main(){',
 
-            vec2 position = -1.0 +  2.0 * vUv;
+	        'vec2 position = -1.0 +  2.0 * vUv;',
 
-            position *= vec2( zoom * resolution, zoom * 0.5 );
+	        'position *= vec2( zoom * resolution, zoom * 0.5 );',
 
-            float x2y2 = position.x * position.x + position.y * position.y;
-            vec3 sphere_pnt = vec3( 2. * position, x2y2 - 1. ) / ( x2y2 + 1. );
+	        'float x2y2 = position.x * position.x + position.y * position.y;',
+	        'vec3 sphere_pnt = vec3( 2. * position, x2y2 - 1. ) / ( x2y2 + 1. );',
 
-            sphere_pnt = vec3( transform * vec4( sphere_pnt, 1.0 ) );
+	        'sphere_pnt = vec3( transform * vec4( sphere_pnt, 1.0 ) );',
 
-            vec2 sampleUV = vec2(
-                (atan(sphere_pnt.y, sphere_pnt.x) / PI + 1.0) * 0.5,
-                (asin(sphere_pnt.z) / PI + 0.5)
-            );
+	        'vec2 sampleUV = vec2(',
+	        '(atan(sphere_pnt.y, sphere_pnt.x) / PI + 1.0) * 0.5,',
+	        '(asin(sphere_pnt.z) / PI + 0.5)',
+	        ');',
 
-            gl_FragColor = texture2D( tDiffuse, sampleUV );
-            gl_FragColor.a *= opacity;
+	        'gl_FragColor = texture2D( tDiffuse, sampleUV );',
 
-        }
-    `
+	        'gl_FragColor.a *= opacity;',
+
+	        '}'
+
+	    ].join( '\n' )
+
 	};
 
 	/**
@@ -5943,15 +5744,19 @@
 	 * @constructor
 	 * @param {string} type 		- Type of little planet basic class
 	 * @param {string} source 		- URL for the image source
+	 * @param {number} [size=10000] - Size of plane geometry
+	 * @param {number} [ratio=0.5]  - Ratio of plane geometry's height against width
 	 */
-	function LittlePlanet ( type = 'image', source ) {
+	function LittlePlanet ( type = 'image', source, size = 10000, ratio = 0.5 ) {
 
 	    if ( type === 'image' ) {
 
-	        ImagePanorama.call( this, source );
+	        ImagePanorama.call( this, source, this.createGeometry( size, ratio ), this.createMaterial( size ) );
 
 	    }
 
+	    this.size = size;
+	    this.ratio = ratio;
 	    this.EPS = 0.000001;
 	    this.frameId = null;
 
@@ -5965,8 +5770,6 @@
 
 	    this.vectorX = new THREE.Vector3( 1, 0, 0 );
 	    this.vectorY = new THREE.Vector3( 0, 1, 0 );
-
-	    this.type = 'little_planet';
 
 	    this.addEventListener( 'window-resize', this.onWindowResize );
 
@@ -6000,38 +5803,26 @@
 
 	    },
 
-	    /**
-	     * Create a skybox geometry
-	     * @memberOf LittlePlanet
-	     * @instance
-	     */
-	    createGeometry: function ( edgeLength ) {
+	    createGeometry: function ( size, ratio ) {
 
-	        const ratio = 0.5;
-	        return new THREE.PlaneBufferGeometry( edgeLength, ratio * edgeLength );
+	        return new THREE.PlaneBufferGeometry( size, size * ratio );
 
 	    },
 
-	    /**
-	     * Create material
-	     * @memberOf LittlePlanet
-	     * @instance
-	     */
-	    createMaterial: function ( size = this.edgeLength ) {
+	    createMaterial: function ( size ) {
 
-	        const { fragmentShader, vertexShader, uniforms: _uniforms } = StereographicShader;
-	        const uniforms = THREE.UniformsUtils.clone( _uniforms );
+	        const shader = Object.assign( {}, StereographicShader ), uniforms = shader.uniforms;
 
 	        uniforms.zoom.value = size;
 	        uniforms.opacity.value = 0.0;
 
 	        return new THREE.ShaderMaterial( {
 
-	            vertexShader,
-	            fragmentShader,
-	            uniforms,
-	            transparent: true,
-	            opacity: 0
+	            uniforms: uniforms,
+	            vertexShader: shader.vertexShader,
+	            fragmentShader: shader.fragmentShader,
+	            side: THREE.BackSide,
+	            transparent: true
 
 	        } );
 			
@@ -6217,18 +6008,6 @@
 
 	    },
 
-	    updateTexture: function ( texture ) {
-
-	        this.material.uniforms.tDiffuse.value = texture;
-
-	    },
-
-	    getTexture: function () {
-
-	        return this.material.uniforms.tDiffuse.value;
-
-	    },
-
 	    onLoad: function ( texture ) {
 
 	        this.material.uniforms.resolution.value = this.container.clientWidth / this.container.clientHeight;
@@ -6280,12 +6059,12 @@
 	 * @classdesc Image Little Planet
 	 * @constructor
 	 * @param {string} source 		- URL for the image source
+	 * @param {number} [size=10000] - Size of plane geometry
+	 * @param {number} [ratio=0.5]  - Ratio of plane geometry's height against width
 	 */
-	function ImageLittlePlanet ( source ) {
+	function ImageLittlePlanet ( source, size, ratio ) {
 
-	    LittlePlanet.call( this, 'image', source );
-
-	    this.type = 'image_little_planet';
+	    LittlePlanet.call( this, 'image', source, size, ratio );
 
 	}
 
@@ -6350,11 +6129,14 @@
 	 */
 	function CameraPanorama ( constraints ) {
 
-	    Panorama.call( this );
+	    const radius = 5000;
+	    const geometry = new THREE.SphereBufferGeometry( radius, 60, 40 );
+	    const material = new THREE.MeshBasicMaterial( { visible: false });
+
+	    Panorama.call( this, geometry, material );
 
 	    this.media = new Media( constraints );
-
-	    this.type = 'camera_panorama';
+	    this.radius = radius;
 
 	    this.addEventListener( 'enter', this.start.bind( this ) );
 	    this.addEventListener( 'leave', this.stop.bind( this ) );
@@ -6413,189 +6195,6 @@
 	        this.media.stop();
 
 	    },
-
-	} );
-
-	/**
-	 * @classdesc Stereo Image Panorama
-	 * @constructor
-	 * @param {string} src - image source
-	 * @param {number} [stereo=new Stereo()] - stereo mixin
-	 */
-	function StereoImagePanorama ( src, stereo = new Stereo() ){
-
-	    ImagePanorama.call( this, src );
-
-	    this.stereo = stereo;
-	    this.type = 'stereo_image_panorama';
-
-	}
-
-	StereoImagePanorama.prototype = Object.assign( Object.create( ImagePanorama.prototype ), {
-
-	    constructor: StereoImagePanorama,
-
-	    /**
-	     * This will be called when texture is ready
-	     * @param  {THREE.Texture} texture - Image texture
-	     * @memberOf StereoImagePanorama
-	     * @instance
-	     */
-	    onLoad: function ( texture ) {
-
-	        const { width, height } = texture.image;
-	        let format = null;
-
-	        if ( width / height === 4 ) { 
-	            
-	            format = STEREOFORMAT.SBS;
-	        
-	        } else { 
-
-	            format = STEREOFORMAT.TAB;
-	        
-	        }
-
-	        this.stereo.updateUniformByFormat( format, this.material.uniforms );
-
-	        this.material.uniforms[ 'tEquirect' ].value = texture;
-
-	        ImagePanorama.prototype.onLoad.call( this, texture );
-
-	    },
-
-	    /**
-	     * Update Texture for Stereo Left Eye
-	     * @memberOf StereoImagePanorama
-	     * @instance
-	     */
-	    updateTextureToLeft: function() {
-
-	        this.stereo.updateTextureToLeft( this.material.uniforms.offset.value );
-
-	    },
-
-	    /**
-	     * Update Texture for Stereo Right Eye
-	     * @memberOf StereoImagePanorama
-	     * @instance
-	     */
-	    updateTextureToRight: function() {
-
-	        this.stereo.updateTextureToRight( this.material.uniforms.offset.value );
-
-	    },
-
-	    /**
-	     * Dispose
-	     * @memberOf StereoImagePanorama
-	     * @instance
-	     */
-	    dispose: function () {	
-
-	        const { value } = this.material.uniforms.tEquirect;
-
-	        if ( value instanceof THREE.Texture ) {
-
-	            value.dispose();
-
-	        }
-
-	        ImagePanorama.prototype.dispose.call( this );
-
-	    }
-
-	} );
-
-	/**
-	 * @classdesc Stereo Image Panorama
-	 * @constructor
-	 * @param {string} src - image source
-	 * @param {object} options - { @see VideoPanorama }
-	 * @param {number} [stereo=new Stereo()] - stereo mixin
-	 */
-	function StereoVideoPanorama ( src, options = {}, stereo = new Stereo() ){
-
-	    VideoPanorama.call( this, src, options );
-
-	    this.stereo = stereo;
-	    this.type = 'stereo_video_panorama';
-
-	}
-
-	StereoVideoPanorama.prototype = Object.assign( Object.create( VideoPanorama.prototype ), {
-
-	    constructor: StereoVideoPanorama,
-
-	    /**
-	     * This will be called when video texture is ready
-	     * @param  {THREE.VideoTexture} texture - Video texture
-	     * @memberOf StereoVideoPanorama
-	     * @instance
-	     */
-	    onLoad: function ( texture ) {
-
-	        const { videoWidth, videoHeight } = texture.image;
-	        let format = null;
-
-	        if ( videoWidth / videoHeight === 4 ) { 
-	            
-	            format = STEREOFORMAT.SBS;
-	        
-	        } else { 
-
-	            format = STEREOFORMAT.TAB;
-	        
-	        }
-
-	        this.stereo.updateUniformByFormat( format, this.material.uniforms );
-
-	        this.material.uniforms[ 'tEquirect' ].value = texture;
-
-	        VideoPanorama.prototype.onLoad.call( this );
-
-	    },
-
-	    /**
-	     * Update Texture for Stereo Left Eye
-	     * @memberOf StereoVideoPanorama
-	     * @instance
-	     */
-	    updateTextureToLeft: function() {
-
-	        this.stereo.updateTextureToLeft( this.material.uniforms.offset.value );
-
-	    },
-
-	    /**
-	     * Update Texture for Stereo Right Eye
-	     * @memberOf StereoVideoPanorama
-	     * @instance
-	     */
-	    updateTextureToRight: function() {
-
-	        this.stereo.updateTextureToRight( this.material.uniforms.offset.value );
-
-	    },
-
-	    /**
-	     * Dispose
-	     * @memberOf StereoVideoPanorama
-	     * @instance
-	     */
-	    dispose: function () {	
-
-	        const { value } = this.material.uniforms.tEquirect;
-
-	        if ( value instanceof THREE.Texture ) {
-
-	            value.dispose();
-
-	        }
-
-	        VideoPanorama.prototype.dispose.call( this );
-
-	    }
 
 	} );
 
@@ -6690,45 +6289,45 @@
 	     * internals
 	     */
 
-	    const scope = this;
+	    var scope = this;
 
-	    const EPS = 10e-8;
-	    const MEPS = 10e-5;
+	    var EPS = 10e-8;
+	    var MEPS = 10e-5;
 
-	    const rotateStart = new THREE.Vector2();
-	    const rotateEnd = new THREE.Vector2();
-	    const rotateDelta = new THREE.Vector2();
+	    var rotateStart = new THREE.Vector2();
+	    var rotateEnd = new THREE.Vector2();
+	    var rotateDelta = new THREE.Vector2();
 
-	    const panStart = new THREE.Vector2();
-	    const panEnd = new THREE.Vector2();
-	    const panDelta = new THREE.Vector2();
-	    const panOffset = new THREE.Vector3();
+	    var panStart = new THREE.Vector2();
+	    var panEnd = new THREE.Vector2();
+	    var panDelta = new THREE.Vector2();
+	    var panOffset = new THREE.Vector3();
 
-	    const offset = new THREE.Vector3();
+	    var offset = new THREE.Vector3();
 
-	    const dollyStart = new THREE.Vector2();
-	    const dollyEnd = new THREE.Vector2();
-	    const dollyDelta = new THREE.Vector2();
+	    var dollyStart = new THREE.Vector2();
+	    var dollyEnd = new THREE.Vector2();
+	    var dollyDelta = new THREE.Vector2();
 
-	    let theta = 0;
-	    let phi = 0;
-	    let phiDelta = 0;
-	    let thetaDelta = 0;
-	    let scale = 1;
-	    const pan = new THREE.Vector3();
+	    var theta = 0;
+	    var phi = 0;
+	    var phiDelta = 0;
+	    var thetaDelta = 0;
+	    var scale = 1;
+	    var pan = new THREE.Vector3();
 
-	    const lastPosition = new THREE.Vector3();
-	    const lastQuaternion = new THREE.Quaternion();
+	    var lastPosition = new THREE.Vector3();
+	    var lastQuaternion = new THREE.Quaternion();
 
-	    let momentumLeft = 0, momentumUp = 0;
-	    let eventPrevious;
-	    let momentumOn = false;
+	    var momentumLeft = 0, momentumUp = 0;
+	    var eventPrevious;
+	    var momentumOn = false;
 
-	    let keyUp, keyBottom, keyLeft, keyRight;
+	    var keyUp, keyBottom, keyLeft, keyRight;
 
-	    const STATE = { NONE: -1, ROTATE: 0, DOLLY: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_DOLLY: 4, TOUCH_PAN: 5 };
+	    var STATE = { NONE: -1, ROTATE: 0, DOLLY: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_DOLLY: 4, TOUCH_PAN: 5 };
 
-	    let state = STATE.NONE;
+	    var state = STATE.NONE;
 
 	    // for reset
 
@@ -6738,14 +6337,14 @@
 
 	    // so camera.up is the orbit axis
 
-	    const quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
-	    const quatInverse = quat.clone().inverse();
+	    var quat = new THREE.Quaternion().setFromUnitVectors( object.up, new THREE.Vector3( 0, 1, 0 ) );
+	    var quatInverse = quat.clone().inverse();
 
 	    // events
 
-	    const changeEvent = { type: 'change' };
-	    const startEvent = { type: 'start' };
-	    const endEvent = { type: 'end' };
+	    var changeEvent = { type: 'change' };
+	    var startEvent = { type: 'start' };
+	    var endEvent = { type: 'end' };
 
 	    this.setLastQuaternion = function ( quaternion ) {
 	        lastQuaternion.copy( quaternion );
@@ -6784,7 +6383,7 @@
 	    // pass in distance in world space to move left
 	    this.panLeft = function ( distance ) {
 
-	        const te = this.object.matrix.elements;
+	        var te = this.object.matrix.elements;
 
 	        // get X column of matrix
 	        panOffset.set( te[ 0 ], te[ 1 ], te[ 2 ] );
@@ -6797,7 +6396,7 @@
 	    // pass in distance in world space to move up
 	    this.panUp = function ( distance ) {
 
-	        const te = this.object.matrix.elements;
+	        var te = this.object.matrix.elements;
 
 	        // get Y column of matrix
 	        panOffset.set( te[ 4 ], te[ 5 ], te[ 6 ] );
@@ -6813,14 +6412,14 @@
 	     */
 	    this.pan = function ( deltaX, deltaY ) {
 
-	        const element = scope.domElement === document ? scope.domElement.body : scope.domElement;
+	        var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
 	        if ( scope.object instanceof THREE.PerspectiveCamera ) {
 
 	            // perspective
-	            const position = scope.object.position;
-	            const offset = position.clone().sub( scope.target );
-	            let targetDistance = offset.length();
+	            var position = scope.object.position;
+	            var offset = position.clone().sub( scope.target );
+	            var targetDistance = offset.length();
 
 	            // half of the fov is center to top of screen
 	            targetDistance *= Math.tan( ( scope.object.fov / 2 ) * Math.PI / 180.0 );
@@ -6916,7 +6515,7 @@
 
 	    this.update = function ( ignoreUpdate ) {
 
-	        const position = this.object.position;
+	        var position = this.object.position;
 
 	        offset.copy( position ).sub( this.target );
 
@@ -6951,7 +6550,7 @@
 	        // restrict phi to be betwee EPS and PI-EPS
 	        phi = Math.max( EPS, Math.min( Math.PI - EPS, phi ) );
 
-	        let radius = offset.length() * scale;
+	        var radius = offset.length() * scale;
 
 	        // restrict radius to be between desired limits
 	        radius = Math.max( this.minDistance, Math.min( this.maxDistance, radius ) );
@@ -7080,7 +6679,7 @@
 
 	        event.preventDefault();
 
-	        const element = scope.domElement === document ? scope.domElement.body : scope.domElement;
+	        var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
 	        if ( state === STATE.ROTATE ) {
 
@@ -7162,7 +6761,7 @@
 	        event.preventDefault();
 	        event.stopPropagation();
 
-	        let delta = 0;
+	        var delta = 0;
 
 	        if ( event.wheelDelta !== undefined ) { // WebKit / Opera / Explorer 9
 
@@ -7285,9 +6884,9 @@
 
 	            state = STATE.TOUCH_DOLLY;
 
-	            const dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
-	            const dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
-	            const distance = Math.sqrt( dx * dx + dy * dy );
+	            var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+	            var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+	            var distance = Math.sqrt( dx * dx + dy * dy );
 
 	            dollyStart.set( 0, distance );
 
@@ -7319,7 +6918,7 @@
 	        event.preventDefault();
 	        event.stopPropagation();
 
-	        const element = scope.domElement === document ? scope.domElement.body : scope.domElement;
+	        var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
 	        switch ( event.touches.length ) {
 
@@ -7356,9 +6955,9 @@
 	            if ( scope.noZoom === true ) return;
 	            if ( state !== STATE.TOUCH_DOLLY ) return;
 
-	            const dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
-	            const dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
-	            const distance = Math.sqrt( dx * dx + dy * dy );
+	            var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+	            var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+	            var distance = Math.sqrt( dx * dx + dy * dy );
 
 	            dollyEnd.set( 0, distance );
 	            dollyDelta.subVectors( dollyEnd, dollyStart );
@@ -7467,12 +7066,13 @@
 	 */
 	function DeviceOrientationControls ( camera, domElement ) {
 
-	    const scope = this;
-	    const changeEvent = { type: 'change' };
+	    var scope = this;
+	    var changeEvent = { type: 'change' };
 
-	    let rotX = 0;
-	    let tempX = 0;
-	    let tempY = 0;
+	    var rotY = 0;
+	    var rotX = 0;
+	    var tempX = 0;
+	    var tempY = 0;
 
 	    this.camera = camera;
 	    this.camera.rotation.reorder( 'YXZ' );
@@ -7480,25 +7080,26 @@
 
 	    this.enabled = true;
 
-	    this.deviceOrientation = null;
+	    this.deviceOrientation = {};
 	    this.screenOrientation = 0;
 
 	    this.alpha = 0;
 	    this.alphaOffsetAngle = 0;
 
-	    const onDeviceOrientationChangeEvent = function( event ) {
+
+	    var onDeviceOrientationChangeEvent = function( event ) {
 
 	        scope.deviceOrientation = event;
 
 	    };
 
-	    const onScreenOrientationChangeEvent = function() {
+	    var onScreenOrientationChangeEvent = function() {
 
 	        scope.screenOrientation = window.orientation || 0;
 
 	    };
 
-	    const onTouchStartEvent = function (event) {
+	    var onTouchStartEvent = function (event) {
 
 	        event.preventDefault();
 	        event.stopPropagation();
@@ -7508,13 +7109,15 @@
 
 	    };
 
-	    const onTouchMoveEvent = function (event) {
+	    var onTouchMoveEvent = function (event) {
 
 	        event.preventDefault();
 	        event.stopPropagation();
 
+	        rotY += THREE.Math.degToRad( ( event.touches[ 0 ].pageX - tempX ) / 4 );
 	        rotX += THREE.Math.degToRad( ( tempY - event.touches[ 0 ].pageY ) / 4 );
-	        scope.rotateLeft( -THREE.Math.degToRad( ( event.touches[ 0 ].pageX - tempX ) / 4 ) );
+
+	        scope.updateAlphaOffsetAngle( rotY );
 
 	        tempX = event.touches[ 0 ].pageX;
 	        tempY = event.touches[ 0 ].pageY;
@@ -7523,19 +7126,19 @@
 
 	    // The angles alpha, beta and gamma form a set of intrinsic Tait-Bryan angles of type Z-X'-Y''
 
-	    const setCameraQuaternion = function( quaternion, alpha, beta, gamma, orient ) {
+	    var setCameraQuaternion = function( quaternion, alpha, beta, gamma, orient ) {
 
-	        const zee = new THREE.Vector3( 0, 0, 1 );
+	        var zee = new THREE.Vector3( 0, 0, 1 );
 
-	        const euler = new THREE.Euler();
+	        var euler = new THREE.Euler();
 
-	        const q0 = new THREE.Quaternion();
+	        var q0 = new THREE.Quaternion();
 
-	        const q1 = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
+	        var q1 = new THREE.Quaternion( - Math.sqrt( 0.5 ), 0, 0, Math.sqrt( 0.5 ) ); // - PI/2 around the x-axis
 
-	        let vectorFingerY;
-	        const fingerQY = new THREE.Quaternion();
-	        const fingerQX = new THREE.Quaternion();
+	        var vectorFingerY;
+	        var fingerQY = new THREE.Quaternion();
+	        var fingerQX = new THREE.Quaternion();
 
 	        if ( scope.screenOrientation == 0 ) {
 
@@ -7602,12 +7205,12 @@
 
 	    this.update = function( ignoreUpdate ) {
 
-	        if ( scope.enabled === false || !scope.deviceOrientation ) return;
+	        if ( scope.enabled === false ) return;
 
-	        const alpha = scope.deviceOrientation.alpha ? THREE.Math.degToRad( scope.deviceOrientation.alpha ) + scope.alphaOffsetAngle : 0; // Z
-	        const beta = scope.deviceOrientation.beta ? THREE.Math.degToRad( scope.deviceOrientation.beta ) : 0; // X'
-	        const gamma = scope.deviceOrientation.gamma ? THREE.Math.degToRad( scope.deviceOrientation.gamma ) : 0; // Y''
-	        const orient = scope.screenOrientation ? THREE.Math.degToRad( scope.screenOrientation ) : 0; // O
+	        var alpha = scope.deviceOrientation.alpha ? THREE.Math.degToRad( scope.deviceOrientation.alpha ) + scope.alphaOffsetAngle : 0; // Z
+	        var beta = scope.deviceOrientation.beta ? THREE.Math.degToRad( scope.deviceOrientation.beta ) : 0; // X'
+	        var gamma = scope.deviceOrientation.gamma ? THREE.Math.degToRad( scope.deviceOrientation.gamma ) : 0; // Y''
+	        var orient = scope.screenOrientation ? THREE.Math.degToRad( scope.screenOrientation ) : 0; // O
 
 	        setCameraQuaternion( scope.camera.quaternion, alpha, beta, gamma, orient );
 	        scope.alpha = alpha;
@@ -7619,23 +7222,7 @@
 	    this.updateAlphaOffsetAngle = function( angle ) {
 
 	        this.alphaOffsetAngle = angle;
-
-	    };
-
-	    this.updateRotX = function( angle ) {
-
-	        rotX = angle;
-
-	    };
-
-	    this.rotateLeft = function( angle ) {
-
-	        this.updateAlphaOffsetAngle( this.alphaOffsetAngle - angle );
-	    };
-
-	    this.rotateUp = function( angle ) {
-
-	        this.updateRotX( rotX + angle );
+	        this.update();
 
 	    };
 
@@ -7662,16 +7249,16 @@
 	 */
 	function CardboardEffect ( renderer ) {
 
-	    const _camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+	    var _camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
 
-	    const _scene = new THREE.Scene();
+	    var _scene = new THREE.Scene();
 
-	    const _stereo = new THREE.StereoCamera();
+	    var _stereo = new THREE.StereoCamera();
 	    _stereo.aspect = 0.5;
 
-	    const _params = { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat };
+	    var _params = { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat };
 
-	    const _renderTarget = new THREE.WebGLRenderTarget( 512, 512, _params );
+	    var _renderTarget = new THREE.WebGLRenderTarget( 512, 512, _params );
 	    _renderTarget.scissorTest = true;
 	    _renderTarget.texture.generateMipmaps = false;
 
@@ -7680,37 +7267,37 @@
 	     * https://github.com/borismus/webvr-boilerplate/blob/master/src/distortion/barrel-distortion-fragment.js
 	     */
 
-	    const distortion = new THREE.Vector2( 0.441, 0.156 );
+	    var distortion = new THREE.Vector2( 0.441, 0.156 );
 
-	    const geometry = new THREE.PlaneBufferGeometry( 1, 1, 10, 20 ).removeAttribute( 'normal' ).toNonIndexed();
+	    var geometry = new THREE.PlaneBufferGeometry( 1, 1, 10, 20 ).removeAttribute( 'normal' ).toNonIndexed();
 
-	    const positions = geometry.attributes.position.array;
-	    const uvs = geometry.attributes.uv.array;
+	    var positions = geometry.attributes.position.array;
+	    var uvs = geometry.attributes.uv.array;
 
 	    // duplicate
 	    geometry.attributes.position.count *= 2;
 	    geometry.attributes.uv.count *= 2;
 
-	    const positions2 = new Float32Array( positions.length * 2 );
+	    var positions2 = new Float32Array( positions.length * 2 );
 	    positions2.set( positions );
 	    positions2.set( positions, positions.length );
 
-	    const uvs2 = new Float32Array( uvs.length * 2 );
+	    var uvs2 = new Float32Array( uvs.length * 2 );
 	    uvs2.set( uvs );
 	    uvs2.set( uvs, uvs.length );
 
-	    const vector = new THREE.Vector2();
-	    const length = positions.length / 3;
+	    var vector = new THREE.Vector2();
+	    var length = positions.length / 3;
 
-	    for ( let i = 0, l = positions2.length / 3; i < l; i ++ ) {
+	    for ( var i = 0, l = positions2.length / 3; i < l; i ++ ) {
 
 	        vector.x = positions2[ i * 3 + 0 ];
 	        vector.y = positions2[ i * 3 + 1 ];
 
-	        const dot = vector.dot( vector );
-	        const scalar = 1.5 + ( distortion.x + distortion.y * dot ) * dot;
+	        var dot = vector.dot( vector );
+	        var scalar = 1.5 + ( distortion.x + distortion.y * dot ) * dot;
 
-	        const offset = i < length ? 0 : 1;
+	        var offset = i < length ? 0 : 1;
 
 	        positions2[ i * 3 + 0 ] = ( vector.x / scalar ) * 1.5 - 0.5 + offset;
 	        positions2[ i * 3 + 1 ] = ( vector.y / scalar ) * 3.0;
@@ -7724,46 +7311,34 @@
 
 	    //
 
-	    const material = new THREE.MeshBasicMaterial( { map: _renderTarget.texture } );
-	    const mesh = new THREE.Mesh( geometry, material );
+	    var material = new THREE.MeshBasicMaterial( { map: _renderTarget.texture } );
+	    var mesh = new THREE.Mesh( geometry, material );
 	    _scene.add( mesh );
 
 	    //
-
-	    this.setEyeSeparation = function ( eyeSep ) {
-
-	        _stereo.eyeSep = eyeSep;
-
-	    };
 
 	    this.setSize = function ( width, height ) {
 
 	        renderer.setSize( width, height );
 
-	        const pixelRatio = renderer.getPixelRatio();
+	        var pixelRatio = renderer.getPixelRatio();
 
 	        _renderTarget.setSize( width * pixelRatio, height * pixelRatio );
 
 	    };
 
-	    this.render = function ( scene, camera, panorama ) {
-
-	        const stereoEnabled = panorama instanceof StereoImagePanorama || panorama instanceof StereoVideoPanorama;
+	    this.render = function ( scene, camera ) {
 
 	        scene.updateMatrixWorld();
-
-	        if ( stereoEnabled ) this.setEyeSeparation( panorama.stereo.eyeSep );
 
 	        if ( camera.parent === null ) camera.updateMatrixWorld();
 
 	        _stereo.update( camera );
 
-	        const width = _renderTarget.width / 2;
-	        const height = _renderTarget.height;
+	        var width = _renderTarget.width / 2;
+	        var height = _renderTarget.height;
 
 	        if ( renderer.autoClear ) renderer.clear();
-
-	        if ( stereoEnabled ) panorama.updateTextureToLeft();
 
 	        _renderTarget.scissor.set( 0, 0, width, height );
 	        _renderTarget.viewport.set( 0, 0, width, height );
@@ -7771,8 +7346,6 @@
 	        renderer.render( scene, _stereo.cameraL );
 
 	        renderer.clearDepth();
-
-	        if ( stereoEnabled ) panorama.updateTextureToRight();
 
 	        _renderTarget.scissor.set( width, 0, width, height );
 	        _renderTarget.viewport.set( width, 0, width, height );
@@ -7795,9 +7368,9 @@
 	 */
 	const StereoEffect = function ( renderer ) {
 
-	    const _stereo = new THREE.StereoCamera();
+	    var _stereo = new THREE.StereoCamera();
 	    _stereo.aspect = 0.5;
-	    const size = new THREE.Vector2();
+	    var size = new THREE.Vector2();
 
 	    this.setEyeSeparation = function ( eyeSep ) {
 
@@ -7811,15 +7384,11 @@
 
 	    };
 
-	    this.render = function ( scene, camera, panorama ) {
-
-	        const stereoEnabled = panorama instanceof StereoImagePanorama || panorama instanceof StereoVideoPanorama;
+	    this.render = function ( scene, camera ) {
 
 	        scene.updateMatrixWorld();
 
 	        if ( camera.parent === null ) camera.updateMatrixWorld();
-	        
-	        if ( stereoEnabled ) this.setEyeSeparation( panorama.stereo.eyeSep );
 
 	        _stereo.update( camera );
 
@@ -7828,21 +7397,15 @@
 	        if ( renderer.autoClear ) renderer.clear();
 	        renderer.setScissorTest( true );
 
-	        if ( stereoEnabled ) panorama.updateTextureToLeft();
-
 	        renderer.setScissor( 0, 0, size.width / 2, size.height );
 	        renderer.setViewport( 0, 0, size.width / 2, size.height );
 	        renderer.render( scene, _stereo.cameraL );
-
-	        if ( stereoEnabled ) panorama.updateTextureToRight();
 
 	        renderer.setScissor( size.width / 2, 0, size.width / 2, size.height );
 	        renderer.setViewport( size.width / 2, 0, size.width / 2, size.height );
 	        renderer.render( scene, _stereo.cameraR );
 
 	        renderer.setScissorTest( false );
-
-	        if ( stereoEnabled ) panorama.updateTextureToLeft();
 
 	    };
 
@@ -7869,194 +7432,209 @@
 	 * @param {boolean} [options.autoReticleSelect=true] - Auto select a clickable target after dwellTime
 	 * @param {boolean} [options.viewIndicator=false] - Adds an angle view indicator in upper left corner
 	 * @param {number}  [options.indicatorSize=30] - Size of View Indicator
-	 * @param {string}  [options.output=null] - Whether and where to output raycast position. Could be 'console' or 'overlay'
+	 * @param {string}  [options.output='none'] - Whether and where to output raycast position. Could be 'event', 'console' or 'overlay'.
 	 * @param {boolean} [options.autoRotate=false] - Auto rotate
 	 * @param {number}  [options.autoRotateSpeed=2.0] - Auto rotate speed as in degree per second. Positive is counter-clockwise and negative is clockwise.
 	 * @param {number}  [options.autoRotateActivationDuration=5000] - Duration before auto rotatation when no user interactivity in ms
-	 * @param {THREE.Vector3} [options.initialLookAt=new THREE.Vector3( 0, 0, -Number.MAX_SAFE_INTEGER )] - Initial looking at vector
 	 */
-	function Viewer ( options = {} ) {
+	function Viewer ( options ) {
 
-	    this.options = Object.assign( {
+	    let container;
 
-	        container: this.setupContainer( options.container ),
-	        controlBar: true,
-	        controlButtons: [ 'fullscreen', 'setting', 'video' ],
-	        autoHideControlBar: false,
-	        autoHideInfospot: true,
-	        horizontalView: false,
-	        clickTolerance: 10,
-	        cameraFov: 60,
-	        reverseDragging: false,
-	        enableReticle: false,
-	        dwellTime: 1500,
-	        autoReticleSelect: true,
-	        viewIndicator: false,
-	        indicatorSize: 30,
-	        output: null,
-	        autoRotate: false,
-	        autoRotateSpeed: 2.0,
-	        autoRotateActivationDuration: 5000,
-	        initialLookAt: new THREE.Vector3( 0, 0, -Number.MAX_SAFE_INTEGER )
+	    options = options || {};
+	    options.controlBar = options.controlBar !== undefined ? options.controlBar : true;
+	    options.controlButtons = options.controlButtons || [ 'fullscreen', 'setting', 'video' ];
+	    options.autoHideControlBar = options.autoHideControlBar !== undefined ? options.autoHideControlBar : false;
+	    options.autoHideInfospot = options.autoHideInfospot !== undefined ? options.autoHideInfospot : true;
+	    options.horizontalView = options.horizontalView !== undefined ? options.horizontalView : false;
+	    options.clickTolerance = options.clickTolerance || 10;
+	    options.cameraFov = options.cameraFov || 60;
+	    options.reverseDragging = options.reverseDragging || false;
+	    options.enableReticle = options.enableReticle || false;
+	    options.dwellTime = options.dwellTime || 1500;
+	    options.autoReticleSelect = options.autoReticleSelect !== undefined ? options.autoReticleSelect : true;
+	    options.viewIndicator = options.viewIndicator !== undefined ? options.viewIndicator : false;
+	    options.indicatorSize = options.indicatorSize || 30;
+	    options.output = options.output ? options.output : 'none';
+	    options.autoRotate = options.autoRotate || false;
+	    options.autoRotateSpeed = options.autoRotateSpeed || 2.0;
+	    options.autoRotateActivationDuration = options.autoRotateActivationDuration || 5000;
 
-	    }, options );
+	    this.options = options;
 
-	    const { container, cameraFov, controlBar, controlButtons, viewIndicator, indicatorSize, enableReticle, reverseDragging, output, scene, camera, renderer } = this.options;
-	    const { clientWidth, clientHeight } = container;
+	    /*
+	     * CSS Icon
+	     * const styleLoader = new StyleLoader();
+	     * styleLoader.inject( 'icono' );
+	     */
+
+	    // Container
+	    if ( options.container ) {
+
+	        container = options.container;
+	        container._width = container.clientWidth;
+	        container._height = container.clientHeight;
+
+	    } else {
+
+	        container = document.createElement( 'div' );
+	        container.classList.add( 'panolens-container' );
+	        container.style.width = '100%';
+	        container.style.height = '100%';
+	        container._width = window.innerWidth;
+	        container._height = window.innerHeight;
+	        document.body.appendChild( container );
+
+	    }
 
 	    this.container = container;
-	    this.scene = this.setupScene( scene );
+
+	    this.camera = options.camera || new THREE.PerspectiveCamera( this.options.cameraFov, this.container.clientWidth / this.container.clientHeight, 1, 10000 );
+	    this.scene = options.scene || new THREE.Scene();
+	    this.renderer = options.renderer || new THREE.WebGLRenderer( { alpha: true, antialias: false } );
 	    this.sceneReticle = new THREE.Scene();
-	    this.camera = this.setupCamera( cameraFov, clientWidth / clientHeight, camera );
-	    this.renderer = this.setupRenderer( renderer, container );
-	    this.reticle = this.addReticle( this.camera, this.sceneReticle );
-	    this.control = this.setupControls( this.camera, container );
-	    this.effect = this.setupEffects( this.renderer, container );
+
+	    this.viewIndicatorSize = this.options.indicatorSize;
+
+	    this.reticle = {};
+	    this.tempEnableReticle = this.options.enableReticle;
 
 	    this.mode = MODES.NORMAL;
+
 	    this.panorama = null;
 	    this.widget = null;
+
 	    this.hoverObject = null;
 	    this.infospot = null;
 	    this.pressEntityObject = null;
 	    this.pressObject = null;
+
 	    this.raycaster = new THREE.Raycaster();
 	    this.raycasterPoint = new THREE.Vector2();
 	    this.userMouse = new THREE.Vector2();
 	    this.updateCallbacks = [];
 	    this.requestAnimationId = null;
+
 	    this.cameraFrustum = new THREE.Frustum();
 	    this.cameraViewProjectionMatrix = new THREE.Matrix4();
+
 	    this.autoRotateRequestId = null;
+
 	    this.outputDivElement = null;
+
 	    this.touchSupported = 'ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch;
+
+	    // Handler references
+	    this.HANDLER_MOUSE_DOWN = this.onMouseDown.bind( this );
+	    this.HANDLER_MOUSE_UP = this.onMouseUp.bind( this );
+	    this.HANDLER_MOUSE_MOVE = this.onMouseMove.bind( this );
+	    this.HANDLER_WINDOW_RESIZE = this.onWindowResize.bind( this );
+	    this.HANDLER_KEY_DOWN = this.onKeyDown.bind( this );
+	    this.HANDLER_KEY_UP = this.onKeyUp.bind( this );
+	    this.HANDLER_TAP = this.onTap.bind( this, {
+	        clientX: this.container.clientWidth / 2,
+	        clientY: this.container.clientHeight / 2
+	    } );
+
+	    // Flag for infospot output
+	    this.OUTPUT_INFOSPOT = false;
+
+	    // Animations
 	    this.tweenLeftAnimation = new Tween.Tween();
 	    this.tweenUpAnimation = new Tween.Tween();
-	    this.outputEnabled = false;
-	    this.viewIndicatorSize = indicatorSize;
-	    this.tempEnableReticle = enableReticle;
 
-	    this.handlerMouseUp = this.onMouseUp.bind( this );
-	    this.handlerMouseDown = this.onMouseDown.bind( this );
-	    this.handlerMouseMove = this.onMouseMove.bind( this );
-	    this.handlerWindowResize = this.onWindowResize.bind( this );
-	    this.handlerKeyDown = this.onKeyDown.bind( this );
-	    this.handlerKeyUp = this.onKeyUp.bind( this );
-	    this.handlerTap = this.onTap.bind( this, { clientX: clientWidth / 2, clientY: clientHeight / 2 } );
+	    // Renderer
+	    this.renderer.setPixelRatio( window.devicePixelRatio );
+	    this.renderer.setSize( this.container.clientWidth, this.container.clientHeight );
+	    this.renderer.setClearColor( 0x000000, 0 );
+	    this.renderer.autoClear = false;
 
-	    if ( controlBar ) this.addDefaultControlBar( controlButtons );
-	    if ( viewIndicator ) this.addViewIndicator();
-	    if ( reverseDragging ) this.reverseDraggingDirection();
-	    if ( enableReticle ) this.enableReticleControl(); else this.registerMouseAndTouchEvents(); 
-	    if ( output === 'overlay' ) this.addOutputElement();
+	    // Append Renderer Element to container
+	    this.renderer.domElement.classList.add( 'panolens-canvas' );
+	    this.renderer.domElement.style.display = 'block';
+	    this.container.style.backgroundColor = '#000';
+	    this.container.appendChild( this.renderer.domElement );
 
+	    // Camera Controls
+	    this.OrbitControls = new OrbitControls( this.camera, this.container );
+	    this.OrbitControls.id = 'orbit';
+	    this.OrbitControls.minDistance = 1;
+	    this.OrbitControls.noPan = true;
+	    this.OrbitControls.autoRotate = this.options.autoRotate;
+	    this.OrbitControls.autoRotateSpeed = this.options.autoRotateSpeed;
+
+	    this.DeviceOrientationControls = new DeviceOrientationControls( this.camera, this.container );
+	    this.DeviceOrientationControls.id = 'device-orientation';
+	    this.DeviceOrientationControls.enabled = false;
+	    this.camera.position.z = 1;
+
+	    // Register change event if passiveRenering
+	    if ( this.options.passiveRendering ) {
+
+	        console.warn( 'passiveRendering is now deprecated' );
+
+	    }
+
+	    // Controls
+	    this.controls = [ this.OrbitControls, this.DeviceOrientationControls ];
+	    this.control = this.OrbitControls;
+
+	    // Cardboard effect
+	    this.CardboardEffect = new CardboardEffect( this.renderer );
+	    this.CardboardEffect.setSize( this.container.clientWidth, this.container.clientHeight );
+
+	    // Stereo effect
+	    this.StereoEffect = new StereoEffect( this.renderer );
+	    this.StereoEffect.setSize( this.container.clientWidth, this.container.clientHeight );
+
+	    this.effect = this.CardboardEffect;
+
+	    // Add default hidden reticle
+	    this.addReticle();
+
+	    // Lock horizontal view
+	    if ( this.options.horizontalView ) {
+	        this.OrbitControls.minPolarAngle = Math.PI / 2;
+	        this.OrbitControls.maxPolarAngle = Math.PI / 2;
+	    }
+
+	    // Add Control UI
+	    if ( this.options.controlBar !== false ) {
+	        this.addDefaultControlBar( this.options.controlButtons );
+	    }
+
+	    // Add View Indicator
+	    if ( this.options.viewIndicator ) {
+	        this.addViewIndicator();
+	    }
+
+	    // Reverse dragging direction
+	    if ( this.options.reverseDragging ) {
+	        this.reverseDraggingDirection();
+	    }
+
+	    // Register event if reticle is enabled, otherwise defaults to mouse
+	    if ( this.options.enableReticle ) {
+	        this.enableReticleControl();
+	    } else {
+	        this.registerMouseAndTouchEvents();
+	    }
+
+	    // Output infospot position to an overlay container if specified
+	    if ( this.options.output === 'overlay' ) {
+	        this.addOutputElement();
+	    }
+
+	    // Register dom event listeners
 	    this.registerEventListeners();
 
+	    // Animate
 	    this.animate.call( this );
 
 	}
 	Viewer.prototype = Object.assign( Object.create( THREE.EventDispatcher.prototype ), {
 
 	    constructor: Viewer,
-
-	    setupScene: function ( scene = new THREE.Scene() ) {
-
-	        return scene;
-
-	    },
-
-	    setupCamera: function ( cameraFov, ratio, camera = new THREE.PerspectiveCamera( cameraFov, ratio, 1, 10000 ) ) {
-
-	        return camera;
-
-	    },
-
-	    setupRenderer: function ( renderer = new THREE.WebGLRenderer( { alpha: true, antialias: false } ), container ) {
-
-	        const { clientWidth, clientHeight } = container;
-
-	        renderer.setPixelRatio( window.devicePixelRatio );
-	        renderer.setSize( clientWidth, clientHeight );
-	        renderer.setClearColor( 0x000000, 0 );
-	        renderer.autoClear = false;
-	        renderer.domElement.classList.add( 'panolens-canvas' );
-	        renderer.domElement.style.display = 'block';
-	        container.style.backgroundColor = '#000';
-	        container.appendChild( renderer.domElement );
-
-	        return renderer;
-
-	    },
-
-	    setupControls: function ( camera, container ) {
-
-	        const { autoRotate, autoRotateSpeed, horizontalView } = this.options;
-
-	        const orbit = new OrbitControls( camera, container );
-	        orbit.id = 'orbit';
-	        orbit.index = CONTROLS.ORBIT;
-	        orbit.minDistance = 1;
-	        orbit.noPan = true;
-	        orbit.autoRotate = autoRotate;
-	        orbit.autoRotateSpeed = autoRotateSpeed;
-
-	        if ( horizontalView ) {
-
-	            orbit.minPolarAngle = Math.PI / 2;
-	            orbit.maxPolarAngle = Math.PI / 2;
-
-	        }
-
-	        const orient = new DeviceOrientationControls( camera, container );
-	        orient.id = 'device-orientation';
-	        orient.index = CONTROLS.DEVICEORIENTATION;
-	        orient.enabled = false;
-
-	        this.controls = [ orbit, orient ];
-	        this.OrbitControls = orbit;
-	        this.DeviceOrientationControls = orient;
-
-	        return orbit;
-	 
-	    },
-
-	    setupEffects: function ( renderer, { clientWidth, clientHeight } ) {
-
-	        const cardboard = new CardboardEffect( renderer );
-	        cardboard.setSize( clientWidth, clientHeight );
-
-	        const stereo = new StereoEffect( renderer );
-	        stereo.setSize( clientWidth, clientHeight );
-
-	        this.CardboardEffect = cardboard;
-	        this.StereoEffect = stereo;
-
-	        return cardboard;
-
-	    },
-
-	    setupContainer: function ( container ) {
-
-	        if ( container ) {
-
-	            container._width = container.clientWidth;
-	            container._height = container.clientHeight;
-
-	            return container;
-
-	        } else {
-
-	            const element = document.createElement( 'div' );
-	            element.classList.add( 'panolens-container' );
-	            element.style.width = '100%';
-	            element.style.height = '100%';
-	            document.body.appendChild( element );
-	            
-	            return element;
-	            
-	        }
-
-	    },
 
 	    /**
 	     * Add an object to the scene
@@ -8103,16 +7681,13 @@
 	        }
 
 	        // Hookup default panorama event listeners
-	        if ( object instanceof Panorama ) {
+	        if ( object.type === 'panorama' ) {
 
 	            this.addPanoramaEventListener( object );
 
 	            if ( !this.panorama ) {
 
-	                const { initialLookAt } = this.options;
-
 	                this.setPanorama( object );
-	                this.setControlCenter( initialLookAt );
 
 	            }
 
@@ -8176,7 +7751,7 @@
 
 	        const leavingPanorama = this.panorama;
 
-	        if ( pano instanceof Panorama && leavingPanorama !== pano ) {
+	        if ( pano.type === 'panorama' && leavingPanorama !== pano ) {
 
 	            // Clear exisiting infospot
 	            this.hideInfospot();
@@ -8638,7 +8213,7 @@
 	    addPanoramaEventListener: function ( pano ) {
 
 	        // Set camera control on every panorama
-	        pano.addEventListener( 'enter', this.setCameraControl.bind( this ) );
+	        pano.addEventListener( 'enter-fade-start', this.setCameraControl.bind( this ) );
 
 	        // Show and hide widget event only when it's VideoPanorama
 	        if ( pano instanceof VideoPanorama ) {
@@ -8784,22 +8359,6 @@
 	    },
 
 	    /**
-	     * Get raycasted point of current panorama
-	     * @memberof Viewer
-	     * @instance
-	     * @returns {THREE.Vector3}
-	     */
-	    getRaycastViewCenter: function () {
-
-	        const raycaster = new THREE.Raycaster();
-	        raycaster.setFromCamera( new THREE.Vector2( 0, 0 ), this.camera );
-	        const intersect = raycaster.intersectObject( this.panorama );
-
-	        return intersect.length > 0 ? intersect[ 0 ].point : new THREE.Vector3( 0, 0, -1 );
-
-	    },
-
-	    /**
 	     * Enable control by index
 	     * @param  {CONTROLS} index - Index of camera control
 	     * @memberOf Viewer
@@ -8810,13 +8369,34 @@
 	        index = ( index >= 0 && index < this.controls.length ) ? index : 0;
 
 	        this.control.enabled = false;
+
 	        this.control = this.controls[ index ];
+
 	        this.control.enabled = true;
+
+	        switch ( index ) {
+
+	        case CONTROLS.ORBIT:
+
+	            this.camera.position.copy( this.panorama.position );
+	            this.camera.position.z += 1;
+
+	            break;
+
+	        case CONTROLS.DEVICEORIENTATION:
+
+	            this.camera.position.copy( this.panorama.position );
+
+	            break;
+
+	        default:
+
+	            break;
+	        }
+
 	        this.control.update();
-	        
-	        this.setControlCenter( this.getRaycastViewCenter() );
+
 	        this.activateWidgetItem( index, undefined );
-	        this.onChange();
 
 	    },
 
@@ -8895,70 +8475,12 @@
 	     * @memberOf Viewer
 	     * @instance
 	     */
-	    addReticle: function ( camera, sceneReticle ) {
+	    addReticle: function () {
 
-	        const reticle = new Reticle( 0xffffff, true, this.options.dwellTime );
-	        reticle.hide();
-	        camera.add( reticle );
-	        sceneReticle.add( camera );
-
-	        return reticle;
-
-	    },
-
-	    rotateControlLeft: function ( left ) {
-
-	        this.control.rotateLeft( left );
-
-	    },
-
-	    rotateControlUp: function ( up ) {
-
-	        this.control.rotateUp( up );
-
-	    },
-
-	    rotateOrbitControl: function ( left, up ) {
-
-	        this.rotateControlLeft( left );
-	        this.rotateControlUp( up );
-
-	    },
-
-	    calculateCameraDirectionDelta: function ( vector ) {
-
-	        let ha, va, chv, cvv, hv, vv, vptc;
-
-	        chv = this.camera.getWorldDirection( new THREE.Vector3() );
-	        cvv = chv.clone();
-
-	        vptc = this.panorama.getWorldPosition( new THREE.Vector3() ).sub( this.camera.getWorldPosition( new THREE.Vector3() ) );
-
-	        hv = vector.clone();
-	        hv.add( vptc ).normalize();
-	        vv = hv.clone();
-
-	        chv.y = 0;
-	        hv.y = 0;
-
-	        ha = Math.atan2( hv.z, hv.x ) - Math.atan2( chv.z, chv.x );
-	        ha = ha > Math.PI ? ha - 2 * Math.PI : ha;
-	        ha = ha < -Math.PI ? ha + 2 * Math.PI : ha;
-	        va = Math.abs( cvv.angleTo( chv ) + ( cvv.y * vv.y <= 0 ? vv.angleTo( hv ) : -vv.angleTo( hv ) ) );
-	        va *= vv.y < cvv.y ? 1 : -1;
-
-	        return { left: ha, up: va };
-
-	    },
-
-	    /**
-	     * Set control center
-	     * @param {THREE.Vector3} vector - Vector to be looked at the center
-	     */
-	    setControlCenter: function( vector ) {
-
-	        const { left, up } = this.calculateCameraDirectionDelta( vector );
-	        this.rotateOrbitControl( left, up );
+	        this.reticle = new Reticle( 0xffffff, true, this.options.dwellTime );
+	        this.reticle.hide();
+	        this.camera.add( this.reticle );
+	        this.sceneReticle.add( this.camera );
 
 	    },
 
@@ -8972,41 +8494,68 @@
 	     */
 	    tweenControlCenter: function ( vector, duration, easing ) {
 
+	        if ( this.control !== this.OrbitControls ) {
+
+	            return;
+
+	        }
+
+	        // Pass in arguments as array
 	        if ( vector instanceof Array ) {
 
-	            vector = vector[ 0 ];
 	            duration = vector[ 1 ];
 	            easing = vector[ 2 ];
+	            vector = vector[ 0 ];
 
 	        }
 
 	        duration = duration !== undefined ? duration : 1000;
 	        easing = easing || Tween.Easing.Exponential.Out;
 
-	        const { left, up } = this.calculateCameraDirectionDelta( vector );
-	        const rotateControlLeft = this.rotateControlLeft.bind( this );
-	        const rotateControlUp = this.rotateControlUp.bind( this );
+	        let scope, ha, va, chv, cvv, hv, vv, vptc, ov, nv;
 
-	        const ov = { left: 0, up: 0 };
-	        const nv = { left: 0, up: 0 };
+	        scope = this;
+
+	        chv = this.camera.getWorldDirection( new THREE.Vector3() );
+	        cvv = chv.clone();
+
+	        vptc = this.panorama.getWorldPosition( new THREE.Vector3() ).sub( this.camera.getWorldPosition( new THREE.Vector3() ) );
+
+	        hv = vector.clone();
+	        // Scale effect
+	        hv.x *= -1;
+	        hv.add( vptc ).normalize();
+	        vv = hv.clone();
+
+	        chv.y = 0;
+	        hv.y = 0;
+
+	        ha = Math.atan2( hv.z, hv.x ) - Math.atan2( chv.z, chv.x );
+	        ha = ha > Math.PI ? ha - 2 * Math.PI : ha;
+	        ha = ha < -Math.PI ? ha + 2 * Math.PI : ha;
+	        va = Math.abs( cvv.angleTo( chv ) + ( cvv.y * vv.y <= 0 ? vv.angleTo( hv ) : -vv.angleTo( hv ) ) );
+	        va *= vv.y < cvv.y ? 1 : -1;
+
+	        ov = { left: 0, up: 0 };
+	        nv = { left: 0, up: 0 };
 
 	        this.tweenLeftAnimation.stop();
 	        this.tweenUpAnimation.stop();
 
 	        this.tweenLeftAnimation = new Tween.Tween( ov )
-	            .to( { left }, duration )
+	            .to( { left: ha }, duration )
 	            .easing( easing )
 	            .onUpdate(function(ov){
-	                rotateControlLeft( ov.left - nv.left );
+	                scope.control.rotateLeft( ov.left - nv.left );
 	                nv.left = ov.left;
 	            })
 	            .start();
 
 	        this.tweenUpAnimation = new Tween.Tween( ov )
-	            .to( { up }, duration )
+	            .to( { up: va }, duration )
 	            .easing( easing )
 	            .onUpdate(function(ov){
-	                rotateControlUp( ov.up - nv.up );
+	                scope.control.rotateUp( ov.up - nv.up );
 	                nv.up = ov.up;
 	            })
 	            .start();
@@ -9023,7 +8572,28 @@
 	     */
 	    tweenControlCenterByObject: function ( object, duration, easing ) {
 
-	        this.tweenControlCenter( object.getWorldPosition( new THREE.Vector3() ), duration, easing );
+	        let isUnderScalePlaceHolder = false;
+
+	        object.traverseAncestors( function ( ancestor ) {
+
+	            if ( ancestor.scalePlaceHolder ) {
+
+	                isUnderScalePlaceHolder = true;
+
+	            }
+	        } );
+
+	        if ( isUnderScalePlaceHolder ) {
+
+	            const invertXVector = new THREE.Vector3( -1, 1, 1 );
+
+	            this.tweenControlCenter( object.getWorldPosition( new THREE.Vector3() ).multiply( invertXVector ), duration, easing );
+
+	        } else {
+
+	            this.tweenControlCenter( object.getWorldPosition( new THREE.Vector3() ), duration, easing );
+
+	        }
 
 	    },
 
@@ -9129,14 +8699,30 @@
 	        if ( intersects.length > 0 ) {
 
 	            const point = intersects[ 0 ].point.clone();
+	            const converter = new THREE.Vector3( -1, 1, 1 );
 	            const world = this.panorama.getWorldPosition( new THREE.Vector3() );
-	            point.sub( world );
+	            point.sub( world ).multiply( converter );
 
-	            const message = `${point.x.toFixed(2)}, ${point.y.toFixed(2)}, ${point.z.toFixed(2)}`;
+	            const position = {
+	                x: point.x.toFixed(2),
+	                y: point.y.toFixed(2),
+	                z: point.z.toFixed(2),
+	            };
+
+	            const message = `${position.x}, ${position.y}, ${position.z}`;
 
 	            if ( point.length() === 0 ) { return; }
 
 	            switch ( this.options.output ) {
+
+	            case 'event':
+	                /**
+	                 * Dispatch raycast position as event
+	                 * @type {object}
+	                 * @event Viewer#position-output
+	                 */
+	                this.dispatchEvent( { type: 'position-output', position: position } );
+	                break;
 
 	            case 'console':
 	                console.info( message );
@@ -9154,25 +8740,6 @@
 	        }
 
 	    },
-
-		getPosition: function () {
-			var intersects, point, panoramaWorldPosition, outputPosition;
-			intersects = this.raycaster.intersectObject( this.panorama, true );
-		
-			if ( intersects.length > 0 ) {
-				point = intersects[0].point;
-				panoramaWorldPosition = this.panorama.getWorldPosition();
-		
-				// Panorama is scaled -1 on X axis
-				outputPosition = new THREE.Vector3(
-					-(point.x - panoramaWorldPosition.x).toFixed(2),
-					+(point.y - panoramaWorldPosition.y).toFixed(2),
-					+(point.z - panoramaWorldPosition.z).toFixed(2)
-				);
-			}
-		
-			return outputPosition;
-		},
 
 	    /**
 	     * On mouse down
@@ -9296,11 +8863,12 @@
 	        }
 
 	        // output infospot information
-	        if ( event.type !== 'mousedown' && this.touchSupported || this.outputEnabled ) { 
+	        if ( event.type !== 'mousedown' && this.touchSupported || this.OUTPUT_INFOSPOT ) { 
 
 	            this.outputPosition(); 
 
 	        }
+
 
 	        const intersects = this.raycaster.intersectObjects( this.panorama.children, true );
 	        const intersect_entity = this.getConvertedIntersect( intersects );
@@ -9331,7 +8899,7 @@
 	        }
 
 	        if ( type === 'click' ) {
-	            
+
 	            this.panorama.dispatchEvent( { type: 'click', intersects: intersects, mouseEvent: event } );
 
 	            if ( intersect_entity && intersect_entity.dispatchEvent ) {
@@ -9567,7 +9135,7 @@
 
 	        if ( this.options.output && this.options.output !== 'none' && event.key === 'Control' ) {
 
-	            this.outputEnabled = true;
+	            this.OUTPUT_INFOSPOT = true;
 
 	        }
 
@@ -9581,7 +9149,7 @@
 	     */
 	    onKeyUp: function () {
 
-	        this.outputEnabled = false;
+	        this.OUTPUT_INFOSPOT = false;
 
 	    },
 
@@ -9628,7 +9196,7 @@
 	        if ( this.mode === MODES.CARDBOARD || this.mode === MODES.STEREO ) {
 
 	            this.renderer.clear();
-	            this.effect.render( this.scene, this.camera, this.panorama );
+	            this.effect.render( this.scene, this.camera );
 	            this.effect.render( this.sceneReticle, this.camera );
 				
 
@@ -9677,11 +9245,11 @@
 
 	        const options = { passive: false };
 
-	        this.container.addEventListener( 'mousedown' , 	this.handlerMouseDown, options );
-	        this.container.addEventListener( 'mousemove' , 	this.handlerMouseMove, options );
-	        this.container.addEventListener( 'mouseup'	 , 	this.handlerMouseUp  , options );
-	        this.container.addEventListener( 'touchstart', 	this.handlerMouseDown, options );
-	        this.container.addEventListener( 'touchend'  , 	this.handlerMouseUp  , options );
+	        this.container.addEventListener( 'mousedown' , 	this.HANDLER_MOUSE_DOWN, options );
+	        this.container.addEventListener( 'mousemove' , 	this.HANDLER_MOUSE_MOVE, options );
+	        this.container.addEventListener( 'mouseup'	 , 	this.HANDLER_MOUSE_UP  , options );
+	        this.container.addEventListener( 'touchstart', 	this.HANDLER_MOUSE_DOWN, options );
+	        this.container.addEventListener( 'touchend'  , 	this.HANDLER_MOUSE_UP  , options );
 
 	    },
 
@@ -9692,11 +9260,11 @@
 	     */
 	    unregisterMouseAndTouchEvents: function () {
 
-	        this.container.removeEventListener( 'mousedown' ,  this.handlerMouseDown, false );
-	        this.container.removeEventListener( 'mousemove' ,  this.handlerMouseMove, false );
-	        this.container.removeEventListener( 'mouseup'	,  this.handlerMouseUp  , false );
-	        this.container.removeEventListener( 'touchstart',  this.handlerMouseDown, false );
-	        this.container.removeEventListener( 'touchend'  ,  this.handlerMouseUp  , false );
+	        this.container.removeEventListener( 'mousedown' ,  this.HANDLER_MOUSE_DOWN, false );
+	        this.container.removeEventListener( 'mousemove' ,  this.HANDLER_MOUSE_MOVE, false );
+	        this.container.removeEventListener( 'mouseup'	,  this.HANDLER_MOUSE_UP  , false );
+	        this.container.removeEventListener( 'touchstart',  this.HANDLER_MOUSE_DOWN, false );
+	        this.container.removeEventListener( 'touchend'  ,  this.HANDLER_MOUSE_UP  , false );
 
 	    },
 
@@ -9707,7 +9275,7 @@
 	     */
 	    registerReticleEvent: function () {
 
-	        this.addUpdateCallback( this.handlerTap );
+	        this.addUpdateCallback( this.HANDLER_TAP );
 
 	    },
 
@@ -9718,7 +9286,7 @@
 	     */
 	    unregisterReticleEvent: function () {
 
-	        this.removeUpdateCallback( this.handlerTap );
+	        this.removeUpdateCallback( this.HANDLER_TAP );
 
 	    },
 
@@ -9732,9 +9300,9 @@
 	        const clientX = this.container.clientWidth / 2 + this.container.offsetLeft;
 	        const clientY = this.container.clientHeight / 2;
 
-	        this.removeUpdateCallback( this.handlerTap );
-	        this.handlerTap = this.onTap.bind( this, { clientX, clientY } );
-	        this.addUpdateCallback( this.handlerTap );
+	        this.removeUpdateCallback( this.HANDLER_TAP );
+	        this.HANDLER_TAP = this.onTap.bind( this, { clientX, clientY } );
+	        this.addUpdateCallback( this.HANDLER_TAP );
 
 	    },
 
@@ -9746,11 +9314,11 @@
 	    registerEventListeners: function () {
 
 	        // Resize Event
-	        window.addEventListener( 'resize' , this.handlerWindowResize, true );
+	        window.addEventListener( 'resize' , this.HANDLER_WINDOW_RESIZE, true );
 
 	        // Keyboard Event
-	        window.addEventListener( 'keydown', this.handlerKeyDown, true );
-	        window.addEventListener( 'keyup'  , this.handlerKeyUp	 , true );
+	        window.addEventListener( 'keydown', this.HANDLER_KEY_DOWN, true );
+	        window.addEventListener( 'keyup'  , this.HANDLER_KEY_UP	 , true );
 
 	    },
 
@@ -9762,11 +9330,11 @@
 	    unregisterEventListeners: function () {
 
 	        // Resize Event
-	        window.removeEventListener( 'resize' , this.handlerWindowResize, true );
+	        window.removeEventListener( 'resize' , this.HANDLER_WINDOW_RESIZE, true );
 
 	        // Keyboard Event
-	        window.removeEventListener( 'keydown', this.handlerKeyDown, true );
-	        window.removeEventListener( 'keyup'  , this.handlerKeyUp  , true );
+	        window.removeEventListener( 'keydown', this.HANDLER_KEY_DOWN, true );
+	        window.removeEventListener( 'keyup'  , this.HANDLER_KEY_UP  , true );
 
 	    },
 
@@ -9776,8 +9344,6 @@
 	     * @instance
 	     */
 	    dispose: function () {
-
-	        this.disableAutoRate();
 
 	        this.tweenLeftAnimation.stop();
 	        this.tweenUpAnimation.stop();
@@ -10016,10 +9582,6 @@
 	exports.Panorama = Panorama;
 	exports.REVISION = REVISION;
 	exports.Reticle = Reticle;
-	exports.STEREOFORMAT = STEREOFORMAT;
-	exports.Stereo = Stereo;
-	exports.StereoImagePanorama = StereoImagePanorama;
-	exports.StereoVideoPanorama = StereoVideoPanorama;
 	exports.THREE_REVISION = THREE_REVISION;
 	exports.THREE_VERSION = THREE_VERSION;
 	exports.TextureLoader = TextureLoader;
