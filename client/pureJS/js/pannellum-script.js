@@ -1,31 +1,40 @@
-let SERVER_API_URL = 'http://campus.rowansserver.com/api/'
-let SERVER_URL = 'http://campus.rowansserver.com/'
+const SERVER_API_URL = 'http://campus.rowansserver.com/api/'
+const SERVER_URL = 'http://campus.rowansserver.com/'
+const EXTERNAL_POINT_PREFIX = 'external-'
 
-function id(id) { return document.getElementById(id); }
-
-const emptyImagePath = "/client/pureJS/images/default.jpg";
 const hardcodedProject = "485b3c31c3d347ae84108de9";
 const hardcodedArea = "d56b5b91eb4b4faab2ff4a4a";
 const hardcodedLevel = "8535bdd97dd844289e3f2936";
 
-createScene(hardcodedProject, hardcodedArea, hardcodedLevel)
-setupMap()
+
+let LOCALSTORAGE_LEVEL = 'currLevel';
+let LOCALSTORAGE_AREA = 'currArea';
+let LOCALSTORAGE_PROJECT = 'currProject';
+let LOCALSTORAGE_POINT = 'currPoint';
+
+let viewer = null;
 
 
-function setupMap(imgLoc, points, currPoint){
-    const img = document.getElementById("mapImage");
-    const imgClickMap = document.getElementById("mapMap");
-    const canvas = document.getElementById("mapCanvas");
-
-    img.src = imgLoc;
-    let ctx = canvas.getContext('2d');
-
+if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item above is not set, should completely redo
+    localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
+    localStorage.setItem(LOCALSTORAGE_AREA, hardcodedArea)
+    localStorage.setItem(LOCALSTORAGE_LEVEL, hardcodedLevel)
+    localStorage.removeItem(LOCALSTORAGE_POINT);//Reset
 }
 
-function setupViewer(scenes, first_scene) {
+
+function id(id) { return document.getElementById(id); }
+
+const emptyImagePath = "http://purejs.rowansserver.com/client/pureJS/images/default.jpg";
+
+
+setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
+
+
+function configurePanoViewer(scenes, first_scene) {
     console.log("Config pano", scenes, first_scene)
-    
-    pannellum.viewer('panorama', {   
+
+    viewer = pannellum.viewer('panorama', {
         "default": {
             "firstScene": first_scene,
             "author": "Waikato Students",
@@ -34,26 +43,44 @@ function setupViewer(scenes, first_scene) {
         },
         scenes
     });
+
+    console.log("Calling even listener")
+    viewer.on('scenechange', async (id)=>{
+        if(id.startsWith(EXTERNAL_POINT_PREFIX)){
+            //Object is in another level - move view over to new level & reload
+            console.log(id + " Is External")
+            let restoredID = id.substring(EXTERNAL_POINT_PREFIX.length)
+            let info = await (await fetch(SERVER_API_URL + 'pointlocation/' + restoredID)).json();
+            localStorage.setItem(LOCALSTORAGE_AREA, info.payload.area._id)
+            localStorage.setItem(LOCALSTORAGE_LEVEL, info.payload.level._id)
+            localStorage.setItem(LOCALSTORAGE_POINT, restoredID)
+
+            //Set up with latest variables
+            setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
+        }
+    })
 }
 
-async function createScene(project, area, level) {
+async function setup360LevelTour(project, area, level) {
     let scenes = {}
 
     //Get Level
-    let levelObj = await (await fetch(SERVER_API_URL + 
-            'project/' + project + 
-            '/area/' + area + 
-            '/level/' + level))
-        .json();
-    
+    let levelObj = await (await fetch(SERVER_API_URL +
+            'project/' + project +
+            '/area/' + area +
+            '/level/' + level)).json();
+
     console.log("Level:", levelObj)
-    
-    if (levelObj == null) { 
-        console.log('Could not fetch Level'); 
-        return; 
+
+    if (levelObj == null) {
+        console.log('Could not fetch Level');
+        return;
     }
 
-    let firstScene = levelObj.payload.points[0]._id
+    if(!localStorage.getItem(LOCALSTORAGE_POINT))
+        localStorage.setItem(LOCALSTORAGE_POINT, levelObj.payload.points[0]._id);
+
+    setupMap(levelObj.payload.image.name, levelObj.payload.points, localStorage.getItem(LOCALSTORAGE_POINT));
 
     //Link Panoramas
     levelObj.payload.points.forEach(point => {
@@ -70,35 +97,33 @@ async function createScene(project, area, level) {
             if(point.image.name != "") url = SERVER_URL + "images/" + point.image.name;
 
             //For each link
-            point.link_ids.forEach(link => {
-                
-                let linked_point = findPointById(levelObj.payload.points, link);
-                
-                //If link is internal
-                if (linked_point != null) {
+            point.link_ids.forEach(link_id => {
+
+                let pointInCurrLevel = findPointInLevelById(levelObj.payload.points, link_id);
+
+                if (pointInCurrLevel != null) {
                     //Link was internal
                     console.log("Internal Link");
-                    console.log(linked_point);
+                    console.log(pointInCurrLevel);
 
-                    let yaw = angleBetweenPoints(point, linked_point);
+                    let yaw = angleBetweenPoints(point, pointInCurrLevel);
                     console.log(yaw);
                     //Add Link
-                    hotSpots.push(new newHotSpot(0, yaw, linked_point.image.name, linked_point._id, 0, 0));
+                    hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id, 0, 0));//temp external
                 }
                 else {
-                    //Link was external - add flag for when this link is used to jump to / create new scene
+                    //External point
+                    hotSpots.push(newHotSpot(0, 10, "External", EXTERNAL_POINT_PREFIX + point._id))
                     console.log("External Link");
                 }
             });
-           
+
             scenes[point._id] = newSceneObject("Waikato Virtual Tour!", url, hotSpots);
         }
-
-        //let pointInfo = await (await fetch(SERVER_API_URL + 'project/' + hardcodedProject + '/area/' + hardcodedArea + '/level/' + hardcodedLevel + '/point/' + levelObj.payload.points[0]._id)).json();
-        //if (pointInfo == null) { console.log('Could not get Point'); return; }
     });
 
-    setupViewer(scenes, firstScene);
+    console.log("Setting up Viewer")
+    configurePanoViewer(scenes, localStorage.getItem(LOCALSTORAGE_POINT));
 }
 
 function newHotSpot(pitch, yaw, point_name, scene_id, targetYaw, targetPitch) {
@@ -110,8 +135,7 @@ function newHotSpot(pitch, yaw, point_name, scene_id, targetYaw, targetPitch) {
         "sceneId": scene_id,
     }
 
-    //"targetYaw": targetYaw,
-    //"targetPitch": targetPitch
+
 }
 
 function newSceneObject(title, url, hotspots) {
@@ -125,14 +149,6 @@ function newSceneObject(title, url, hotspots) {
             "hotSpots": hotspots
     }
 }
-function findPointById(points, link_id) {
+function findPointInLevelById(points, link_id) {
     return points.find(point => point._id == link_id);
 }
-
-
-
-
-
-
-
-  
