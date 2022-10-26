@@ -6,14 +6,12 @@ const hardcodedProject = "485b3c31c3d347ae84108de9";
 const hardcodedArea = "d56b5b91eb4b4faab2ff4a4a";
 const hardcodedLevel = "8535bdd97dd844289e3f2936";
 
-
 let LOCALSTORAGE_LEVEL = 'currLevel';
 let LOCALSTORAGE_AREA = 'currArea';
 let LOCALSTORAGE_PROJECT = 'currProject';
 let LOCALSTORAGE_POINT = 'currPoint';
 
-let viewer = null;
-
+let target_yaw = 0;
 
 if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item above is not set, should completely redo
     localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
@@ -22,8 +20,12 @@ if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item above is not set, 
     localStorage.removeItem(LOCALSTORAGE_POINT);//Reset
 }
 
-
 function id(id) { return document.getElementById(id); }
+
+var onHotSpotClick = function(event, yaw) {
+    console.log("Hotspot Clicked", yaw);
+    target_yaw = yaw;
+};
 
 const emptyImagePath = "http://purejs.rowansserver.com/client/pureJS/images/default.jpg";
 
@@ -34,19 +36,20 @@ setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getIt
 function configurePanoViewer(scenes, first_scene) {
     console.log("Config pano", scenes, first_scene)
 
-    viewer = pannellum.viewer('panorama', {
+    let viewer = pannellum.viewer('panorama', {
         "default": {
             "firstScene": first_scene,
             "author": "Waikato Students",
             "sceneFadeDuration": 500,
-            "autoLoad": true
+            "autoLoad": true,
         },
         scenes
     });
 
-    console.log("Calling even listener")
-    viewer.on('scenechange', async (id)=>{
-        if(id.startsWith(EXTERNAL_POINT_PREFIX)){
+    viewer.on('scenechange', async (id) => {
+        viewer.setYaw(target_yaw);
+
+        if(id.startsWith(EXTERNAL_POINT_PREFIX)) {
             //Object is in another level - move view over to new level & reload
             console.log(id + " Is External")
             let restoredID = id.substring(EXTERNAL_POINT_PREFIX.length)
@@ -126,16 +129,16 @@ async function setup360LevelTour(project, area, level) {
     configurePanoViewer(scenes, localStorage.getItem(LOCALSTORAGE_POINT));
 }
 
-function newHotSpot(pitch, yaw, point_name, scene_id, targetYaw, targetPitch) {
+function newHotSpot(pitch, yaw, point_name, scene_id) {
     return {
         "pitch": pitch,
         "yaw": yaw,
         "type": "scene",
         "text": point_name,
         "sceneId": scene_id,
+        "clickHandlerFunc": onHotSpotClick,
+        "clickHandlerArgs": yaw
     }
-
-
 }
 
 function newSceneObject(title, url, hotspots) {
