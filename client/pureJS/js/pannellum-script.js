@@ -47,7 +47,7 @@ function configurePanoViewer(scenes, first_scene) {
     });
 
     viewer.on('scenechange', async (id) => {
-        viewer.setYaw(target_yaw);
+        viewer.setYaw(target_yaw, false);
 
         if(id.startsWith(EXTERNAL_POINT_PREFIX)) {
             //Object is in another level - move view over to new level & reload
