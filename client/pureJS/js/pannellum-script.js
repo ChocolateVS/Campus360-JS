@@ -22,11 +22,6 @@ function setupMap(imgLoc, points, currPoint){
 
 }
 
-
-
-
-
-
 function setupViewer(scenes, first_scene) {
     console.log("Config pano", scenes, first_scene)
     
