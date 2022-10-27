@@ -22,87 +22,10 @@ body, html {
   padding: 1rem;
 }
 
-#controlButton {
-  top: 1rem;
-  display:none;
-}
-
-#modeButton {
-  top: 4rem;
-  display:none;
-}
-
-#videoButton {
-  top: 150px;
-  display: none;
-}
-
-input {
-  height:40px;
-  margin:10px;
-  border:none;
-  outline: none;
-  background-color: transparent;
-  transition-duration:500ms;
-  font-family:monospace;
-  font-size:20px;
-}
-
-input:focus{
-  transition-duration:500ms;
-  border-bottom:1px solid #000000;
-}
-
-#search_container {
-  position:absolute;
-  width:20%;
-  top:0;
-  box-shadow: 0 0 5px #000000;
-  transition-duration:500ms;
-  border-radius:10px;
-  margin:10px;
-  display:flex;
-  flex-direction:column;
-  z-index:1000;
-}
-
-#search_results {
-  margin:0px 10px 10px 10px;
-  display: none;
-  flex-direction:column;
-}
-
-.search_result {
-  font-size:17px;
-  display:flex;
-  flex-direction: row;
-  justify-content:space-between;
-  border-radius:10px;
-  padding:0px 5px 0px 5px;
-  align-items:center;
-  height:60px;
-}
-
-.search_result:hover {
- background-color:rgb(175 175 175 / 0.55);
- cursor:pointer;
-}
-
 .logo {
   position:absolute;
   top:0;
   left:0;
   margin:10px;
   width:200px;
-}
-
-.search_location_container {
-  display:flex;
-  flex-direction: row;
-  justify-content:right;
-  align-items:center;
-}
-
-.search_result_location {
-  margin:5px;
 }

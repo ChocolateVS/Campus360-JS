@@ -13,11 +13,9 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" type="text/css" href="css/floorplan.css"/>
     <link rel="stylesheet" type="text/css" href="css/pannellum.css"/>
-    <link rel="stylesheet" type="text/css" href="css/custom_hotspot.css"/>
+    <link rel="stylesheet" type="text/css" href="css/search_box.css"/>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js" defer></script>
-    <script src="js/three.min.js" defer></script>
-    <!--<script src="js/panolens.min.js" defer></script>-->
     <script src="js/jquery-3.6.0.js" defer></script>
     <script src="js/search.js" defer></script>
     <script src="js/angle.js" defer></script>
@@ -39,17 +37,14 @@
         <div id="search_results" data-room-results></div>
     </div>
 
-    <!-- Controls for Pano -->
-    <button id="controlButton" class="button">Control Toggle</button>
-    <button id="modeButton" class="button">Mode Toggle</button>
-    <button id="videoButton" class="button">Video Toggle</button>
-
-    <!-- Bottom corner map -->
+    <!-- Floorplan map -->
     <div class="cornerMap">
         <img class="floorplan" src="images/mapdefault.jpg" alt="mapOfLevel">
         <div class="floorplan_buttons_container"></div>
     </div>
+
 </body>
+
 <template template-room>
     <span class="roomInfo">
     <div class="name" template-room-name>
