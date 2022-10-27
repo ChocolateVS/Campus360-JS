@@ -1,19 +1,36 @@
-.imageMap { 
+.cornerMap {
   border-radius: 10px;
-  position:absolute;
-  right:20px;
-  bottom:20px;
-  width: 10%; 
-  z-index: 2;
-  opacity: 0.5;
+  position: absolute;
+  right:0;
+  bottom:0;
+  margin:20px;
+  width: 100%;
+  opacity: 0.3;
   transition-duration: 1s;
+  z-index: 2;
 }
 
-.imageMap:hover {
+.cornerMap:hover {
   transition-duration: 1s;
-  position:absolute;
-  width: 20%; 
+  width: 200%; 
   opacity: 1;
+  cursor:pointer;
+}
+
+.floorplan {
+  border-radius: 10px;
+  position: absolute;
+  bottom: 0;
+  right:0;
+  width: 10%;
+}
+
+.floorplan_canvas {
+  border-radius: 10px;
+  position: absolute;
+  bottom: 0;
+  right:0;
+  width: 10%;
 }
 
 body, html {

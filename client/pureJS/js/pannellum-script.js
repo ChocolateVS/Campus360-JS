@@ -13,6 +13,8 @@ let LOCALSTORAGE_POINT = 'currPoint';
 
 let target_yaw = 0;
 
+let levelObj;
+
 if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item above is not set, should completely redo
     localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
     localStorage.setItem(LOCALSTORAGE_AREA, hardcodedArea)
@@ -42,12 +44,16 @@ function configurePanoViewer(scenes, first_scene) {
             "author": "Waikato Students",
             "sceneFadeDuration": 500,
             "autoLoad": true,
+            "compass": true,
+            "northOffset": 0
         },
         scenes
     });
 
     viewer.on('scenechange', async (id) => {
         viewer.setYaw(target_yaw, false);
+
+        drawPoints(levelObj.payload.points, id);
 
         if(id.startsWith(EXTERNAL_POINT_PREFIX)) {
             //Object is in another level - move view over to new level & reload
@@ -68,7 +74,7 @@ async function setup360LevelTour(project, area, level) {
     let scenes = {}
 
     //Get Level
-    let levelObj = await (await fetch(SERVER_API_URL +
+    levelObj = await (await fetch(SERVER_API_URL +
             'project/' + project +
             '/area/' + area +
             '/level/' + level)).json();
@@ -83,7 +89,8 @@ async function setup360LevelTour(project, area, level) {
     if(!localStorage.getItem(LOCALSTORAGE_POINT))
         localStorage.setItem(LOCALSTORAGE_POINT, levelObj.payload.points[0]._id);
 
-    setupMap(levelObj.payload.image.name, levelObj.payload.points, localStorage.getItem(LOCALSTORAGE_POINT));
+    setupMap(levelObj.payload.image.name);
+    drawPoints(levelObj.payload.points, localStorage.getItem(LOCALSTORAGE_POINT));
 
     //Link Panoramas
     levelObj.payload.points.forEach(point => {
@@ -112,7 +119,7 @@ async function setup360LevelTour(project, area, level) {
                     let yaw = angleBetweenPoints(point, pointInCurrLevel);
                     console.log(yaw);
                     //Add Link
-                    hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id, 0, 0));//temp external
+                    hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id, 0, 0)); //Temp external
                 }
                 else {
                     //External point

@@ -1,17 +1,19 @@
-function setupMap(imgLoc, points, currPointID){
-    const img = document.getElementById("mapImage");
-    const imgClickMap = document.getElementById("mapMap");
-    img.src = "http://campus.rowansserver.com/images/" +imgLoc;
+let floorplan_overlay;
+let floorplan_canvas = document.querySelector(".floorplan_canvas");
+
+function setupMap(imgLoc){
+    $(".floorplan").attr("src", "http://campus.rowansserver.com/images/" + imgLoc);
+     floorplan_overlay = $("#floorplan_click_overlay");
+
     //ToDo: Create clickable areas to move to.
 }
 
-
-
 function drawPoints(points, currPointID){
-    const canvas = document.getElementById("mapCanvas");
-    
-    let ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height)
+    let ctx = floorplan_canvas.getContext('2d');
+    ctx.canvas.width = $(".floorplan").width();
+    ctx.canvas.height = $(".floorplan").height();
+    ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
+
     let pointSize = ctx.canvas.width * 0.02;
 
     for (var coord in points){

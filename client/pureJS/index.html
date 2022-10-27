@@ -11,7 +11,8 @@
     <!-- 180×180 -->
 
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <link rel="stylesheet" type="text/css" href="css/pannellum.css"/>
+    <link rel="stylesheet" type="text/css" href="css/custom_hotspot.css"/>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js" defer></script>
     <script src="js/three.min.js" defer></script>
     <!--<script src="js/panolens.min.js" defer></script>-->
@@ -42,11 +43,10 @@
     <button id="videoButton" class="button">Video Toggle</button>
 
     <!-- Bottom corner map -->
-    <div id="cornerMap">
-        <img id="mapImage" src="images/mapdefault.jpg" map="#mapMap" alt="mapOfLevel" class="imageMap"/>
-        <map id="mapMap">
-        </map>
-        <canvas id="mapCanvas" class="imageMap"  pointerEvents='none' style='z-index: 3;'></canvas>
+    <div class="cornerMap">
+        <img class="floorplan" map="floorplan_click_overlay" src="images/mapdefault.jpg" alt="mapOfLevel">
+        <map id="floorplan_click_overlay"></map>
+        <canvas class="floorplan_canvas"  pointerEvents='none' style='z-index: 3;'></canvas>
     </div>
 </body>
 <template template-room>
