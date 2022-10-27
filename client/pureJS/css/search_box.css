@@ -13,7 +13,7 @@ input {
     transition-duration:500ms;
     border-bottom:1px solid #000000;
   }
-  
+
   #search_container {
     position:absolute;
     width:20%;
@@ -25,6 +25,18 @@ input {
     display:flex;
     flex-direction:column;
     z-index:1000;
+  }
+
+  @media only screen and (max-width: 1400px) {
+    #search_container {
+      width:50%;
+    }
+  }
+
+  @media only screen and (max-width: 800px) {
+    #search_container {
+      width:65%;
+    }
   }
   
   #search_results {

@@ -10,6 +10,18 @@
     z-index: 2;
 }
 
+@media only screen and (max-width: 800px) {
+    .cornerMap {
+      width:20%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .cornerMap {
+      width:30%;
+    }
+}
+
 /** When hovering over the map, 
 child elements with absolute positioning 
 will follow in size 
