@@ -146,7 +146,8 @@ function newHotSpot(pitch, yaw, point_name, scene_id) {
         "text": point_name,
         "sceneId": scene_id,
         "clickHandlerFunc": onHotSpotClick,
-        "clickHandlerArgs": yaw
+        "clickHandlerArgs": yaw,
+        //"cssClass": "default-hotspot"
     }
 }
 

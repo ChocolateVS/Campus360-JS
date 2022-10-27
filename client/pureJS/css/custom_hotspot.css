@@ -1,10 +1,17 @@
-.custom-hotspot {
-    height: 20%;
-    width: 20%;
-    border-radius: 10px;
-    background: rgb(95, 90, 90);
+.default-hotspot {
+    height: 3vw;
+    width: 3vw;
+    background: rgba(90, 90, 90, 0.5);
+    background-size: cover;
 }
-div.custom-tooltip span {
+
+
+.default-hotspot:hover {
+    animation: default_hover 1s ease-in-out infinite alternate;
+}
+
+.c
+div.default-tooltip span {
     visibility: hidden;
     position: absolute;
     border-radius: 3px;
@@ -16,10 +23,10 @@ div.custom-tooltip span {
     margin-left: -220px;
     cursor: default;
 }
-div.custom-tooltip:hover span{
+div.default-tooltip:hover span{
     visibility: visible;
 }
-div.custom-tooltip:hover span:after {
+div.default-tooltip:hover span:after {
     content: '';
     position: absolute;
     width: 0;
@@ -30,4 +37,16 @@ div.custom-tooltip:hover span:after {
     bottom: -20px;
     left: -10px;
     margin: 0 50%;
+}
+
+@keyframes default_hover {
+    0% {
+        transform: scale(1.0);
+    }
+    50% {
+        transform: scale(2.0);
+    }
+    100% {
+        transform: scale(1.0);
+    }
 }
