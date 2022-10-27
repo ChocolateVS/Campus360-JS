@@ -1,12 +1,12 @@
 input {
-    height:40px;
+    height:1.5vw;
+    min-height:20px;
     margin:10px;
     border:none;
     outline: none;
     background-color: transparent;
     transition-duration:500ms;
     font-family:monospace;
-    font-size:20px;
   }
   
   input:focus{
@@ -25,6 +25,7 @@ input {
     display:flex;
     flex-direction:column;
     z-index:1000;
+    font-size:5vw;
   }
 
   @media only screen and (max-width: 1400px) {
@@ -35,10 +36,16 @@ input {
 
   @media only screen and (max-width: 800px) {
     #search_container {
-      width:65%;
+      width:60%;
     }
   }
   
+  @media only screen and (orientation:portrait) {
+    #search_container {
+      width:60%;
+    }
+  }
+
   #search_results {
     margin:0px 10px 10px 10px;
     display: none;

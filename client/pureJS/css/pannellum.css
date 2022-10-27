@@ -168,7 +168,7 @@
     z-index: 2;
     -webkit-transform: translateZ(9999px);
     transform: translateZ(9999px)
-}
+} 
 
 .pnlm-title-box {
     position: relative;
@@ -492,5 +492,17 @@ div.pnlm-tooltip:hover span:after {
 
 .pnlm-pointer {
     cursor: pointer;
-    /*cursor: url('../images/cursor.png') 25 15, auto;*/
 }
+
+@media only screen and (orientation:portrait) {
+    .pnlm-panorama-info {
+        width:0%;
+        height:0%;
+    }
+
+    .pnlm-compass {
+        width:0%;
+        height:0%;
+    }
+}
+
