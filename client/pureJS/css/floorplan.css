@@ -10,23 +10,12 @@
     z-index: 2;
 }
 
-@media only screen and (max-width: 800px) {
-    .cornerMap {
-      width:20%;
-    }
-}
+/** 
+    When hovering over the map, it will grow bigger
+    (Equivalent to onclick or onfocus, mobile)
+    Child elements with absolute positioning will follow in size 
 
-@media only screen and (max-width: 500px) {
-    .cornerMap {
-      width:30%;
-    }
-}
-
-/** When hovering over the map, 
-child elements with absolute positioning 
-will follow in size 
-
-Change map size using the scale value
+    Change map size using the scale value
 **/
 .cornerMap:hover {
     border-radius: 10px;
@@ -35,7 +24,7 @@ Change map size using the scale value
     bottom:0;
     margin: 20px;
     transition-duration: 1s;
-    transform: scale(3);
+    transform: scale(2.5);
     transform-origin: bottom right;
     opacity: 1;
 }
@@ -72,4 +61,26 @@ Change map size using the scale value
     transition-duration: 0.5s;
     transform: scale(1.8);
     border:0.5px solid rgba(255, 0, 0, 0.055)
+}
+
+/**
+
+    For Mobile or portrait, we increase the size of the corner map (x2)
+
+    Therefore we must also scale the floorplan so the children are still positioned correctly
+
+**/
+@media only screen and (orientation:portrait) {
+    .cornerMap {
+      width:20%;
+    }
+
+    .cornerMap:hover {
+        transform: scale(1.8);
+        margin:20px;
+    }
+
+    .floorplan {
+        width:200%;
+    }
 }

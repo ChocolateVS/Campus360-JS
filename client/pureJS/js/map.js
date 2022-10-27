@@ -1,5 +1,8 @@
 let floorplan_overlay;
 
+let temp_points;
+let temp_current;
+
 function setupMap(imgLoc){
     $(".floorplan").attr("src", "http://campus.rowansserver.com/images/" + imgLoc);
      floorplan_overlay = $("#floorplan_click_overlay");
@@ -8,6 +11,11 @@ function setupMap(imgLoc){
 }
 
 function drawPoints(points, currPointID){
+
+    //For Resize Event
+    temp_points = points;
+    temp_current = currPointID;
+
     $(".floorplan_buttons_container").width($(".floorplan").width());
     $(".floorplan_buttons_container").height($(".floorplan").height());
 
@@ -60,4 +68,9 @@ $(".cornerMap").hover(
       $(".floorplan_buttons_container").removeClass("hover");
     }
   );
+
+  window.addEventListener("resize", e => {
+    drawPoints(temp_points, temp_current);
+    console.log("resize");
+  });
 
