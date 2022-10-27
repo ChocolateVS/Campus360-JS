@@ -15,10 +15,10 @@ function drawPoints(points, currPointID){
 
     $(".floorplan_buttons_container").empty();
 
+    //For each point, create a button and put it in the buttons container
+    //Set the top and right margins to position it
     for (var coord of points) {
-        let color = "red"
-        if(coord._id == currPointID) color = "blue";
-
+    
         let x = coord.x * $(".floorplan").width();
         let y = coord.y * $(".floorplan").height();
 
@@ -32,8 +32,15 @@ function drawPoints(points, currPointID){
         button.style.marginTop = (y - (pointSize / 2)) + "px";
         button.style.marginBottom = "0px";
         button.style.marginRight = "0px";
-        button.style.backgroundColor = color;
         button.style.padding = "0px";
+        button.style.backgroundColor = "transparent";
+
+        if(coord._id == currPointID) {
+          button.style.backgroundImage = "url('./images/current_location.png')";
+          
+        }
+        else button.style.backgroundImage = "url('./images/location_blue.png')";
+        
 
         $(".floorplan_buttons_container").append(button);
     }

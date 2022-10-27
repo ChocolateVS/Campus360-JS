@@ -1,0 +1,63 @@
+.cornerMap {
+    border-radius: 10px;
+    position: absolute;
+    right:0;
+    bottom:0;
+    margin: 20px;
+    width:10%;
+    opacity: 0.3;
+    transition-duration: 1s;
+    z-index: 2;
+}
+
+/** When hovering over the map, 
+child elements with absolute positioning 
+will follow in size 
+
+Change map size using the scale value
+**/
+.cornerMap:hover {
+    border-radius: 10px;
+    position: absolute;
+    right:0;
+    bottom:0;
+    margin: 20px;
+    transition-duration: 1s;
+    transform: scale(3);
+    transform-origin: bottom right;
+    opacity: 1;
+}
+
+.floorplan {
+    border-radius: 10px;
+    position: absolute;
+    bottom: 0;
+    right:0;
+    width: 100%;
+}
+
+.floorplan_buttons_container {
+    border-radius: 10px;
+    position: absolute;
+    bottom: 0;
+    right:0;
+    z-index:2000;
+}
+
+.floorplan_button {
+    border-radius: 6px;
+    background-color: black;
+    position: absolute;
+    cursor:pointer;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    transition-duration: 0.5s;
+    
+}
+
+.floorplan_button:hover {
+    transition-duration: 0.5s;
+    transform: scale(1.8);
+    border:0.5px solid rgba(255, 0, 0, 0.055)
+}
