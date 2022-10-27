@@ -9,18 +9,18 @@ document.getElementById("locationInput").addEventListener("focus", function() {
 
 
 //Defocuses searchbox
-// document.getElementById("container").addEventListener("mousedown", function() {
-//     removeFocusFromSearch();
-// });
-// document.getElementById("container").addEventListener("touch", function() {
-//     removeFocusFromSearch();
-// });
+ document.getElementById("panorama").addEventListener("mousedown", function() {
+     removeFocusFromSearch();
+ });
+ document.getElementById("panorama").addEventListener("touch", function() {
+     removeFocusFromSearch();
+ });
 
 function removeFocusFromSearch() {
-document.activeElement.blur();
-$('#search_container').css('border-radius', '10px');
-$('#search_container').css('background-color', 'transparent');
-id("search_results").style.display = "none";
+    document.activeElement.blur();
+    $('#search_container').css('border-radius', '10px');
+    $('#search_container').css('background-color', 'transparent');
+    id("search_results").style.display = "none";
 }
 
 //Filters & Populates searchbox
