@@ -1,5 +1,4 @@
 let floorplan_overlay;
-let floorplan_canvas = document.querySelector(".floorplan_canvas");
 
 function setupMap(imgLoc){
     $(".floorplan").attr("src", "http://campus.rowansserver.com/images/" + imgLoc);
@@ -9,19 +8,49 @@ function setupMap(imgLoc){
 }
 
 function drawPoints(points, currPointID){
-    let ctx = floorplan_canvas.getContext('2d');
-    ctx.canvas.width = $(".floorplan").width();
-    ctx.canvas.height = $(".floorplan").height();
-    ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
+    $(".floorplan_buttons_container").width($(".floorplan").width());
+    $(".floorplan_buttons_container").height($(".floorplan").height());
 
-    let pointSize = ctx.canvas.width * 0.02;
+    let pointSize = $(".floorplan").width() * 0.04;
 
-    for (var coord in points){
-        if(points[coord]._id == currPointID) ctx.fillStyle = "blue"; // Red color
-        else ctx.fillStyle = "red"; // Red color
-        ctx.beginPath();
-        ctx.arc(points[coord].x*ctx.canvas.width, points[coord].y*ctx.canvas.height, pointSize, 0, Math.PI * 2, true);
-        ctx.fill();
+    $(".floorplan_buttons_container").empty();
+
+    for (var coord of points) {
+        let color = "red"
+        if(coord._id == currPointID) color = "blue";
+
+        let x = coord.x * $(".floorplan").width();
+        let y = coord.y * $(".floorplan").height();
+
+        let button = document.createElement('input');
+        button.setAttribute('type', 'button');
+        button.setAttribute('class', 'floorplan_button');
+        button.setAttribute('onclick', 'navigateToPoint("' + coord._id + '")');
+        button.style.width = pointSize + "px";
+        button.style.height = pointSize + "px";
+        button.style.marginLeft = (x - (pointSize / 2)) + "px";
+        button.style.marginTop = (y - (pointSize / 2)) + "px";
+        button.style.marginBottom = "0px";
+        button.style.marginRight = "0px";
+        button.style.backgroundColor = color;
+        button.style.padding = "0px";
+
+        $(".floorplan_buttons_container").append(button);
     }
 }
+
+function navigateToPoint(point) {
+    console.log("Navigating to point", point);
+    viewer.loadScene(point);
+}
+
+$(".cornerMap").hover(
+    function() {
+        console.log("OK");
+      $(".floorplan_buttons_container").addClass("hover");
+    }, 
+    function() {
+      $(".floorplan_buttons_container").removeClass("hover");
+    }
+  );
 

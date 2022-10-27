@@ -15,6 +15,8 @@ let target_yaw = 0;
 
 let levelObj;
 
+let viewer;
+
 if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item above is not set, should completely redo
     localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
     localStorage.setItem(LOCALSTORAGE_AREA, hardcodedArea)
@@ -38,7 +40,7 @@ setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getIt
 function configurePanoViewer(scenes, first_scene) {
     console.log("Config pano", scenes, first_scene)
 
-    let viewer = pannellum.viewer('panorama', {
+    viewer = pannellum.viewer('panorama', {
         "default": {
             "firstScene": first_scene,
             "author": "Waikato Students",

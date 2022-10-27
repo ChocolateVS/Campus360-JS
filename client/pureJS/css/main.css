@@ -3,18 +3,23 @@
   position: absolute;
   right:0;
   bottom:0;
-  margin:20px;
-  width: 100%;
+  margin: 20px;
+  width:10%;
   opacity: 0.3;
   transition-duration: 1s;
   z-index: 2;
 }
 
 .cornerMap:hover {
+  border-radius: 10px;
+  position: absolute;
+  right:0;
+  bottom:0;
+  margin: 20px;
   transition-duration: 1s;
-  width: 200%; 
+  transform: scale(2.4);
+  transform-origin: bottom right;
   opacity: 1;
-  cursor:pointer;
 }
 
 .floorplan {
@@ -22,15 +27,22 @@
   position: absolute;
   bottom: 0;
   right:0;
-  width: 10%;
+  width: 100%;
 }
 
-.floorplan_canvas {
+.floorplan_buttons_container {
   border-radius: 10px;
   position: absolute;
   bottom: 0;
   right:0;
-  width: 10%;
+  z-index:2000;
+  cursor:pointer;
+}
+
+.floorplan_button {
+  border-radius: 6px;
+  background-color: black;
+  position: absolute;
 }
 
 body, html {
