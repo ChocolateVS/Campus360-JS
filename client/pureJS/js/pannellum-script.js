@@ -60,6 +60,7 @@ function configurePanoViewer(scenes, first_scene) {
 
     viewer.on('scenechange', async (id) => {
         viewer.setYaw(target_yaw, false);
+        console.log("Setting Target Yaw", target_yaw);
 
         drawPoints(levelObj.payload.points, id);
 
@@ -125,7 +126,7 @@ async function setup360LevelTour(project, area, level) {
                     console.log(pointInCurrLevel);
 
                     let yaw = findAngleBetweenPoints(point, pointInCurrLevel);
-                    console.log(yaw);
+                    console.log("Hospot Yaw", yaw);
                     //Add Link
                     hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id, 0, 0)); //Temp external
                 }
