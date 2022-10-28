@@ -124,7 +124,7 @@ async function setup360LevelTour(project, area, level) {
                     console.log("Internal Link");
                     console.log(pointInCurrLevel);
 
-                    let yaw = angleBetweenPoints(point, pointInCurrLevel);
+                    let yaw = findAngleBetweenPoints(point, pointInCurrLevel);
                     console.log(yaw);
                     //Add Link
                     hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id, 0, 0)); //Temp external

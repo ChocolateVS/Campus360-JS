@@ -28,3 +28,11 @@ function find_angle(A,B,C) {
     var AC = Math.sqrt(Math.pow(C.x-A.x,2)+ Math.pow(C.y-A.y,2));
     return Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB));
 }
+
+function findAngleBetweenPoints(currPoint, linkPoint) {
+    let x1 = currPoint.x;
+    let y1 = currPoint.y;
+    let x2 = linkPoint.x;
+    let y2 = linkPoint.y;
+    return 90 - Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+}
