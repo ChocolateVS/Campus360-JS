@@ -146,7 +146,7 @@ async function setup360LevelTour(project, area, level) {
 }
 
 function newHotSpot(pitch, yaw, point_name, scene_id) {
-    console.log("Yaw for handler function");
+    console.log("Yaw for handler function", yaw);
     return {
         "pitch": pitch,
         "yaw": yaw,
