@@ -395,11 +395,12 @@
     border: 2px solid rgba(255, 255, 255, 0);
 }
 
-.pnlm-hotspot:hover {
-    transition-duration: 0.5s;
-    background-color: rgba(0,0,0,0.8);
-    border: 2px solid rgba(255, 255, 255, 0.8);
-
+@media only screen and (orientation:landscape) {
+    .pnlm-hotspot:hover {
+        transition-duration: 0.5s;
+        background-color: rgba(0,0,0,0.8);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+    }
 }
 
 .pnlm-hotspot.pnlm-info {
