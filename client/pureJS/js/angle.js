@@ -34,5 +34,5 @@ function findAngleBetweenPoints(currPoint, linkPoint) {
     let y1 = currPoint.y;
     let x2 = linkPoint.x;
     let y2 = linkPoint.y;
-    return 90 - Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+    return 270 + Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
 }
