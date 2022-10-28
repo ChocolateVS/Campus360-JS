@@ -54,6 +54,14 @@
     background-repeat: no-repeat;
 
     transition-duration: 0.5s;
+
+    height:1.5vw;
+    margin:10px;
+    border:none;
+    outline: none;
+    background-color: transparent;
+    transition-duration:500ms;
+    font-family:monospace;
     
 }
 

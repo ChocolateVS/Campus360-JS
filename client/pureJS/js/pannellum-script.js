@@ -3,8 +3,14 @@ const SERVER_URL = 'http://campus.rowansserver.com/'
 const EXTERNAL_POINT_PREFIX = 'external-'
 
 const hardcodedProject = "485b3c31c3d347ae84108de9";
-const hardcodedArea = "d56b5b91eb4b4faab2ff4a4a";
-const hardcodedLevel = "8535bdd97dd844289e3f2936";
+
+//Slightly Better Tour of my house
+const hardcodedArea = "6ca3c2caaf5648c0839d2586";
+const hardcodedLevel = "06fc572a9afd4abf99af8f1b"
+
+//Hallway
+//const hardcodedArea = "d56b5b91eb4b4faab2ff4a4a";
+//const hardcodedLevel = "8535bdd97dd844289e3f2936";
 
 let LOCALSTORAGE_LEVEL = 'currLevel';
 let LOCALSTORAGE_AREA = 'currArea';
