@@ -1,5 +1,5 @@
-const SERVER_API_URL = 'http://campus.rowansserver.com/api/'
-const SERVER_URL = 'http://campus.rowansserver.com/'
+const SERVER_API_URL = 'https://campus.rowansserver.com/api/'
+const SERVER_URL = 'https://campus.rowansserver.com/'
 const EXTERNAL_POINT_PREFIX = 'external-'
 
 const hardcodedProject = "485b3c31c3d347ae84108de9";
@@ -15,17 +15,17 @@ let LOCALSTORAGE_POINT = 'currPoint';
 let viewer = null;
 
 
-if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item above is not set, should completely redo
+if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item is not set, should completely redo
     localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
     localStorage.setItem(LOCALSTORAGE_AREA, hardcodedArea)
     localStorage.setItem(LOCALSTORAGE_LEVEL, hardcodedLevel)
-    localStorage.removeItem(LOCALSTORAGE_POINT);//Reset
+    localStorage.removeItem(LOCALSTORAGE_POINT);//starting location
 }
 
 
 function id(id) { return document.getElementById(id); }
 
-const emptyImagePath = "http://purejs.rowansserver.com/client/pureJS/images/default.jpg";
+const emptyImagePath = "https://purejs.rowansserver.com/client/pureJS/images/default.jpg";
 
 
 setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
@@ -149,6 +149,7 @@ function newSceneObject(title, url, hotspots) {
             "hotSpots": hotspots
     }
 }
+
 function findPointInLevelById(points, link_id) {
     return points.find(point => point._id == link_id);
 }

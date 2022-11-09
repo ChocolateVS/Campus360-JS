@@ -1,7 +1,7 @@
 function setupMap(imgLoc, points, currPointID){
     const img = document.getElementById("mapImage");
     const imgClickMap = document.getElementById("mapMap");
-    img.src = "http://campus.rowansserver.com/images/" +imgLoc;
+    img.src = "https://campus.rowansserver.com/images/" +imgLoc;
     //ToDo: Create clickable areas to move to.
 }
 
