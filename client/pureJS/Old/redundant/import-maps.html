@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Map Maker</title>
+        
+        <link rel="stylesheet" type="text/css" href="css/map-maker.css">
+        <script src="https://pchen66.github.io/js/three/three.min.js"></script>
+        <script src="js/panolens.js"></script>
+        <script src="js/jquery-3.6.0.js"></script>
+
+    </head>
+    <body>
+        <form id="import_form">
+            <input id="fileInput" type="file" accept=".json" class="button">
+            <br>
+            <input id="submitBtn" type="submit" value="Submit" class="button">
+        </form>
+
+        <div id="map_view">
+            <h1 class="map_h1" id="map_name"></h1>
+            <div id="map_details">
+                <h2 class="map_h2" id="map_block"></h2>
+                <h2 class="map_h2" id="map_floor"></h2>
+            </div>
+            <div id="locations_container">
+                
+            </div>
+        </div>
+
+        <div id="preview" class="preview"></div>
+        <button id="closePreviewBtn" class="closePreviewBtn" onClick="closePreview()">Close Preview</button>
+        <div class="floor_plan_view" id="floor_plan_view">
+            <img class="floor_plan_img" id="floor_plan_img">
+            <img class="floor_plan_nav_arrow" id="floor_plan_nav_arrow" src="images/nav_arrow.png">
+            <img class="orientation_arrow" id="orientation_arrow" src="images/nav_arrow.png">
+            <button class="setOrientation" id="setOrientation" onclick="setOrientation()">Set Orientation</button>
+        </div>
+    </body>
+    <script src="js/map-maker-better.js"></script>
+</html>

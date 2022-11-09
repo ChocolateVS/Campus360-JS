@@ -11,15 +11,18 @@
     <!-- 180×180 -->
 
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js" defer></script>
-    <script src="js/three.min.js" defer></script>
-    <!--<script src="js/panolens.min.js" defer></script>-->
+    <link rel="stylesheet" type="text/css" href="css/floorplan.css"/>
+    <link rel="stylesheet" type="text/css" href="css/pannellum.css"/>
+    <link rel="stylesheet" type="text/css" href="css/search_box.css"/>
+
+    <script src="js/pannellum.js" defer></script>
     <script src="js/jquery-3.6.0.js" defer></script>
     <script src="js/search.js" defer></script>
     <script src="js/angle.js" defer></script>
     <script src="js/map.js" defer></script>
     <script src="js/pannellum-script.js" defer></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
 </head>
 
 <body>
@@ -32,23 +35,18 @@
 
     <!-- Search Box -->
     <div id="search_container">
-        <input type="search" id="locationInput" class="input" placeholder="Search Waikato Campus" data-room-search>
+        <input type="search" id="locationInput" class="search_input" placeholder="Search Waikato Campus" data-room-search>
         <div id="search_results" data-room-results></div>
     </div>
 
-    <!-- Controls for Pano -->
-    <button id="controlButton" class="button">Control Toggle</button>
-    <button id="modeButton" class="button">Mode Toggle</button>
-    <button id="videoButton" class="button">Video Toggle</button>
-
-    <!-- Bottom corner map -->
-    <div id="cornerMap">
-        <img id="mapImage" src="images/mapdefault.jpg" map="#mapMap" alt="mapOfLevel" class="imageMap"/>
-        <map id="mapMap">
-        </map>
-        <canvas id="mapCanvas" class="imageMap"  pointerEvents='none' style='z-index: 3;'></canvas>
+    <!-- Floorplan map -->
+    <div class="cornerMap">
+        <img class="floorplan" src="images/mapdefault.jpg" alt="mapOfLevel">
+        <div class="floorplan_buttons_container"></div>
     </div>
+
 </body>
+
 <template template-room>
     <span class="roomInfo">
     <div class="name" template-room-name>
