@@ -5,8 +5,7 @@
     "main": "index.js",
     "scripts": {
         "devStart": "nodemon index.js",
-        "start": "npm run build && npm install && node index.js",
-        "build": "cd ../client && npm install && npm run build"
+        "start": "npm install && node index.js"
     },
     "keywords": [],
     "author": "Skwangles",

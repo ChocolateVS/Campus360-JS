@@ -32,16 +32,13 @@ if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item is not set, should
 
 function id(id) { return document.getElementById(id); }
 
-<<<<<<< HEAD:client/js/pannellum-script.js
-const emptyImagePath = "https://purejs.rowansserver.com/client/pureJS/images/default.jpg";
-=======
+
 var onHotSpotClick = function(event, yaw) {
     console.log("Hotspot Clicked", yaw);
     target_yaw = yaw;
 };
 
-const emptyImagePath = "http://purejs.rowansserver.com/client/pureJS/images/default.jpg";
->>>>>>> 4d901fec89fa5f2431092fabc5c329e80190dea2:client/pureJS/js/pannellum-script.js
+const emptyImagePath = "https://purejs.rowansserver.com/client/images/default.jpg";
 
 
 setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
