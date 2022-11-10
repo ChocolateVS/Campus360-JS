@@ -8,7 +8,7 @@ made to showcase student talent @ UoW.
 ## How to use
 ---
 ### SERVER Setup:
-- Navigate to .env file - update all the passwords to your preference, make sure the mongo-init.js & MONGO_URL reflect the updated values
+- Navigate to .env file - update all the passwords to your preference, make sure the mongo-init.js & MONGO_URL reflect the updated values (both use RESTRICTED_USR/PWD & DBNAME)
 - Default values: waikato_db - dbname, campus360 - usr, SuperSecurePassword! - pwd
 - Make sure the mongo-express MONGO_EXPRES_USR/PWD match the MONGODB_ADMIN_USR/PWD
 - Make sure you update the passwords in mongo-init.js to reflect the usr/pwd of the url inside the .env
