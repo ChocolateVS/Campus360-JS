@@ -17,8 +17,8 @@ Once ```sudo docker-compose up``` has booted up (i.e. creates the containers), y
 **please note the logs in the docker-compose up will indicate NodeJS & mongo-express are crashing, this is EXPECTED until we do the next step**  
 - Please note: You will have to start the mongoDB by ITSELF when doing this step - the other containers depend on the credentials created in this step to work  
 - Campus360-JS should be the parent folder, so the containers will start with campus360-js, but this may be different for you. Please check the closing statement of the docker-compose up to see, or run ```docker ps -a```    
-```sudo docker start campus360-js_mongodb_1```  
-```docker exec -it campus360-js_mongodb_1 sh```    
+```sudo docker start campus360-js_mongo_1```  
+```docker exec -it campus360-js_mongo_1 sh```    
 ```mongosh -u campus360 -p SuperSecurePassword!``` then to create user for NodeJS  
 ```use waikato_db; 
 db.createUser({user:'remote', pwd:'SuperSecurePassword!', roles:[{role:'readWrite', db:'waikato_db'}] });
