@@ -10,7 +10,7 @@ made to showcase student talent @ UoW.
 Navigate to docker-compose.yaml - ensure passwords are what you want, and the index/package.json in NODE up to date.   
 ```docker-compose up```  
 #### Setting up the MongoDB  
-```docker exec -it server_mongodb_1 sh```  
+```docker exec -it campus360-js_mongodb_1 sh```  
 ```mongosh -u campus360 -p SuperSecurePassword!``` then to create user for NodeJS 
 ```use waikato_db; 
 db.createUser({user:'remote', pwd:'SuperSecurePassword!', roles:[{role:'readWrite', db:'waikato_db'}] });
@@ -22,12 +22,12 @@ You should now be good to go, either open port 3001(nodejs) and 3002(mongo-expre
 (**not** recommended) open 27017 if you need direct access to the mongodb server  
 
 #### Editing:  
-  To edit the NodeJS when docker has already been created ```docker exec -it server_nodejs_1 sh```  
+  To edit the NodeJS when docker has already been created ```docker exec -it campus360-js_nodejs_1 sh```  
   then ```apt update && apt install nano && nano index.js```  
   
-  To edit the mongodb: ```docker exec -it server_mongo_1 sh``` then  
+  To edit the mongodb: ```docker exec -it campus360-js_mongo_1 sh``` then  
   ```mongosh -u campus360 -p SuperSecurePassword! waikato_db``` (campus360/SuperSecurePassword! are the Admin details in docker-compose.yaml)
-   Otherwise if 3002 is an open port on the server ```serverip:3002/``` should allow you to access the GUI editor - remote/SuperSecurePassword! (change in docker-compose.yaml)  
+   Otherwise if 3002 is an open port on the server ```<serverip>:3002/``` should allow you to access the GUI editor - remote/SuperSecurePassword! (change in docker-compose.yaml)  
 ---
 ### Android App Setup
 Install the android app on your android phone - connect to the Insta360x2 camera via wifi - and start taking photos + mapping points   
