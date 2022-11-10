@@ -6,6 +6,7 @@ made to showcase student talent @ UoW.
 ```WARNING: The API is completely unprotected - WILL EVENTUALLY IMPLEMENT AUTHKEYS```
 
 ## How to use
+---
 ### SERVER Setup:
 Navigate to docker-compose.yaml - ensure passwords are what you want, and the index/package.json in NODE up to date.   
 ```sudo docker-compose build && sudo docker-compose up```  
@@ -30,6 +31,7 @@ You should now be good to go, either open port 3001(nodejs) and 3002(mongo-expre
 To Start: ```sudo docker-compose up``` or ```sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1```  
 
 #### Editing:  
+---
   To edit the NodeJS when docker has already been created ```docker exec -it campus360-js_nodejs_1 sh```  
   then ```apt update && apt install nano && nano index.js```  
   
