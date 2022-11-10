@@ -8,9 +8,7 @@ made to showcase student talent @ UoW.
 ## How to use
 ---
 ### SERVER Setup:
-- Navigate to docker-compose.yaml - ensure passwords are what you want, and the index/package.json in NODE up to date.   
- 
-
+- Navigate to docker-compose.yaml, .env, and mongo-init.js - ensure passwords are what you want, and the index.js & package.json in /server is up to date. 
 - Make sure you update the passwords in mongo-init.js to reflect the usr/pwd of the url inside the .env
 'sudo docker-compose up' should handle everything.
 Either open port 3001(nodejs) and 3002(mongo-express online editor) on your system, or use a nginx to proxypass (We used nginx).  
@@ -21,12 +19,17 @@ To Start: ```sudo docker-compose build && sudo docker-compose up```(ctrl+c to ex
 
 #### Editing:  
 ---
- - To edit the NodeJS when docker has already been created ```docker exec -it campus360-js_nodejs_1 sh```
- - ```apt update && apt install nano && nano index.js```  
+ To edit the NodeJS when docker has already been created:
+ - ```docker exec -it campus360-js_nodejs_1 sh```
+ - ```apt update && apt install nano && nano index.js``` 
+ or (catch all)
+ - ```sudo docker-compose build && sudo docker-compose up``` -> ctrl-c -> ```sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1```
+
   
  - To edit the mongodb: 
  - ```docker exec -it campus360-js_mongo_1 sh```  
- - ```mongosh -u campus360 -p SuperSecurePassword! waikato_db``` (campus360/SuperSecurePassword! are the Admin details in docker-compose.yaml)
+ - ```mongosh -u <mongo_root_usr> -p <mongo_root_pwd>``` (usr/pwd are the Admin details in docker-compose.yaml)
+ - ```use waikato_db;```
  Otherwise if 3002 is an open port on the server ```<serverip>:3002/``` should allow you to access the GUI editor - remote/SuperSecurePassword! (change in docker-compose.yaml)  
 ---
 ### Android App Setup:
@@ -62,12 +65,11 @@ Once ```sudo docker-compose up``` has booted up (i.e. creates the containers), y
 - Campus360-JS should be the parent folder, so the containers will start with campus360-js, but this may be different for you. Please check the closing statement of the docker-compose up to see, or run ```docker ps -a```    
 - ```sudo docker start campus360-js_mongo_1```  
 - ```docker exec -it campus360-js_mongo_1 sh```    
-- ```mongosh -u campus360 -p SuperSecurePassword!``` then to create user for NodeJS  
+- ```mongosh -u <mongo_root_usr> -p <mongo_root_pwd>``` then to create user for NodeJS  
 - ```use waikato_db;```
-- ```db.createUser({user:'remote', pwd:'SuperSecurePassword!', roles:[{role:'readWrite', db:'waikato_db'}] });```  
+- ```db.createUser({user:'<usr in .env/MONGO_URL & mongo-init.js>', pwd:'<pwd in .env/MONGO_URL & mongo-init.js>', roles:[{role:'readWrite', db:'waikato_db'}] });```  
 (feel free to customise the db user's details - just make sure to update the .env in /NODE to match)  
 - ```exit```   
-
 
 Rowan: Developed the Android app & Front-end  
 Alexander: Developed the backend, server-config & Front end  
