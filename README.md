@@ -38,17 +38,17 @@ To Start: ```sudo docker-compose up``` or ```sudo docker start campus360-js_node
    Otherwise if 3002 is an open port on the server ```<serverip>:3002/``` should allow you to access the GUI editor - remote/SuperSecurePassword! (change in docker-compose.yaml)  
 ---
 ### Android App Setup
-Install the android app on your android phone - connect to the Insta360x2 camera via wifi - and start taking photos + mapping points   
+[Install](https://github.com/ChocolateVS/Campus360-MapBuilder) the android app on your android phone - connect to the Insta360x2 camera via wifi - and start taking photos + mapping points   
 Once you have your points and everything loaded, you can then export it all the the Mongo database, which can be subsequently accessed via the frontend/API.  
 
 ## How it works
-HTML5 - front end - Using Panolens.js to view 360deg    
+HTML5 - front end - Using Panneleum to view 360deg    
 NodeJS - server side  
 MongoDB - database   
 Mongo-Express - GUI mongodb editor
 Docker - runs the NodeJS, DB and GUI editor  
   
-Android App - create maps, points and manage bringing all together - connects via Wifi to the 360deg camera.  
+[Android App](https://github.com/ChocolateVS/Campus360-MapBuilder) - Gitrepo linked - create maps, points and manage bringing all together - connects via Wifi to the 360deg camera.  
 
 ### Common Issues
 Build fails - make sure that there is a /images dir in the /server section, make sure you have docker-compose installed, make sure you have docker installed. Make sure you are running docker-compose up, from the parent directory, instead of in '/server'
