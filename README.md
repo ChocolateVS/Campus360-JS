@@ -10,7 +10,7 @@ made to showcase student talent @ UoW.
 ### SERVER Setup:
 - Navigate to .env file - update all the passwords to your preference, make sure the mongo-init.js & MONGO_URL reflect the updated values (both use RESTRICTED_USR/PWD & DBNAME)
 - Default values: waikato_db - dbname, campus360 - usr, SuperSecurePassword! - pwd
-- Make sure the mongo-express MONGO_EXPRES_USR/PWD match the MONGODB_ADMIN_USR/PWD
+- Make sure the mongo-express MONGO_EXPRESS_USR/PWD match the MONGODB_ADMIN_USR/PWD
 - Make sure you update the passwords in mongo-init.js to reflect the usr/pwd of the url inside the .env
 'sudo docker-compose up' should handle everything.
 Either open port 3001(nodejs) and 3002(mongo-express online editor) on your system, or use a nginx to proxypass (We used nginx).  
