@@ -18,6 +18,7 @@ router.get('/:pointId', getProject, getArea, getLevel, getPoint, async(req, res)
     let links = res.point.link_ids
     let projObj = res.point.toObject({ getters: true, minimize: false, depopulate:true})
     projObj.links = links
+    console.log('Get Point: ' + req.params.pointId)
     res.status(200).json({ success: true, payload: projObj }).end();
 });
 
@@ -26,7 +27,7 @@ router.get('/', getProject, getArea, getLevel, (req, res, next) => {
 });
 
 router.post('/', getProject, getArea, getLevel, async(req, res) => {
-    console.log(req.params)
+    
     let newPoint;
     let createObj = {};
    
@@ -49,6 +50,7 @@ router.post('/', getProject, getArea, getLevel, async(req, res) => {
         if (newPoint == null) throw 'Could not create Point object';
         const saveResult = await newPoint.save();
         await res.level.save();
+        console.log('Create Point: ' + JSON.stringify(createObj))
         res.status(201).json({ success: true, payload: saveResult })
     } catch (err) {
         res.status(400).json({ success: false, message: err.message })
@@ -58,6 +60,7 @@ router.post('/', getProject, getArea, getLevel, async(req, res) => {
 router.patch('/:pointId', getProject, getArea, getLevel, getPoint, async(req, res) => {
     try {
         let resp = await res.point.updateOne({ _id: ObjectId(req.params.pointId) }, { $set: req.query }); //Only updates the attributes specified in 'query'
+        console.log('Update Point: ' + req.params.pointId)
         res.status(200).json({ success: true, payload: resp }).end();
     } catch (ex) {
         res.status(400).json({ "success": false, message: err.message }).end()
@@ -68,6 +71,7 @@ router.delete('/:pointId', getProject, getArea, getLevel, getPoint, async(req, r
     try {
         //remove references
         let deleteResponse = await recursiveDelPoint([req.params.pointId])
+        console.log('Delete Point: ' + req.params.pointId)
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

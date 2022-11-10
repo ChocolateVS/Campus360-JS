@@ -5,7 +5,7 @@ const { Level, Point } = require('../models/schema.js');
 
 //Upload images to Level objects
 router.post('/floorplan', (req, res, next) => {
-    console.log("Creating floorplan...")
+    console.log("Request to upload floorplan")
     try {
         let storage = multer.diskStorage({
             destination: function(req, file, cb) {
@@ -21,7 +21,6 @@ router.post('/floorplan', (req, res, next) => {
         res.status(500).json({ success: false, message: err.message })
     }
 }, async(req, res) => {
-    console.log('processing file');
     if (!req.file) { res.status(400).json({ success: false, message: "Param name must be 'file'" }).end(); return; }
     let file = req.file;
     if (!file) {
@@ -40,7 +39,7 @@ router.post('/floorplan', (req, res, next) => {
         //Update Level from ID
         if (req.query.id) {
             let resp = await Level.findOne({ _id: req.query.id });
-            if (!resp) throw 'Could not find specified levelID: " +  req.query.id + ". File uploaded regardless as ' + fileInfo.directory + "/" + fileInfo.name
+            if (!resp) throw "Could not find specified levelID: " +  req.query.id + ". File uploaded regardless as " + fileInfo.directory + "/" + fileInfo.name
             resp.image = fileInfo
             await resp.save();
         }
@@ -48,6 +47,7 @@ router.post('/floorplan', (req, res, next) => {
             success: true,
             message: "Successfully received image as: " + JSON.stringify(fileInfo)
         });
+        console.log("Insert floorplan: " + JSON.stringify(fileInfo))
         res.end();
     } catch (err) {
         res.status(400).json({ success: false, message: err.message })
@@ -56,7 +56,7 @@ router.post('/floorplan', (req, res, next) => {
 
 //Upload image to Point object
 router.post('/panorama', (req, res, next) => {
-    console.log("Creating a panorama")
+    console.log("Request to upload panorama")
     try {
         let storage = multer.diskStorage({
             destination: function(req, file, cb) {
@@ -73,7 +73,6 @@ router.post('/panorama', (req, res, next) => {
     }
 
 }, async(req, res) => {
-    console.log("processing the file")
     if (!req.file) { res.status(400).json({ success: false, message: "Param name must be 'file'" }).end(); return; }
     let file = req.file;
     if (!file) {
@@ -87,11 +86,12 @@ router.post('/panorama', (req, res, next) => {
         name: (req.query.filename ? req.query.filename : file.originalname),
         directory: (req.query.local_directory ? req.query.local_directory : '')
     }
+
     try {
         //Update Level from ID
         if (req.query.id) {
             let resp = await Point.findOne({ _id: req.query.id });
-            if (!resp) throw 'Could not find specified pointID: " +  req.query.id + ". File uploaded regardless as ' + fileInfo.directory + "/" + fileInfo.name
+            if (!resp) throw "Could not find specified pointID: " +  req.query.id + ". File uploaded regardless as " + fileInfo.directory + "/" + fileInfo.name
             resp.image = fileInfo
             await resp.save();
         }
@@ -99,6 +99,7 @@ router.post('/panorama', (req, res, next) => {
             success: true,
             message: "Successfully received image as: " + JSON.stringify(fileInfo)
         });
+        console.log("Insert panorama: " + JSON.stringify(fileInfo))
         res.end();
     } catch (err) {
         res.status(400).json({ success: false, message: err.message })

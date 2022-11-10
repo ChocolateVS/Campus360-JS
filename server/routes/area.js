@@ -26,6 +26,7 @@ router.get('/:areaId', getProject, getArea, async(req, res) => {
     let levels = res.area.level_ids
     let projObj = res.area.toObject({ getters: true, minimize: false, depopulate:true})
     projObj.levels = levels
+    console.log("Get area:" + res.params.areaId)
     res.status(200).json({ success: true, payload: projObj }).end();
 });
 
@@ -51,6 +52,7 @@ router.post('/', getProject, async(req, res, next) => {
         if (newArea == null) throw "Could not create an 'Area' instance";
         const saveResult = await newArea.save();
         await res.project.save(); //Must save after incase newArea is invalid
+        console.log("Create area:" + JSON.stringify(createObj))
         res.status(201).json({ success: true, payload: saveResult })
     } catch (err) {
         res.status(400).json({ success: false, message: err.message })
@@ -62,6 +64,7 @@ router.patch('/:areaId', getProject, getArea, async(req, res) => {
         let updateObject = req.query;
         let id = ObjectId(req.params.areaId)
         let resp = await Area.updateOne({ _id: id }, { $set: updateObject });
+        console.log("Update area:" + res.params.areaId)
         res.status(200).json({ success: true, payload: resp }).end();
     } catch (ex) {
         res.status(400).json({ "success": false, message: ex.message }).end()
@@ -72,6 +75,7 @@ router.delete('/:areaId', getProject, getArea, async(req, res) => { //middleware
     try {
         //Remove references
         let deleteResponse = await recursiveDelArea([req.params.areaId])
+        console.log("Delete area:" + res.params.areaId)
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end();

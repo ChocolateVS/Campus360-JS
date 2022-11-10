@@ -17,6 +17,7 @@ router.get('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) =
     let links = res.room.link_ids
     let projObj = res.room.toObject({ getters: true, minimize: false, depopulate:true})
     projObj.links = links
+    console.log('Get room: ' + req.params.roomId)
     res.status(200).json({ success: true, payload: projObj }).end();
 });
 
@@ -44,6 +45,7 @@ router.post('/', getLevel, async(req, res) => {
         if (newRoom == null) throw 'Could not create Room object';
         const saveResult = await newRoom.save();
         await res.level.save();
+        console.log('Create room: ' + JSON.stringify(createObj))
         res.status(201).json({ success: true, payload: saveResult })
     } catch (err) {
         res.status(400).json({ "success": false, message: err.message }).end()
@@ -54,6 +56,7 @@ router.post('/', getLevel, async(req, res) => {
 router.patch('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => {
     try {
         let resp = await Room.updateOne({ _id: res.room._id }, { $set: req.query }); //Only updates the attributes specified in 'query'
+        console.log('Update room: ' + req.params.roomId)
         res.status(200).json({ success: true, payload: resp }).end();
     } catch (err) {
         res.status(400).json({ "success": false, message: err.message }).end()
@@ -63,6 +66,7 @@ router.patch('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res)
 router.delete('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
         let deleteResponse = await recursiveDelRoom([req.params.roomId])
+        console.log('Delete room: ' + req.params.roomId)
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

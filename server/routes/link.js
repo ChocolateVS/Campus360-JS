@@ -28,6 +28,7 @@ function setObj(req, res, next) {
 router.get('/:linkId', determineType, setObj, async(req, res) => {
     let resp;
     resp = res.linkParent.link_ids.find(obj => { return obj._id == req.params.linkId })
+    console.log('Get link: ' + req.params.linkId)
     res.status(200).json({ success: true, payload: (resp ? resp : 'No link exists with that ID') })
 });
 
@@ -38,6 +39,7 @@ router.get('/', determineType, setObj, (req, res, next) => {
 
 
 router.post('/:linkId', determineType, setObj, async(req, res) => {
+    
     try {
         let otherPoint;
         if (!res.linkParent) throw 'Could not identify object to add link to!';
@@ -57,6 +59,7 @@ router.post('/:linkId', determineType, setObj, async(req, res) => {
         } else throw 'LinkID does not correspond to a point'
 
         const saveResult = await res.linkParent.save()
+        console.log('Create link: ' + req.params.linkId)
         res.status(201).json({ success: true, payload: saveResult })
     } catch (err) {
         res.status(400).json({ "success": false, message: err.message }).end()
@@ -65,8 +68,7 @@ router.post('/:linkId', determineType, setObj, async(req, res) => {
 });
 
 router.delete('/:linkId', determineType, setObj, async(req, res) => {
-    console.log(req.params.linkId)
-    console.log('deleted')
+    
     try {
         if (!res.linkParent) throw 'Could not identify object to delete from!';
         let modelType = res.roomId ? Room : (res.pointId ? Point : null);
@@ -76,7 +78,7 @@ router.delete('/:linkId', determineType, setObj, async(req, res) => {
         
         //Delete two way
         if(res.twoWayLink) await Point.updateOne({ _id: req.params.linkId, link_ids: res.linkParent._id}, { $pull: { link_ids: res.linkParent._id} })
-
+        console.log('Delete link: ' + req.params.linkId)
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

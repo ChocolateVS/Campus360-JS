@@ -25,6 +25,7 @@ router.get('/:levelId', getProject, getArea, getLevel, async(req, res) => {
     let projObj = res.level.toObject({ getters: true, minimize: false, depopulate: true })
     projObj.rooms = rooms
     projObj.points = points
+    console.log("Get level:" + res.params.levelId)
     res.status(200).json({ success: true, payload: projObj }).end();
 });
 
@@ -54,7 +55,7 @@ router.post('/', getProject, getArea, async(req, res) => {
         if (newLevel == null) throw 'Could not make Level object';
         const saveResult = await newLevel.save()
         await res.area.save(); //Must save AFTER incase the 'newLevel' is invalid
-
+        console.log('Create level: ' + JSON.stringify(createObj))
         res.status(201).json({ success: true, payload: saveResult })
     } catch (err) {
         res.status(400).json({ success: false, message: err.message })
@@ -64,6 +65,7 @@ router.post('/', getProject, getArea, async(req, res) => {
 router.patch('/:levelId', getProject, getArea, getLevel, async(req, res) => {
     try {
         let resp = await Level.updateOne({ _id: ObjectId(req.params.levelId) }, { $set: req.query }); //Only update specified values in 'query'
+        console.log("Update level:" + res.params.levelId)
         res.status(200).json({ success: true, payload: resp }).end();
     } catch (ex) {
         res.status(400).json({ "success": false, message: err.message }).end()
@@ -74,6 +76,7 @@ router.delete('/:levelId', getProject, getArea, getLevel, async(req, res) => { /
     try {
         //Remove references
         let deleteResponse = await recursiveDelLevel([req.params.levelId])
+        console.log("Delete level:" + res.params.levelId)
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()

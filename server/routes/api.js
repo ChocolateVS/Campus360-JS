@@ -28,7 +28,7 @@ router.get('/roomlocation/:roomId', async(req, res) => {
                 outObj.area = area;
             else throw 'No area attached to this level/point!'
         } else throw 'No level attached to this point!'
-
+        console.log("Room location for " + req.params.roomId)
         res.status(200).json({ success: true, payload: outObj });
     } catch (ex) {
         res.status(400).json({ success: false, message: ex.message })
@@ -47,7 +47,7 @@ router.get('/pointlocation/:pointId', async(req, res) => {
                 outObj.area = area;
             else throw 'No area attached to this level/point!'
         } else throw 'No level attached to this point!'
-
+        console.log("Point location for " + req.params.pointId)
         res.status(200).json({ success: true, payload: outObj });
     } catch (ex) {
         res.status(400).json({ success: false, message: ex.message })
@@ -81,7 +81,7 @@ router.get('/all', async(req, res) => {
             ]
         }
     })
-
+    console.log("Get all")
     res.status(200).json({ success: true, payload: resp }).end();
 })
 
