@@ -18,10 +18,10 @@ ALL non-get requests must have a 'auth' param in the BODY (i.e. not ?auth=) - AU
 
 ## AREA
 
-- GET /api/project/<projectID>/area/\<optional ID for specific>
-- POST /api/project/<projectID>/area?id=\<optional>&name=\<required string>
-- PATCH /api/project/<projectID>/area/\<areaID>?name=\<optional string>
-- DELETE /api/project/<projectID>/area/\<areaID>
+- GET /api/project/\<projectID>/area/\<optional ID for specific>
+- POST /api/project/\<projectID>/area?id=\<optional>&name=\<required string>
+- PATCH /api/project/\<projectID>/area/\<areaID>?name=\<optional string>
+- DELETE /api/project/\<projectID>/area/\<areaID>
 
 ## LEVEL
 
