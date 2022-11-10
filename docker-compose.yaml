@@ -9,10 +9,12 @@ services:
         - 27017
       volumes:
         - mon-db:/data/db
+        - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
       environment:
         - MONGO_INITDB_ROOT_USERNAME=campus360
         - MONGO_INITDB_ROOT_PASSWORD=SuperSecurePassword!
         - MONGO_INITDB_DATABASE=waikato_db
+
     nodejs:
       build: ./
       restart: 'unless-stopped'
@@ -25,6 +27,7 @@ services:
         - 3001
       depends_on:
         - mongo
+
     mongo-express:
         image: mongo-express
         environment:
