@@ -1,5 +1,8 @@
 version:  "3.3"
 services:
+    base:
+      env_file:
+        - server/.env
     mongo:
       image: mongo
       restart: 'unless-stopped'
@@ -12,7 +15,7 @@ services:
         - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
       environment:
         - MONGO_INITDB_ROOT_USERNAME=${MONGO_RESTRICTED_USR:-campus360}
-        - MONGO_INITDB_ROOT_PASSWORD=${MONGO_RESTRICTED_PWD-SuperSecurePassword}
+        - MONGO_INITDB_ROOT_PASSWORD=${MONGO_RESTRICTED_PWD-SuperSecurePassword!}
         - MONGO_INITDB_DATABASE=${MONGO_DB_NAME:-waikato_db}
 
     nodejs:
