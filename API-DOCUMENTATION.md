@@ -37,16 +37,16 @@ ALL non-get requests must have a 'auth' param in the BODY (i.e. not ?auth=) - AU
 - POST /api/upload/floorplan?id=<required valid ObjectId>&filename=<default '' string>&scale=<default 1 number>&local_directory=<dirname string default ''>
 
 
-```NOTE: Room and Point are referenced by LEVEL```
-## Room
 
+## Room
+```NOTE: Room and Point are referenced by LEVEL```
 - GET /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<optional ID for specific>
 - POST /api/project/<projectID>/area/<areaID>/level/<levelID>/room?id=<optional objectid>&name=<required string>&owner=<default '' string>&type=<default '' string>
 - PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<roomID>?name=<optional string>&owner=<optional string>&type=<optional string>
 - DELETE /api/project/<projectID>/area/<areaID>/level/<levelID>/room/<roomID>
 
 ## Point
-
+```NOTE: Room and Point are referenced by LEVEL```
 - GET /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<optional ID for specific>
 - POST /api/project/<projectID>/area/<areaID>/level/<levelID>/point?id=<optional>&name=<required string>&x=<required number>&y=<required number>&north=<default 0.5 number>&type=<default '' string>&local_directory=<default '' string>&filename=<default '' string> 
 - PATCH /api/project/<projectID>/area/<areaID>/level/<levelID>/point/<pointID>?name=<optional string>&x=<optional number>&y=<optional number>&type=<optional string>&image.north=<optional number>&image.directory=<optional string>&image.name=<optional string> 
