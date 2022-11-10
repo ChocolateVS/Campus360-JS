@@ -12,6 +12,13 @@ const uploadAPI = require('./upload.js')
 //Mongoose
 const { Project } = require('../models/schema.js')
 
+router.use((req, res, next)=>{
+    if(req.method == "GET") next();
+    else if(req.body.auth && req.body.auth == process.env.AUTH_KEY) next();
+    else 
+    res.status(400).json({success:false, payload: "User does not have auth!"})
+})
+
 router.get('/rooms', async(req, res) => {
     let resp = await Room.find();
     res.status(200).json({ success: true, payload: resp });
