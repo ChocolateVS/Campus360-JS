@@ -9,15 +9,15 @@ made to showcase student talent @ UoW.
 ---
 ### SERVER Setup:
 - Navigate to docker-compose.yaml - ensure passwords are what you want, and the index/package.json in NODE up to date.   
-- ```sudo docker-compose build && sudo docker-compose up```  
-- Note: The container names will have the parent folder's name as a prefix and a number as a suffix e.g. parent_nodejs_1, campus360-js_nodejs_1, etc.  
+ 
 
-#### Setting up the MongoDB  
 - Make sure you update the passwords in mongo-init.js to reflect the usr/pwd of the url inside the .env
-
-You should now be good to go, either open port 3001(nodejs) and 3002(mongo-express online editor) on your system, or use a nginx to proxypass (We used nginx).  
+'sudo docker-compose up' should handle everything.
+Either open port 3001(nodejs) and 3002(mongo-express online editor) on your system, or use a nginx to proxypass (We used nginx).  
 - (**not** recommended) open 27017 if you need direct access to the mongodb server  
-To Start: ```sudo docker-compose up``` or ```sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1```  
+- Note: The container names will have the parent folder's name as a prefix and a number as a suffix e.g. parent_nodejs_1, campus360-js_nodejs_1, etc, so if any of the container names used here don't match yours, feel free to change the suffix to match your parent folder. 
+To Start: ```sudo docker-compose build && sudo docker-compose up```(ctrl+c to exit) or (only after docker-compose has been run atleast once) ```sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1``` 
+- The second option is a more permanent 'on', 'docker-compose up' only stays on as long as the ssh session is open
 
 #### Editing:  
 ---
