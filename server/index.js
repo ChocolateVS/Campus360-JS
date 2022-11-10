@@ -8,25 +8,19 @@ const api = require('./routes/api.js');
 const app = express();
 
 
-const clientDir = path.join(__dirname, '../client', 'build')
-const pureJSDir = path.join(__dirname, '../client', 'pureJS')
+const clientDir = path.join(__dirname, '../client', './')
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const url = process.env.MONGO_URL || "mongodb://localhost:27017/waikato_db";
 
-app.use(express.static(clientDir));
 //API urls
 app.use('/images', express.static(__dirname + '/images'));
 app.use('/api', api);
 
-app.get('/purejs', express.static(pureJSDir));
-
-//Serve client side
-app.get('/', (req, res)=>{
-    res.sendFile('index.html', {clientDir})
-})
+app.use("/", express.static(clientDir));
 
 
 mongoose.connect(url, {
