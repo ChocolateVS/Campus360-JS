@@ -64,5 +64,5 @@ Docker - runs the NodeJS, DB and GUI editor
 - Cannot run https to http - Either use NGINX + certbot to request over an API, or configure the express to use HTTPS yourself. OR just run everything on http for simplicity.
 
 
-Rowan: Developed the Android app & Front end
-Alexander: Developed the server configuration & Front end
+Rowan: Developed the Android app & Front-end  
+Alexander: Developed the backend, server-config & Front end  
