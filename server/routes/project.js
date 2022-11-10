@@ -60,6 +60,7 @@ router.patch('/:projectId', getProject, async(req, res) => {
 
 router.delete('/:projectId', getProject, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
+        
         let deleteResponse = await recursiveDelProject([req.params.projectId])
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {

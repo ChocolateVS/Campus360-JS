@@ -5,6 +5,7 @@ const { Level, Point } = require('../models/schema.js');
 
 //Upload images to Level objects
 router.post('/floorplan', (req, res, next) => {
+    console.log("Creating floorplan...")
     try {
         let storage = multer.diskStorage({
             destination: function(req, file, cb) {
@@ -17,7 +18,7 @@ router.post('/floorplan', (req, res, next) => {
         let upload = multer({ storage: storage })
         upload.single('file')(req, res, next)
     } catch (err) {
-        res.status(400).json({ success: false, message: err.message })
+        res.status(500).json({ success: false, message: err.message })
     }
 }, async(req, res) => {
     console.log('processing file');
@@ -55,6 +56,7 @@ router.post('/floorplan', (req, res, next) => {
 
 //Upload image to Point object
 router.post('/panorama', (req, res, next) => {
+    console.log("Creating a panorama")
     try {
         let storage = multer.diskStorage({
             destination: function(req, file, cb) {
@@ -71,6 +73,7 @@ router.post('/panorama', (req, res, next) => {
     }
 
 }, async(req, res) => {
+    console.log("processing the file")
     if (!req.file) { res.status(400).json({ success: false, message: "Param name must be 'file'" }).end(); return; }
     let file = req.file;
     if (!file) {
@@ -100,8 +103,6 @@ router.post('/panorama', (req, res, next) => {
     } catch (err) {
         res.status(400).json({ success: false, message: err.message })
     }
-
-
 });
 
 module.exports = router;
