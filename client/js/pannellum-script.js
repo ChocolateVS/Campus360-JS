@@ -1,5 +1,5 @@
 const SERVER_API_URL = window.location.origin + '/api/';
-const SERVER_URL = window.location.origin;
+const SERVER_URL = window.location.origin + "/";
 const EXTERNAL_POINT_PREFIX = 'external-'
 
 const hardcodedProject = "485b3c31c3d347ae84108de9";
