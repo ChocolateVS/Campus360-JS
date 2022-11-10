@@ -8,7 +8,9 @@ made to showcase student talent @ UoW.
 ## How to use
 ---
 ### SERVER Setup:
-- Navigate to docker-compose.yaml, .env, and mongo-init.js - ensure passwords are what you want, and the index.js & package.json in /server is up to date. 
+- Navigate to .env file - update all the passwords to your preference, make sure the mongo-init.js & MONGO_URL reflect the updated values
+- Default values: waikato_db - dbname, campus360 - usr, SuperSecurePassword! - pwd
+- Make sure the mongo-express MONGO_EXPRES_USR/PWD match the MONGODB_ADMIN_USR/PWD
 - Make sure you update the passwords in mongo-init.js to reflect the usr/pwd of the url inside the .env
 'sudo docker-compose up' should handle everything.
 Either open port 3001(nodejs) and 3002(mongo-express online editor) on your system, or use a nginx to proxypass (We used nginx).  
@@ -16,27 +18,30 @@ Either open port 3001(nodejs) and 3002(mongo-express online editor) on your syst
 - Note: The container names will have the parent folder's name as a prefix and a number as a suffix e.g. parent_nodejs_1, campus360-js_nodejs_1, etc, so if any of the container names used here don't match yours, feel free to change the suffix to match your parent folder.  
 
 #### To Start: 
+Either add your user to the docker admin group ```sudo usermod -aG docker $USER``` or add ```sudo``` to the front of each command below.
 ```
-sudo docker-compose build && \
-sudo docker-compose up --no-start && \
-sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1
+docker-compose build && \
+docker-compose up --no-start && \
+docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1
 ``` 
 - If you want the containers to only be run temporarily, you can remove the --no-start flag from the 'docker-compose up', and just run the first 2 commands - The containers will stop on ctrl-c, or ssh session exit
 
 #### Editing:  
 ---
  To edit the NodeJS when docker has already been created:
- - ```docker exec -it campus360-js_nodejs_1 sh```
- - ```apt update && apt install nano && nano index.js``` 
- or (catch all)
- - ```sudo docker-compose build && sudo docker-compose up``` -> ctrl-c -> ```sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1```
+ - ```docker exec -it campus360-js_nodejs_1 sh``` 
+ - Inside the bash shell, ```apt update && apt install nano && nano index.js```  
+ OR 
+ - Just rerun the 'To Start' section code.
 
   
  - To edit the mongodb: 
  - ```docker exec -it campus360-js_mongo_1 sh```  
- - ```mongosh -u <mongo_root_usr> -p <mongo_root_pwd>``` (usr/pwd are the Admin details in docker-compose.yaml)
- - ```use waikato_db;```
- Otherwise if 3002 is an open port on the server ```<serverip>:3002/``` should allow you to access the GUI editor - remote/SuperSecurePassword! (change in docker-compose.yaml)  
+ - Inside the bash shell, ```mongosh -u <mongo_admin_usr> -p <mongo_admin_pwd>``` (usr/pwd are the Admin details in docker-compose.yaml)
+ - ```use <dbname>;``` - You now have freedom to do anything to the waikato_db database  
+ OR (GUI OPTION)
+ - If 3002 is an open port on the server ```<server ip>:3002/``` should allow you to access the GUI editor
+ - use <mon-ex_basicauth_usr>/<mon-ex_basicauth_pwd> to login (docker-compose.yaml) 
 ---
 ### Android App Setup:
 - [Install](https://github.com/ChocolateVS/Campus360-MapBuilder) the android app on your android phone
