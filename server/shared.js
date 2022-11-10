@@ -6,7 +6,6 @@ async function getPoint(req, res, next) {
     let query;
     try {
         let pointID = ObjectId(req.params.pointId ? req.params.pointId : res.pointId);
-        console.log("Query Point for " + pointID)
         query = await Point.findById(pointID).populate('link_ids');
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find any point by id!' })
@@ -23,7 +22,6 @@ async function getRoom(req, res, next) {
     let query;
     try {
         let roomID = ObjectId(req.params.roomId ? req.params.roomId : res.roomId);
-        console.log("Query Point for " + roomID)
         query = await Room.findById(roomID).populate('link_ids')
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find any room by id!' })
@@ -41,7 +39,6 @@ async function getLevel(req, res, next) {
     
     try {
         let queryObj = ObjectId(req.params.levelId ? req.params.levelId : res.levelId);
-        console.log("Query Level for " + JSON.stringify(queryObj))
         query = await Level.findById(queryObj).populate('point_ids').populate('room_ids')
 
         if (query == null) {
@@ -59,7 +56,6 @@ async function getArea(req, res, next) {
     let query;
     try {
         let queryObj = ObjectId(req.params.areaId ? req.params.areaId : res.areaId);
-        console.log("Query Area for " + JSON.stringify(queryObj))
         query = await Area.findById(queryObj).populate('level_ids')
 
         if (query == null) {
@@ -78,10 +74,7 @@ async function getProject(req, res, next) {
     let query;
     try {
         let queryObj = ObjectId(req.params.projectId ? req.params.projectId : res.projectId);
-        console.log("Query Project for " + JSON.stringify(queryObj))
-
         query = await Project.findById(queryObj).populate('area_ids')
-        console.log(query.area_ids)
         
         if (query == null) {
             return res.status(404).json({ success: false, message: 'Could not find Project by ID!' })
