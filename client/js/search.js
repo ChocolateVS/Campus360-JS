@@ -37,7 +37,7 @@ roomSearchEntries.forEach(room =>{
 })
 });
 
-fetch('https://campus.rowansserver.com/api/rooms').then(res => res.json())
+fetch(window.location.origin + '/api/rooms').then(res => res.json())
 .then(data => {
 roomSearchEntries = data.payload.map(room =>{
     const roomObj = roomEntryTemplate.content.cloneNode(true).children[0]

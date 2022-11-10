@@ -4,10 +4,8 @@ let temp_points;
 let temp_current;
 
 function setupMap(imgLoc){
-    $(".floorplan").attr("src", "https://campus.rowansserver.com/images/" + imgLoc);
+    $(".floorplan").attr("src", window.location.origin+ "/images/" + imgLoc);
      floorplan_overlay = $("#floorplan_click_overlay");
-
-    //ToDo: Create clickable areas to move to.
 }
 
 function drawPoints(points, currPointID){

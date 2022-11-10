@@ -1,5 +1,5 @@
-const SERVER_API_URL = 'https://campus.rowansserver.com/api/'
-const SERVER_URL = 'https://campus.rowansserver.com/'
+const SERVER_API_URL = window.location.origin + '/api/';
+const SERVER_URL = window.location.origin;
 const EXTERNAL_POINT_PREFIX = 'external-'
 
 const hardcodedProject = "485b3c31c3d347ae84108de9";
@@ -38,8 +38,7 @@ var onHotSpotClick = function(event, yaw) {
     target_yaw = yaw;
 };
 
-const emptyImagePath = "https://purejs.rowansserver.com/client/images/default.jpg";
-
+const emptyImagePath = "./images/default.jpg";
 
 setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
 
