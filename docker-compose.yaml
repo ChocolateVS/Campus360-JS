@@ -11,9 +11,9 @@ services:
         - mon-db:/data/db
         - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
       environment:
-        - MONGO_INITDB_ROOT_USERNAME=campus360
-        - MONGO_INITDB_ROOT_PASSWORD=SuperSecurePassword!
-        - MONGO_INITDB_DATABASE=waikato_db
+        - MONGO_INITDB_ROOT_USERNAME=${MONGO_RESTRICTED_USR:-campus360}
+        - MONGO_INITDB_ROOT_PASSWORD=${MONGO_RESTRICTED_PWD-SuperSecurePassword}
+        - MONGO_INITDB_DATABASE=${MONGO_DB_NAME:-waikato_db}
 
     nodejs:
       build: ./
@@ -34,11 +34,11 @@ services:
             - ME_CONFIG_MONGODB_SERVER=mongo
             - ME_CONFIG_MONGODB_PORT=27017
             - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
-            - ME_CONFIG_MONGODB_AUTH_DATABASE=waikato_db
-            - ME_CONFIG_MONGODB_AUTH_USERNAME=remote
-            - ME_CONFIG_MONGODB_AUTH_PASSWORD=SuperSecurePassword!
-            - ME_CONFIG_BASICAUTH_USERNAME=campus360
-            - ME_CONFIG_BASICAUTH_PASSWORD=campus360
+            - ME_CONFIG_MONGODB_AUTH_DATABASE=${MONGO_DB_NAME:-waikato_db}
+            - ME_CONFIG_MONGODB_AUTH_USERNAME=${MONGO_RESTRICTED_USR:-remote}
+            - ME_CONFIG_MONGODB_AUTH_PASSWORD=${MONGO_RESTRICTED_PWD-SuperSecurePassword!}
+            - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USR:-campus360}
+            - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PWD-campus360}
         depends_on:
             - mongo
         ports:
