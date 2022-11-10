@@ -14,7 +14,9 @@ made to showcase student talent @ UoW.
 Either open port 3001(nodejs) and 3002(mongo-express online editor) on your system, or use a nginx to proxypass (We used nginx).  
 - (**not** recommended) open 27017 if you need direct access to the mongodb server  
 - Note: The container names will have the parent folder's name as a prefix and a number as a suffix e.g. parent_nodejs_1, campus360-js_nodejs_1, etc, so if any of the container names used here don't match yours, feel free to change the suffix to match your parent folder.  
-To Start: ```sudo docker-compose build && sudo docker-compose up --no-start && sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1``` 
+
+#### To Start: 
+```sudo docker-compose build && sudo docker-compose up --no-start && sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1``` 
 - If you want the containers to only be run temporarily, you can remove the --no-start flag from the 'docker-compose up', and just run the first 2 commands - The containers will stop on ctrl-c, or ssh session exit
 
 #### Editing:  
