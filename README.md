@@ -49,6 +49,10 @@ docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-expre
 - connect to the Insta360x2 camera via wifi - and start taking photos + mapping points   
 - Once you have your points and everything loaded, you can then export it all the the Mongo database, which can be subsequently accessed via the frontend/API.  
 
+### Use of API
+- Refer to API-DOCUMENTATION.txt
+- All non-get requests MUST have the 'auth' param attached to the BODY(i.e. not a GET param) - AUTH_KEY is in server/.env
+
 ## How it works
 HTML5 - front end - Using Panneleum to view 360deg    
 NodeJS - server side  
