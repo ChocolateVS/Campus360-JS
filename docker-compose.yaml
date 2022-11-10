@@ -1,8 +1,5 @@
 version:  "3.3"
 services:
-    base:
-      env_file:
-        - server/.env
     mongo:
       image: mongo
       restart: 'unless-stopped'
