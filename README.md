@@ -19,8 +19,10 @@ Once ```sudo docker-compose up``` has booted up (i.e. creates the containers), y
 - Campus360-JS should be the parent folder, so the containers will start with campus360-js, but this may be different for you. Please check the closing statement of the docker-compose up to see, or run ```docker ps -a```    
 ```sudo docker start campus360-js_mongo_1```  
 ```docker exec -it campus360-js_mongo_1 sh```    
-```mongosh -u campus360 -p SuperSecurePassword! waikato_db``` then to create user for NodeJS  
-```db.createUser({user:'remote', pwd:'SuperSecurePassword!', roles:[{role:'readWrite', db:'waikato_db'}] });
+```mongosh -u campus360 -p SuperSecurePassword!``` then to create user for NodeJS  
+```
+use waikato_db;
+db.createUser({user:'remote', pwd:'SuperSecurePassword!', roles:[{role:'readWrite', db:'waikato_db'}] });
 ```  
 (feel free to customise the db user's details - just make sure to update the .env in /NODE to match)  
 then   
