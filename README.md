@@ -3,11 +3,13 @@
 ### University of Waikato funded project - developed following on from the COMPX241-21A Smoke and Mirrors Project
 made to showcase student talent @ UoW.
 
+```WARNING: The API is completely unprotected - WILL EVENTUALLY IMPLEMENT AUTHKEYS```
+
 ## How to use
 ### SERVER Setup:
 Navigate to docker-compose.yaml - ensure passwords are what you want, and the index/package.json in NODE up to date.   
 ```docker-compose up```  
-#### Setting up the SQL  
+#### Setting up the MongoDB  
 ```docker exec -it server_mongodb_1 sh```  
 ```mongosh -u campus360 -p SuperSecurePassword!``` then to create user for NodeJS 
 ```use waikato_db; 
@@ -16,7 +18,7 @@ db.createUser({user:'remote', pwd:'SuperSecurePassword!', roles:[{role:'readWrit
 (feel free to customise the db user's details - just make sure to update the .env in /NODE to match)
 then 
 ```exit```  
-You should now be good to go, either open port 3000(nodejs) and 3002(mongo-express) on your system, or use a nginx to proxypass (We used nginx).  
+You should now be good to go, either open port 3001(nodejs) and 3002(mongo-express online editor) on your system, or use a nginx to proxypass (We used nginx).  
 (**not** recommended) open 27017 if you need direct access to the mongodb server  
 
 #### Editing:  
@@ -29,7 +31,7 @@ You should now be good to go, either open port 3000(nodejs) and 3002(mongo-expre
 ---
 ### Android App Setup
 Install the android app on your android phone - connect to the Insta360x2 camera via wifi - and start taking photos + mapping points   
-Once you have your points and everything loaded, you can then export it all the the SQL database, which can be subsequently accessed via the frontend.  
+Once you have your points and everything loaded, you can then export it all the the Mongo database, which can be subsequently accessed via the frontend/API.  
 
 ## How it works
 HTML5 - front end - Using Panolens.js to view 360deg    
