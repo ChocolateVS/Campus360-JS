@@ -9,25 +9,25 @@ made to showcase student talent @ UoW.
 ### SERVER Setup:
 Navigate to docker-compose.yaml - ensure passwords are what you want, and the index/package.json in NODE up to date.   
 ```sudo docker-compose build && sudo docker-compose up```  
-- Note: The container names will have the parent folder's name as a prefix and a number as a suffix e.g. parent_nodejs_1, campus360-js_nodejs_1, etc.
+- Note: The container names will have the parent folder's name as a prefix and a number as a suffix e.g. parent_nodejs_1, campus360-js_nodejs_1, etc.  
 #### Setting up the MongoDB  
- - Make sure you update the passwords in here to reflect your docker-compose.yaml
-Once ```sudo docker-compose up``` has booted up (i.e. creates the containers), you will need to 'ctrl-c' and exit out  
+ - Make sure you update the passwords in here to reflect your docker-compose.yaml  
+Once ```sudo docker-compose up``` has booted up (i.e. creates the containers), you will need to 'ctrl-c' and exit out   
 **please note the logs in the docker-compose up will indicate NodeJS & mongo-express are crashing, this is EXPECTED until we do the next step**  
 - Please note: You will have to start the mongoDB by ITSELF when doing this step - the other containers depend on the credentials created in this step to work  
-- Campus360-JS should be the parent folder, so the containers will start with campus360-js, but this may be different for you. Please check the closing statement of the docker-compose up to see, or run ```docker ps -a```  
-```sudo docker start campus360-js_mongodb_1```
-```docker exec -it campus360-js_mongodb_1 sh```  
-```mongosh -u campus360 -p SuperSecurePassword!``` then to create user for NodeJS 
+- Campus360-JS should be the parent folder, so the containers will start with campus360-js, but this may be different for you. Please check the closing statement of the docker-compose up to see, or run ```docker ps -a```    
+```sudo docker start campus360-js_mongodb_1```  
+```docker exec -it campus360-js_mongodb_1 sh```    
+```mongosh -u campus360 -p SuperSecurePassword!``` then to create user for NodeJS  
 ```use waikato_db; 
 db.createUser({user:'remote', pwd:'SuperSecurePassword!', roles:[{role:'readWrite', db:'waikato_db'}] });
-```
-(feel free to customise the db user's details - just make sure to update the .env in /NODE to match)
-then 
-```exit```  
+```  
+(feel free to customise the db user's details - just make sure to update the .env in /NODE to match)  
+then   
+```exit```   
 You should now be good to go, either open port 3001(nodejs) and 3002(mongo-express online editor) on your system, or use a nginx to proxypass (We used nginx).  
 (**not** recommended) open 27017 if you need direct access to the mongodb server  
-To Start: ```sudo docker-compose up``` or ```sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1```
+To Start: ```sudo docker-compose up``` or ```sudo docker start campus360-js_nodejs_1 campus360-js_mongo_1 campus360-js_mongo-express_1```  
 
 #### Editing:  
   To edit the NodeJS when docker has already been created ```docker exec -it campus360-js_nodejs_1 sh```  
