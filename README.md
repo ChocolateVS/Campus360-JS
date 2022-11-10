@@ -54,13 +54,16 @@ Docker - runs the NodeJS, DB and GUI editor
 [Android App](https://github.com/ChocolateVS/Campus360-MapBuilder) - Gitrepo linked - create maps, points and manage bringing all together - connects via Wifi to the 360deg camera.  
 
 ### Common Issues
-Build fails - make sure that there is a /images dir in the /server section, make sure you have docker-compose installed, make sure you have docker installed. Make sure you are running docker-compose up, from the parent directory, instead of in '/server'
-Docker won't run - make sure the latest version is installed, make sure you are running commands as sudo OR have your user added the docker admin group 
-My changes to the mongo/mongo-express aren't showing - Any changes to the docker-compose.yaml, e.g. password, etc). First try 'docker-compose down', if that doesn't work you will need to DELETE the containers associated (don't worry db, images, & client side data is stored in docker volumes in ```/var/lib/docker/volumes```)
-Can't access /var/lib/docker/volumes - you may need to go into ```sudo su```, as it is a protected folder
-Can't access any info from the client side - all the API calls are to a hardcoded URL(yes, i know), you will have to change this to your server
-CORS error - inside /server/index.js there is a CORS statement that can allow or restrict clients from requesting the API
+- Build fails - make sure that there is a /images dir in the /server section, make sure you have docker-compose installed, make sure you have docker installed. 
+- Make sure you are running docker-compose up, from the parent directory, instead of in '/server'
+- Docker won't run - make sure the latest version is installed, make sure you are running commands as sudo OR have your user added the docker admin group 
+- My changes to the mongo/mongo-express aren't showing - Any changes to the docker-compose.yaml, e.g. password, etc). First try 'docker-compose down', if that doesn't work you will need to DELETE the containers associated (don't worry db, images, & client side data is stored in docker volumes in ```/var/lib/docker/volumes```), If that still doesn't work, you will need to clear the volume information `inside /var/lib/docker/volumes` <- most common problem for Mongo not logging in.
+- MongoDB/Mongosh won't log in - if you haven't done the 'setting up mongodb section' NodeJS/Mongo-express won't work. If you are trying to log in with mongosh, and the credentials in docker-compose.yaml aren't working, you may need to clear the docker volume for the mongo, because the populating of the mongo config may have corrupted in earlier steps. 
+- Can't access /var/lib/docker/volumes - you may need to go into ```sudo su```, as it is a protected folder
+- Can't access any info from the client side - all the API calls are to a hardcoded URL(yes, i know), you will have to change this to your server
+- CORS error - inside /server/index.js there is a CORS statement that can allow or restrict clients from requesting the API
 Cannot run https to http - Either use NGINX + certbot to request over an API, or configure the express to use HTTPS yourself. OR just run everything on http for simplicity.
+
 
 Rowan: Developed the Android app & Front end
 Alexander: Developed the server configuration & Front end
