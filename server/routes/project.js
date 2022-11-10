@@ -20,7 +20,7 @@ router.get('/:projectId', getProject, (req, res) => {
     let populatedObj = res.project.area_ids
     let projObj = res.project.toObject({ getters: true, minimize: false, depopulate:true})
     projObj.areas = populatedObj
-    console.log("Get project:" + res.params.projectId)
+    console.log("Get project:" + req.params.projectId)
     res.status(200).json({ success: true, payload: projObj })
 });
 
@@ -54,7 +54,7 @@ router.patch('/:projectId', getProject, async(req, res) => {
         let updateObject = req.query;
         let id = ObjectId(req.params.projectId)
         let resp = await Project.updateOne({ _id: id }, { $set: updateObject });
-        console.log("Update project:" + res.params.projectId)
+        console.log("Update project:" + req.params.projectId)
         res.status(200).json({ success: true, payload: resp }).end();
     } catch (ex) {
         res.status(400).json({ "success": false, message: err.message }).end()
@@ -65,7 +65,7 @@ router.delete('/:projectId', getProject, async(req, res) => { //middleware is us
     try {
         
         let deleteResponse = await recursiveDelProject([req.params.projectId])
-        console.log("Delete project:" + res.params.projectId)
+        console.log("Delete project:" + req.params.projectId)
         res.status(200).json({ success: true, payload: deleteResponse }).end();
     } catch (err) {
         res.status(500).json({ "success": false, message: err.message }).end()
