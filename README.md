@@ -3,8 +3,6 @@
 ### University of Waikato funded project - developed following on from the COMPX241-21A Smoke and Mirrors Project
 made to showcase student talent @ UoW.
 
-```WARNING: The API is completely unprotected - WILL EVENTUALLY IMPLEMENT AUTHKEYS```
-
 ## How to use
 ---
 ### SERVER Setup:
