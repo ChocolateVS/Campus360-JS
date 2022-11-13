@@ -4,7 +4,7 @@ const router = express.Router();
 const areaAPI = require('./area.js');
 
 //Mongo
-const { Project, Room} = require('../models/schema.js');
+const { Project, Room, Level, Area} = require('../models/schema.js');
 const { getProject, recursiveDelProject } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types;
 
