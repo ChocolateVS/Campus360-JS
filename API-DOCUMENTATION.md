@@ -6,15 +6,16 @@ ALL non-get requests must have a 'auth' param in the BODY (i.e. not ?auth=) - AU
 ## UTILITY
 
 - GET /api/all - returns entire DB of projects, fully expanded
-- GET /api/rooms - returns all rooms
-- GET /api/roomlocation/\<roomID> - will return {level:\<levelObj>, area:\<areaObj>} for given ID
-- GET /api/pointlocation/\<pointID> - will return {level:\<levelObj>, area:\<areaObj>} for given ID
+
 
 ## PROJECT
 - GET /api/project/\<optional ID for specific>
 - POST /api/project?id=\<optional>&name=\<required string>
 - PATCH /api/project/\<projectID>?name=\<optional string>
 - DELETE /api/project/\<projectID>
+- GET /api/project/\<projectID>/rooms - returns all rooms
+- GET /api/project/\<projectID>/roomlocation/\<roomID> - will return {level:\<levelObj>, area:\<areaObj>} for given ID
+- GET /api/project/\<projectID>/pointlocation/\<pointID> - will return {level:\<levelObj>, area:\<areaObj>} for given ID
 
 ## AREA
 

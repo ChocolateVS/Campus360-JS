@@ -14,6 +14,51 @@ router.use('/:projectId/area', (req, res, next) => {
     next()
 }, areaAPI)
 
+
+router.get('/:projectId/rooms', getProject, async(req, res) => {
+    let resp = await Room.find();
+    res.status(200).json({ success: true, payload: resp });
+})
+
+router.get('/:projectId/roomlocation/:roomId', getProject, async(req, res) => {
+    let area;
+    let level;
+    outObj = {};
+    try {
+        if (level = await Level.findOne({ 'room_ids': req.params.roomId })) {
+            outObj.level = level
+            if (area = await Area.findOne({ 'level_ids': level._id }))
+                outObj.area = area;
+            else throw 'No area attached to this level/point!'
+        } else throw 'No level attached to this point!'
+        console.log("Room location for " + req.params.roomId)
+        res.status(200).json({ success: true, payload: outObj });
+    } catch (ex) {
+        res.status(400).json({ success: false, message: ex.message })
+    }
+});
+
+
+router.get('/:projectId/pointlocation/:pointId', getProject, async(req, res) => {
+    let area;
+    let level;
+    outObj = {};
+    try {
+        if (level = await Level.findOne({ 'point_ids': req.params.pointId })) {
+            outObj.level = level
+            if (area = await Area.findOne({ 'level_ids': level._id }))
+                outObj.area = area;
+            else throw 'No area attached to this level/point!'
+        } else throw 'No level attached to this point!'
+        console.log("Point location for " + req.params.pointId)
+        res.status(200).json({ success: true, payload: outObj });
+    } catch (ex) {
+        res.status(400).json({ success: false, message: ex.message })
+    }
+
+})
+
+
 router.get('/:projectId', getProject, (req, res) => {
 
     //Separates populated data into separate attribute - preserving IDs array

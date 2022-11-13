@@ -23,23 +23,17 @@ function removeFocusFromSearch() {
     id("search_results").style.display = "none";
 }
 
+
+
 //Filters & Populates searchbox
 let roomSearchEntries = []
 const roomEntryTemplate = document.querySelector("[template-room]")
 const roomEntryResults = document.querySelector("[data-room-results]")
 const roomSearch = document.querySelector("[data-room-search]")
 
-roomSearch.addEventListener('input', e =>{
-const value = e.target.value.toLowerCase();
-roomSearchEntries.forEach(room =>{
-    const isVisible = room.name.toLowerCase().includes(value) || room.owner.toLowerCase().includes(value)
-    room.element.classList.toggle('hide', !isVisible)
-})
-});
-
-fetch(window.location.origin + '/api/rooms').then(res => res.json())
-.then(data => {
-roomSearchEntries = data.payload.map(room =>{
+let roomsRaw = await fetch(window.location.origin + '/api/project/'+localStorage.getItem(LOCALSTORAGE_PROJECT)+'/rooms')
+let roomsJSON = await roomsRaw.json()
+roomSearchEntries = roomsJSON.payload.map(room =>{
     const roomObj = roomEntryTemplate.content.cloneNode(true).children[0]
     const name = roomObj.querySelector('[template-room-name]')
     const owner = roomObj.querySelector('[template-room-owner]')
@@ -48,4 +42,11 @@ roomSearchEntries = data.payload.map(room =>{
     roomEntryResults.append(roomObj)
     return {name: room.name, owner: room.owner, element: roomObj}
 })
-})
+
+roomSearch.addEventListener('input', e =>{
+    const value = e.target.value.toLowerCase();
+    roomSearchEntries.forEach(room =>{
+        const isVisible = room.name.toLowerCase().includes(value) || room.owner.toLowerCase().includes(value)
+        room.element.classList.toggle('hide', !isVisible)
+    })
+    });
