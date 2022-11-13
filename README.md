@@ -68,6 +68,7 @@ Docker - runs the NodeJS, DB and GUI editor
 - Can't access any info from the client side - all the API calls are to a hardcoded URL(yes, i know), you will have to change this to your server
 - CORS error - inside /server/index.js there is a CORS statement that can allow or restrict clients from requesting the API
 - Cannot run https to http - Either use NGINX + certbot to request over an API, or configure the express to use HTTPS yourself. OR just run everything on http for simplicity.
+- My NodeJS and Mongo-Express aren't able to connect to the internet/are timing out connecting to the internet - If you get into the bash of the nodeJS container (see editing NodeJS). In the shell, run ```cat /etc/resolv.conf``` and if you see some form of ```127.0.x.x``` in there, you will need to follow [this](https://stackoverflow.com/questions/20430371/my-docker-container-has-no-internet) thread to resolve the issue - effectively the DNS is not being copied over correctly from your system. 
 
 
 #### What if the credentials failed for MonoDB - Manually setting the credentials for the waikato_db
