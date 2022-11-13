@@ -3,7 +3,6 @@ require('dotenv').config()
 const router = express.Router();
 const mongoose = require('mongoose')
 
-const { Room, Area, Level } = require('../models/schema.js');
 //Routes
 const project = require('./project.js');
 const uploadAPI = require('./upload.js')
