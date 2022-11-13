@@ -15,12 +15,21 @@
     <link rel="stylesheet" type="text/css" href="css/pannellum.css"/>
     <link rel="stylesheet" type="text/css" href="css/search_box.css"/>
 
+    <script>
+        let LOCALSTORAGE_LEVEL = 'currLevel';
+        let LOCALSTORAGE_AREA = 'currArea';
+        let LOCALSTORAGE_PROJECT = 'currProject';
+        let LOCALSTORAGE_POINT = 'currPoint';
+        //let API_PREFIX = window.location.origin;
+        let API_PREFIX = "https://campus.rowansserver.com";
+    </script>
     <script src="js/pannellum.js" defer></script>
     <script src="js/jquery-3.6.0.js" defer></script>
     <script src="js/search.js" defer></script>
     <script src="js/angle.js" defer></script>
     <script src="js/map.js" defer></script>
     <script src="js/pannellum-script.js" defer></script>
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
 </head>
@@ -35,8 +44,8 @@
 
     <!-- Search Box -->
     <div id="search_container">
-        <input type="search" id="locationInput" class="search_input" placeholder="Search Waikato Campus" data-room-search>
-        <div id="search_results" data-room-results></div>
+        <input type="text" id="search_input" placeholder=" Search .." class="filter-input search_input">
+        <div class="output" id="search_results"></div>
     </div>
 
     <!-- Floorplan map -->
@@ -48,9 +57,9 @@
 </body>
 
 <template template-room>
-    <span class="roomInfo">
-    <div class="name" template-room-name>
-    <div class="owner" template-room-owner>
+    <span class="roomInfo search_result">
+    <div class="name" template-room-name></div>
+    <div class="owner" template-room-owner></div>  
     </span>
 </template>
 

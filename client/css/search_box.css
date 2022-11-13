@@ -78,3 +78,9 @@
   .search_result_location {
     margin:5px;
   }
+
+  .name, .owner {
+    color: black;
+    font-family: Arial, Helvetica;
+    font-size: 16px;
+  }

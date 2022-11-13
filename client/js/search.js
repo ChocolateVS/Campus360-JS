@@ -1,7 +1,9 @@
 /***************** Search Stuff ******************/
 
+
+
 //Focuses Searchbox
-document.getElementById("locationInput").addEventListener("focus", function() {
+document.getElementById("search_input").addEventListener("focus", function() {
     $('#search_container').css('border-radius', '10px 10px 0px 0px');
     $('#search_container').css('background-color', 'rgb(222 218 218 / 85%)');
     id("search_results").style.display = "flex";
@@ -25,28 +27,47 @@ function removeFocusFromSearch() {
 
 
 
+ 
+
 //Filters & Populates searchbox
 let roomSearchEntries = []
 const roomEntryTemplate = document.querySelector("[template-room]")
 const roomEntryResults = document.querySelector("[data-room-results]")
 const roomSearch = document.querySelector("[data-room-search]")
 
-let roomsRaw = await fetch(window.location.origin + '/api/project/'+localStorage.getItem(LOCALSTORAGE_PROJECT)+'/rooms')
+
+const output = document.querySelector(".output");
+const search = document.querySelector(".search_input");
+
+function loadList(list) {
+    if(list.length <= 0) {output.innerHTML = '<div> No Rooms Found! </div>'; return;}
+    output.innerHTML = '';
+    list.forEach((item) => {
+    output.append(item.element);
+    });
+  }
+  
+
+function filter(e) {
+  loadList(roomSearchEntries.filter(item=> 
+    item.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+    item.owner.toLowerCase().includes(e.target.value.toLowerCase())
+    ))
+}
+
+let roomsRaw = await fetch(API_PREFIX + '/api/project/'+localStorage.getItem(LOCALSTORAGE_PROJECT)+'/rooms')
 let roomsJSON = await roomsRaw.json()
 roomSearchEntries = roomsJSON.payload.map(room =>{
     const roomObj = roomEntryTemplate.content.cloneNode(true).children[0]
     const name = roomObj.querySelector('[template-room-name]')
     const owner = roomObj.querySelector('[template-room-owner]')
     name.textContent = room.name;
-    owner.textContent = room.owner;
-    roomEntryResults.append(roomObj)
+    owner.textContent = "Occupant:" + room.owner;
+    // roomEntryResults.append(roomObj)
     return {name: room.name, owner: room.owner, element: roomObj}
 })
 
-roomSearch.addEventListener('input', e =>{
-    const value = e.target.value.toLowerCase();
-    roomSearchEntries.forEach(room =>{
-        const isVisible = room.name.toLowerCase().includes(value) || room.owner.toLowerCase().includes(value)
-        room.element.classList.toggle('hide', !isVisible)
-    })
-    });
+loadList(roomSearchEntries)
+
+search.addEventListener("input", filter);
+

@@ -1,26 +1,15 @@
-const SERVER_API_URL = window.location.origin + '/api/';
-const SERVER_URL = window.location.origin + "/";
+const SERVER_API_URL = API_PREFIX+ '/api/';
+const SERVER_URL = API_PREFIX + "/";
 const EXTERNAL_POINT_PREFIX = 'external-'
 
 const hardcodedProject = "485b3c31c3d347ae84108de9";
-
 //Slightly Better Tour of my house
 const hardcodedArea = "6ca3c2caaf5648c0839d2586";
 const hardcodedLevel = "06fc572a9afd4abf99af8f1b"
 
-//Hallway
-//const hardcodedArea = "d56b5b91eb4b4faab2ff4a4a";
-//const hardcodedLevel = "8535bdd97dd844289e3f2936";
-
-let LOCALSTORAGE_LEVEL = 'currLevel';
-let LOCALSTORAGE_AREA = 'currArea';
-let LOCALSTORAGE_PROJECT = 'currProject';
-let LOCALSTORAGE_POINT = 'currPoint';
 
 let target_yaw = 0;
-
 let levelObj;
-
 let viewer;
 
 if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item is not set, should completely redo
@@ -38,7 +27,7 @@ var onHotSpotClick = function(event, yaw) {
     target_yaw = yaw;
 };
 
-const emptyImagePath = "./images/default.jpg";
+const emptyImagePath =  API_PREFIX + "/images/default.jpg";
 
 setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
 
@@ -68,7 +57,7 @@ function configurePanoViewer(scenes, first_scene) {
             //Object is in another level - move view over to new level & reload
             console.log(id + " Is External")
             let restoredID = id.substring(EXTERNAL_POINT_PREFIX.length)
-            let info = await (await fetch(SERVER_API_URL + 'pointlocation/' + restoredID)).json();
+            let info = await (await fetch(API_PREFIX + '/api/pointlocation/' + restoredID)).json();
             localStorage.setItem(LOCALSTORAGE_AREA, info.payload.area._id)
             localStorage.setItem(LOCALSTORAGE_LEVEL, info.payload.level._id)
             localStorage.setItem(LOCALSTORAGE_POINT, restoredID)
@@ -83,7 +72,7 @@ async function setup360LevelTour(project, area, level) {
     let scenes = {}
 
     //Get Level
-    levelObj = await (await fetch(SERVER_API_URL +
+    levelObj = await (await fetch(API_PREFIX + "/api/" +
             'project/' + project +
             '/area/' + area +
             '/level/' + level)).json();
@@ -113,7 +102,7 @@ async function setup360LevelTour(project, area, level) {
             console.log("Links:", point.link_ids);
 
             let url = emptyImagePath;
-            if(point.image.name != "") url = SERVER_URL + "images/" + point.image.name;
+            if(point.image.name != "") url = API_PREFIX + "/images/" + point.image.name;
 
             //For each link
             point.link_ids.forEach(link_id => {

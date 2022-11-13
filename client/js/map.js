@@ -4,7 +4,7 @@ let temp_points;
 let temp_current;
 
 function setupMap(imgLoc){
-    $(".floorplan").attr("src", window.location.origin+ "/images/" + imgLoc);
+    $(".floorplan").attr("src", API_PREFIX + "/images/" + imgLoc);
      floorplan_overlay = $("#floorplan_click_overlay");
 }
 
