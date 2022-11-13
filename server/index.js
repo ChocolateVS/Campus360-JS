@@ -23,7 +23,7 @@ app.use('/api', api);
 
 app.use("/", express.static(clientDir));
 
-
+console.log("Attempting connection to Mongo...(If I take too long, either 1. the DB is unreachable, or 2. the credentials haven't been set)");
 mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
