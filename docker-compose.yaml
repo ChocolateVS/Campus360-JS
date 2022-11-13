@@ -20,7 +20,6 @@ services:
       restart: 'unless-stopped'
       volumes:
         - images:/usr/src/app/images
-        - client:/usr/src/client
       ports:
         - 3001:3001
       expose:
