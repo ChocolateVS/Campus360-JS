@@ -14,12 +14,12 @@ router.use('/:projectId/area', (req, res, next) => {
     next()
 }, areaAPI)
 
-
+//Utility funcs
 router.get('/:projectId/rooms', getProject, async(req, res) => {
     let resp = await Room.find();
     res.status(200).json({ success: true, payload: resp });
 })
-
+//Utility funcs
 router.get('/:projectId/roomlocation/:roomId', getProject, async(req, res) => {
     let area;
     let level;
@@ -38,7 +38,7 @@ router.get('/:projectId/roomlocation/:roomId', getProject, async(req, res) => {
     }
 });
 
-
+//Utility funcs
 router.get('/:projectId/pointlocation/:pointId', getProject, async(req, res) => {
     let area;
     let level;
