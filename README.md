@@ -6,6 +6,10 @@ made to showcase student talent @ UoW.
 ## How to use
 ---
 ### SERVER Setup:
+```
+git clone https://github.com/ChocolateVS/Campus360-JS.git && \
+cd Campus360-JS
+```
 - Navigate to .env file - update all the passwords to your preference, make sure the mongo-init.js & (server/.env)MONGO_URL reflect the updated values (both use RESTRICTED_USR/PWD & DBNAME)
 - Default values: waikato_db - dbname, campus360 - usr, SuperSecurePassword! - pwd
 - Make sure you update the passwords in mongo-init.js to reflect the usr/pwd of the url inside the .env
