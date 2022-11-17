@@ -1,6 +1,6 @@
 const SERVER_API_URL = API_PREFIX+ '/api/';
 const SERVER_URL = API_PREFIX + "/";
-const EXTERNAL_POINT_PREFIX = 'external-'
+const EXTERNAL_POINT_PREFIX = 'external-'//allows us to identify external panos
 
 const hardcodedProject = "485b3c31c3d347ae84108de9";
 //Slightly Better Tour of my house
@@ -12,7 +12,7 @@ let target_yaw = 0;
 let levelObj;
 let viewer;
 
-if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the item is not set, should completely redo
+if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the project is not set, should completely reset
     localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
     localStorage.setItem(LOCALSTORAGE_AREA, hardcodedArea)
     localStorage.setItem(LOCALSTORAGE_LEVEL, hardcodedLevel)
@@ -84,9 +84,11 @@ async function setup360LevelTour(project, area, level) {
         return;
     }
 
+    //Configure current point
     if(!localStorage.getItem(LOCALSTORAGE_POINT))
         localStorage.setItem(LOCALSTORAGE_POINT, levelObj.payload.points[0]._id);
 
+    //Config map in bottom right corner
     setupMap(levelObj.payload.image.name);
     drawPoints(levelObj.payload.points, localStorage.getItem(LOCALSTORAGE_POINT));
 
@@ -96,7 +98,7 @@ async function setup360LevelTour(project, area, level) {
 
         let hotSpots = [];
 
-        //If the panorama should be linked
+        //If the panorama should be linked to anything else
         if (point.link_ids != null) {
 
             console.log("Links:", point.link_ids);

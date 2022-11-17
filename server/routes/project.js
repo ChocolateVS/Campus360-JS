@@ -4,7 +4,7 @@ const router = express.Router();
 const areaAPI = require('./area.js');
 
 //Mongo
-const { Project, Room, Level, Area} = require('../models/schema.js');
+const { Project, Room, Level, Area, Point} = require('../models/schema.js');
 const { getProject, recursiveDelProject } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types;
 
@@ -16,7 +16,7 @@ router.use('/:projectId/area', (req, res, next) => {
 
 //Utility funcs
 router.get('/:projectId/rooms', getProject, async(req, res) => {
-    let resp = await Room.find();
+    let resp = await Room.find({'project': res.project._id});
     res.status(200).json({ success: true, payload: resp });
 })
 //Utility funcs
@@ -25,7 +25,12 @@ router.get('/:projectId/roomlocation/:roomId', getProject, async(req, res) => {
     let level;
     outObj = {};
     try {
-        if (level = await Level.findOne({ 'room_ids': req.params.roomId })) {
+        let room = await Room.findById(req.params.roomId);
+        if(room.level && room.level != '' && room.area && room.area != ''){//Check if fields are populated
+            outObj.level = room.level;
+            outObj.area = room.area;
+        }
+        else if (level = await Level.findOne({ 'room_ids': req.params.roomId })) {
             outObj.level = level
             if (area = await Area.findOne({ 'level_ids': level._id }))
                 outObj.area = area;
@@ -44,7 +49,12 @@ router.get('/:projectId/pointlocation/:pointId', getProject, async(req, res) => 
     let level;
     outObj = {};
     try {
-        if (level = await Level.findOne({ 'point_ids': req.params.pointId })) {
+        let point = await Point.findById(req.params.roomId);
+        if(point.level && point.level != '' && point.area && point.area != ''){//Check if fields are populated
+            outObj.level = point.level;
+            outObj.area = point.area;
+        }
+        else if (level = await Level.findOne({ 'point_ids': req.params.pointId })) {
             outObj.level = level
             if (area = await Area.findOne({ 'level_ids': level._id }))
                 outObj.area = area;
@@ -60,7 +70,6 @@ router.get('/:projectId/pointlocation/:pointId', getProject, async(req, res) => 
 
 
 router.get('/:projectId', getProject, (req, res) => {
-
     //Separates populated data into separate attribute - preserving IDs array
     let populatedObj = res.project.area_ids
     let projObj = res.project.toObject({ getters: true, minimize: false, depopulate:true})

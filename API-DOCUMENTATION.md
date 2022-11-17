@@ -15,8 +15,8 @@ ALL non-get requests must have a 'auth' param in the BODY (i.e. not ?auth=) - AU
 - DELETE /api/project/\<projectID>
 
 - GET /api/project/\<projectID>/rooms - returns all rooms inside given project
-- GET /api/project/\<projectID>/roomlocation/\<roomID> - (Use only if level/area fields are blank in room) will return {level:\<levelObj>, area:\<areaObj>} for given ID
-- GET /api/project/\<projectID>/pointlocation/\<pointID> - (Use only if level/area fields are blank in point) will return {level:\<levelObj>, area:\<areaObj>} for given ID
+- GET /api/project/\<projectID>/roomlocation/\<roomID> - will return {level:\<levelObj>, area:\<areaObj>} for given ID
+- GET /api/project/\<projectID>/pointlocation/\<pointID> -  will return {level:\<levelObj>, area:\<areaObj>} for given ID
 
 ## AREA
 
