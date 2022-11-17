@@ -49,7 +49,7 @@ router.get('/:projectId/pointlocation/:pointId', getProject, async(req, res) => 
     let level;
     outObj = {};
     try {
-        let point = await Point.findById(req.params.roomId);
+        let point = await Point.findById(req.params.pointId);
         if(point.level && point.level != '' && point.area && point.area != ''){//Check if fields are populated
             outObj.level = point.level;
             outObj.area = point.area;
