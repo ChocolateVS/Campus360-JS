@@ -45,11 +45,13 @@ router.post('/', getProject, getArea, async(req, res) => {
         if (req.query.filename) createObj.image.name = req.query.filename;
         if (req.query.scale) createObj.image.scale = req.query.scale;
         if (req.query.name) createObj.name = req.query.name;
+        if (req.query.description) createObj.description = req.query.description;
         //Points & Rooms have specific validation required, so need to ensure they are added only via the /point or /room API
-        if (res.area) {
-        newLevel = new Level(createObj);
-        res.area.level_ids.push(newLevel._id)
-    }
+        if (res.area && res.project) {
+            createObj.project = res.project._id;
+            newLevel = new Level(createObj);
+            res.area.level_ids.push(newLevel._id)
+        }
 
 
         if (newLevel == null) throw 'Could not make Level object';

@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer')
 const { Level, Point } = require('../models/schema.js');
 
-//Upload images to Level objects
+//Upload floorplan images
 router.post('/floorplan', (req, res, next) => {
     console.log("Request to upload floorplan")
     try {
@@ -28,7 +28,6 @@ router.post('/floorplan', (req, res, next) => {
         return;
     }
 
-
     let fileInfo = {
         scale: (req.query.scale ? req.query.scale : process.env.DEFAULT_IMAGE_SCALE),
         name: (req.query.filename ? req.query.filename : file.originalname),
@@ -36,7 +35,7 @@ router.post('/floorplan', (req, res, next) => {
     }
 
     try {
-        //Update Level from ID
+        //Add to level at the same time
         if (req.query.id) {
             let resp = await Level.findOne({ _id: req.query.id });
             if (!resp) throw "Could not find specified levelID: " +  req.query.id + ". File uploaded regardless as " + fileInfo.directory + "/" + fileInfo.name
@@ -54,7 +53,7 @@ router.post('/floorplan', (req, res, next) => {
     }
 });
 
-//Upload image to Point object
+//Upload point 360 images
 router.post('/panorama', (req, res, next) => {
     console.log("Request to upload panorama")
     try {
@@ -88,7 +87,7 @@ router.post('/panorama', (req, res, next) => {
     }
 
     try {
-        //Update Level from ID
+        //Add to point at the same time
         if (req.query.id) {
             let resp = await Point.findOne({ _id: req.query.id });
             if (!resp) throw "Could not find specified pointID: " +  req.query.id + ". File uploaded regardless as " + fileInfo.directory + "/" + fileInfo.name

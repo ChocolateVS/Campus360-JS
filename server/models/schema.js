@@ -12,6 +12,10 @@ const pointSchema = new mongoose.Schema({
         directory: { type: String, default: '' },
         name: { type: String, default: "" }
     },
+    description: {type: String, default: ""},
+    project: {type: mongoose.SchemaTypes.ObjectId, ref:"Project"},
+    area: {type: mongoose.SchemaTypes.ObjectId, ref:"Area"},
+    level: {type: mongoose.SchemaTypes.ObjectId, ref:"Level"},
     link_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: "Point" }],
 });
 
@@ -19,6 +23,10 @@ const roomSchema = new mongoose.Schema({
     name: { type: String, required: [true, 'Must specify Room name!'] },
     type: {type: String, default: ""},
     owner: { type: String, default: "" },
+    description: {type: String, default: ""},
+    project: {type: mongoose.SchemaTypes.ObjectId, ref:"Project"},
+    area: {type: mongoose.SchemaTypes.ObjectId, ref:"Area"},
+    level: {type: mongoose.SchemaTypes.ObjectId, ref:"Level"},
     link_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Point" }],
 });
 
@@ -29,6 +37,8 @@ const levelSchema = new mongoose.Schema({
         directory: { type: String, default: '' },
         name: { type: String, default: "" }
     },
+    description: {type: String, default: ""},
+    project: {type: mongoose.SchemaTypes.ObjectId, ref:"Project"},
     room_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Room" }],
     point_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Point" }],
 });
@@ -38,11 +48,14 @@ const areaSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Must specify Area name!']
     },
+    description: {type: String, default: ""},
+    project: {type: mongoose.SchemaTypes.ObjectId, ref:"Project"},
     level_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Level" }],
 });
 
 const projectSchema = new mongoose.Schema({
     name: { type: String, unique: true, required: [true, 'Must specify Project name!'] },
+    description: {type: String, default: ""},
     area_ids: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Area" }],
 });
 

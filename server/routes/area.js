@@ -44,7 +44,9 @@ router.post('/', getProject, async(req, res, next) => {
         if (req.query.id) createObj._id = ObjectId(req.query.id)
         //Levels have specific referencing, so can only be added via /level API
         if (req.query.name) createObj.name = req.query.name;
+        if (req.query.description) createObj.description = req.query.description;
         if (res.project) {
+            createObj.project = res.project._id;
             newArea = new Area(createObj);
             res.project.area_ids.push(newArea._id)
         }

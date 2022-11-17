@@ -41,10 +41,14 @@ router.post('/', getProject, getArea, getLevel, async(req, res) => {
         if (req.query.north) createObj.image.north = req.query.north;
         if (req.query.name) createObj.name = req.query.name;
         if(req.query.type) createObj.type = req.query.type;
+        if (req.query.description) createObj.description = req.query.description;
         
-        if (res.level) {
-        newPoint = new Point(createObj);
-        res.level.point_ids.push(newPoint._id)
+        if (res.level && res.area && res.project) {
+            createObj.project = res.project._id;
+            createObj.level = res.level._id;
+            createObj.area = res.area._id;
+            newPoint = new Point(createObj);
+            res.level.point_ids.push(newPoint._id)
         }
         //Save changes to DB
         if (newPoint == null) throw 'Could not create Point object';

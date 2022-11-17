@@ -84,6 +84,7 @@ router.post('/', async(req, res) => {
         if (req.query.id) createObj._id = ObjectId(req.query.id)
         //Areas have specific referencing, so can only be added via /level API
         if (req.query.name) createObj.name = req.query.name;
+        if (req.query.description) createObj.description = req.query.description;
         newProject = new Project(createObj);
         if (newProject == null) throw 'Could not make Project object';
         const saveResult = await newProject.save();

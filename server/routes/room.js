@@ -27,7 +27,7 @@ router.get('/', getProject, getArea, getLevel, (req, res, next) => {
 
 
 
-router.post('/', getLevel, async(req, res) => {
+router.post('/', getProject, getArea, getLevel, async(req, res) => {
     let newRoom;
     let createObj = {};
     
@@ -37,9 +37,13 @@ router.post('/', getLevel, async(req, res) => {
         if(req.query.type) createObj.type = req.query.type;
             //Points & Rooms have specific validation required, so need to ensure they are added only via the /point or /room API
         if (req.query.name) createObj.name = req.query.name;
-        if (res.level) {
-        newRoom = new Room(createObj);
-        res.level.room_ids.push(newRoom._id)
+        if (req.query.description) createObj.description = req.query.description;
+        if (res.level && res.area && res.project) {
+            createObj.project = res.project._id;
+            createObj.level = res.level._id;
+            createObj.area = res.area._id;
+            newRoom = new Room(createObj);
+            res.level.room_ids.push(newRoom._id)
     }
         //Save changes to DB
         if (newRoom == null) throw 'Could not create Room object';
@@ -50,7 +54,6 @@ router.post('/', getLevel, async(req, res) => {
     } catch (err) {
         res.status(400).json({ "success": false, message: err.message }).end()
     }
-
 });
 
 router.patch('/:roomId', getProject, getArea, getLevel, getRoom, async(req, res) => {
