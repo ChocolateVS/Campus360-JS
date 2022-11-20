@@ -14,8 +14,13 @@ const { Project } = require('../models/schema.js')
 router.use((req, res, next)=>{
     if(req.method == "GET") next();
     else if('auth' in req.body && req.body.auth == process.env.AUTH_KEY) next();
-    else 
-    res.status(400).json({success:false, payload: "User does not have auth!"})
+    else {
+        console.log("Debugging failed Auth")
+        console.log(req.body)
+        console.log(req.params)
+        console.log(req.query)
+        res.status(400).json({success:false, payload: "User does not have auth!"})
+    }
 })
 
 router.use('/project', project);
