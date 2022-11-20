@@ -17,6 +17,7 @@ router.use((req, res, next)=>{
     else {
         console.log("Debugging failed Auth")
         console.log(req.body)
+        if(Object.keys(req.body).length === 0) console.log(req)
         console.log(req.params)
         console.log(req.query)
         res.status(400).json({success:false, payload: "User does not have auth!"})
