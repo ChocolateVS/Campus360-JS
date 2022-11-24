@@ -7,6 +7,7 @@ const hardcodedProject = "485b3c31c3d347ae84108de9";
 const hardcodedArea = "6ca3c2caaf5648c0839d2586";
 const hardcodedLevel = "06fc572a9afd4abf99af8f1b"
 
+const maxDegree = 360;
 const degreeOffsetForPercentConvert = 180; //0.5 is the default 'north' value, i.e. centre of image, thus -180 from the angles will return where it should face
 
 let target_yaw = 0;
@@ -111,13 +112,18 @@ async function setup360LevelTour(project, area, level) {
             point.link_ids.forEach(async link_id => {
 
                 let pointInCurrLevel = findPointInLevelById(levelObj.payload.points, link_id);
-
+                
+                let northPercent = point.image.north || 0.5; //0.5 is middle of image/default centre
+                let preCheckNorthOffset = (degreeOffsetForPercentConvert * (1 + northPercent)) %  maxDegree;
+                let northOffset = northPercent > 0.5 ? -1 * (preCheckNorthOffset + maxDegree) : preCheckNorthOffset; //Add or invert based on if it is >halfway
+                
                 if (pointInCurrLevel != null) {
                     //Link was internal
                     console.log("Internal Link");
                     console.log(pointInCurrLevel);
-
-                    let yaw = (point.image.north * findAngleBetweenPoints(point, pointInCurrLevel)) - degreeOffsetForPercentConvert; //0.5 means Yaw is 0 - i.e. middle of image is centre
+                    
+  
+                    let yaw =  findAngleBetweenPoints(point, pointInCurrLevel) + northOffset;
                     console.log("Hospot Yaw", yaw);
                     //Add Internal Link
                     hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id));
@@ -130,9 +136,7 @@ async function setup360LevelTour(project, area, level) {
                         'project/' + project +
                         '/area/' + externalPointLocation.area._id +
                         '/level/' + externalPointLocation.level._id + '/point/' + link_id)).json(); //Bit hacky, e
-
-                    let yaw = (point.image.north * findAngleBetweenPoints(point, externalPoint)) - degreeOffsetForPercentConvert; //0.5 means Yaw is 0 - i.e. middle of image is centre
-                    //External point
+                    let yaw =  findAngleBetweenPoints(point, externalPoint) + northOffset;//External point
                     hotSpots.push(newHotSpot(0, yaw, "External", EXTERNAL_POINT_PREFIX + link_id));
                     console.log("External Link");
                 }
