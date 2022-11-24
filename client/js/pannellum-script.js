@@ -123,7 +123,7 @@ async function setup360LevelTour(project, area, level) {
                     console.log(pointInCurrLevel);
                     
   
-                    let yaw =  findAngleBetweenPoints(point, pointInCurrLevel) + northOffset;
+                    let yaw =  findAngleBetweenPoints(point, pointInCurrLevel);// + northOffset; <---work in progress
                     console.log("Hospot Yaw", yaw);
                     //Add Internal Link
                     hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id));
@@ -136,7 +136,7 @@ async function setup360LevelTour(project, area, level) {
                         'project/' + project +
                         '/area/' + externalPointLocation.area._id +
                         '/level/' + externalPointLocation.level._id + '/point/' + link_id)).json(); //Bit hacky, e
-                    let yaw =  findAngleBetweenPoints(point, externalPoint) + northOffset;//External point
+                    let yaw =  findAngleBetweenPoints(point, externalPoint);// + northOffset; <---work in progress//External point
                     hotSpots.push(newHotSpot(0, yaw, "External", EXTERNAL_POINT_PREFIX + link_id));
                     console.log("External Link");
                 }
