@@ -4,7 +4,7 @@ const router = express.Router();
 const areaAPI = require('./area.js');
 
 //Mongo
-const { Project, Room, Level, Area, Point} = require('../models/schema.js');
+const { Project, Room, Level, Area, Point } = require('../models/schema.js');
 const { getProject, recursiveDelProject } = require('../shared.js');
 const { ObjectId } = require('mongoose').Types;
 
@@ -16,21 +16,20 @@ router.use('/:projectId/area', (req, res, next) => {
 
 //Utility funcs
 router.get('/:projectId/rooms', getProject, async(req, res) => {
-    let resp = await Room.find({'project': res.project._id});
-    res.status(200).json({ success: true, payload: resp });
-})
-//Utility funcs
+        let resp = await Room.find({ 'project': res.project._id });
+        res.status(200).json({ success: true, payload: resp });
+    })
+    //Utility funcs
 router.get('/:projectId/roomlocation/:roomId', getProject, async(req, res) => {
     let area;
     let level;
     outObj = {};
     try {
         let room = await Room.findById(req.params.roomId);
-        if(room.level && room.level != '' && room.area && room.area != ''){//Check if fields are populated
+        if (room.level && room.level != '' && room.area && room.area != '') {
             outObj.level = room.level;
             outObj.area = room.area;
-        }
-        else if (level = await Level.findOne({ 'room_ids': req.params.roomId })) {
+        } else if (level = await Level.findOne({ 'room_ids': req.params.roomId })) {
             outObj.level = level
             if (area = await Area.findOne({ 'level_ids': level._id }))
                 outObj.area = area;
@@ -50,11 +49,10 @@ router.get('/:projectId/pointlocation/:pointId', getProject, async(req, res) => 
     outObj = {};
     try {
         let point = await Point.findById(req.params.pointId);
-        if(point.level && point.level != '' && point.area && point.area != ''){//Check if fields are populated
+        if (point.level && point.level != '' && point.area && point.area != '') { //Check if fields are populated
             outObj.level = point.level;
             outObj.area = point.area;
-        }
-        else if (level = await Level.findOne({ 'point_ids': req.params.pointId })) {
+        } else if (level = await Level.findOne({ 'point_ids': req.params.pointId })) {
             outObj.level = level
             if (area = await Area.findOne({ 'level_ids': level._id }))
                 outObj.area = area;
@@ -72,7 +70,7 @@ router.get('/:projectId/pointlocation/:pointId', getProject, async(req, res) => 
 router.get('/:projectId', getProject, (req, res) => {
     //Separates populated data into separate attribute - preserving IDs array
     let populatedObj = res.project.area_ids
-    let projObj = res.project.toObject({ getters: true, minimize: false, depopulate:true})
+    let projObj = res.project.toObject({ getters: true, minimize: false, depopulate: true })
     projObj.areas = populatedObj
     console.log("Get project:" + req.params.projectId)
     res.status(200).json({ success: true, payload: projObj })
@@ -88,10 +86,10 @@ router.get('/', async(req, res, next) => {
 router.post('/', async(req, res) => {
     let newProject;
     let createObj = {};
-    
+
     try {
         if (req.query.id) createObj._id = ObjectId(req.query.id)
-        //Areas have specific referencing, so can only be added via /level API
+            //Areas have specific referencing, so can only be added via /level API
         if (req.query.name) createObj.name = req.query.name;
         if (req.query.description) createObj.description = req.query.description;
         newProject = new Project(createObj);
@@ -118,7 +116,7 @@ router.patch('/:projectId', getProject, async(req, res) => {
 
 router.delete('/:projectId', getProject, async(req, res) => { //middleware is use by convention, not required for the functionality
     try {
-        
+
         let deleteResponse = await recursiveDelProject([req.params.projectId])
         console.log("Delete project:" + req.params.projectId)
         res.status(200).json({ success: true, payload: deleteResponse }).end();

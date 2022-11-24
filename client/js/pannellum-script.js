@@ -1,22 +1,24 @@
-const SERVER_API_URL = API_PREFIX+ '/api/';
+const SERVER_API_URL = API_PREFIX + '/api/';
 const SERVER_URL = API_PREFIX + "/";
-const EXTERNAL_POINT_PREFIX = 'external-'//allows us to identify external panos
+const EXTERNAL_POINT_PREFIX = 'external-' //allows us to identify external panos
 
 const hardcodedProject = "485b3c31c3d347ae84108de9";
 //Slightly Better Tour of my house
 const hardcodedArea = "6ca3c2caaf5648c0839d2586";
 const hardcodedLevel = "06fc572a9afd4abf99af8f1b"
 
+const maxDegrees = 360;
+const percentOffsetDegrees = 180;
 
 let target_yaw = 0;
 let levelObj;
 let viewer;
 
-if(!localStorage.getItem(LOCALSTORAGE_PROJECT)){//If the project is not set, should completely reset
+if (!localStorage.getItem(LOCALSTORAGE_PROJECT)) { //If the project is not set, should completely reset
     localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
     localStorage.setItem(LOCALSTORAGE_AREA, hardcodedArea)
     localStorage.setItem(LOCALSTORAGE_LEVEL, hardcodedLevel)
-    localStorage.removeItem(LOCALSTORAGE_POINT);//starting location
+    localStorage.removeItem(LOCALSTORAGE_POINT); //starting location
 }
 
 function id(id) { return document.getElementById(id); }
@@ -27,7 +29,7 @@ var onHotSpotClick = function(event, yaw) {
     target_yaw = yaw;
 };
 
-const emptyImagePath =  API_PREFIX + "/images/default.jpg";
+const emptyImagePath = API_PREFIX + "/images/default.jpg";
 
 setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
 
@@ -47,13 +49,13 @@ function configurePanoViewer(scenes, first_scene) {
         scenes
     });
 
-    viewer.on('scenechange', async (id) => {
+    viewer.on('scenechange', async(id) => {
         viewer.setYaw(target_yaw, false);
         console.log("Setting Target Yaw", target_yaw);
 
         drawPoints(levelObj.payload.points, id);
 
-        if(id.startsWith(EXTERNAL_POINT_PREFIX)) {
+        if (id.startsWith(EXTERNAL_POINT_PREFIX)) {
             //Object is in another level - move view over to new level & reload
             console.log(id + " Is External")
             let restoredID = id.substring(EXTERNAL_POINT_PREFIX.length)
@@ -73,9 +75,9 @@ async function setup360LevelTour(project, area, level) {
 
     //Get Level
     levelObj = await (await fetch(API_PREFIX + "/api/" +
-            'project/' + project +
-            '/area/' + area +
-            '/level/' + level)).json();
+        'project/' + project +
+        '/area/' + area +
+        '/level/' + level)).json();
 
     console.log("Level:", levelObj)
 
@@ -85,7 +87,7 @@ async function setup360LevelTour(project, area, level) {
     }
 
     //Configure current point
-    if(!localStorage.getItem(LOCALSTORAGE_POINT))
+    if (!localStorage.getItem(LOCALSTORAGE_POINT))
         localStorage.setItem(LOCALSTORAGE_POINT, levelObj.payload.points[0]._id);
 
     //Config map in bottom right corner
@@ -104,10 +106,10 @@ async function setup360LevelTour(project, area, level) {
             console.log("Links:", point.link_ids);
 
             let url = emptyImagePath;
-            if(point.image.name != "") url = API_PREFIX + "/images/" + point.image.name;
+            if (point.image.name != "") url = API_PREFIX + "/images/" + point.image.name;
 
             //For each link
-            point.link_ids.forEach(link_id => {
+            point.link_ids.forEach(async link_id => {
 
                 let pointInCurrLevel = findPointInLevelById(levelObj.payload.points, link_id);
 
@@ -116,14 +118,23 @@ async function setup360LevelTour(project, area, level) {
                     console.log("Internal Link");
                     console.log(pointInCurrLevel);
 
-                    let yaw = findAngleBetweenPoints(point, pointInCurrLevel);
                     console.log("Hospot Yaw", yaw);
-                    //Add Link
-                    hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id, 0, 0)); //Temp external
-                }
-                else {
+                    let yaw = (point.image.north * findAngleBetweenPoints(point, pointInCurrLevel)) - percentOffsetDegrees; //0.5 means Yaw is 0 - i.e. middle of image is centre
+                    //Add Internal Link
+                    hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id));
+                } else {
+                    //Finds location of external point, and gets its information
+                    let externalPointLocation = await (await fetch(API_PREFIX + "/api/" +
+                        'project/' + project +
+                        '/pointlocation/' + link_id)).json();
+                    let externalPoint = await (await fetch(API_PREFIX + "/api/" +
+                        'project/' + project +
+                        '/area/' + externalPointLocation.area._id +
+                        '/level/' + externalPointLocation.level._id + '/point/' + link_id)).json(); //Bit hacky, e
+
+                    let yaw = (point.image.north * findAngleBetweenPoints(point, externalPoint)) - percentOffsetDegrees; //0.5 means Yaw is 0 - i.e. middle of image is centre
                     //External point
-                    hotSpots.push(newHotSpot(0, 10, "External", EXTERNAL_POINT_PREFIX + point._id))
+                    hotSpots.push(newHotSpot(0, yaw, "External", EXTERNAL_POINT_PREFIX + link_id));
                     console.log("External Link");
                 }
             });
@@ -132,7 +143,7 @@ async function setup360LevelTour(project, area, level) {
         }
     });
 
-    console.log("Setting up Viewer")
+    console.log("Setting up Viewer");
     configurePanoViewer(scenes, localStorage.getItem(LOCALSTORAGE_POINT));
 }
 
@@ -152,13 +163,13 @@ function newHotSpot(pitch, yaw, point_name, scene_id) {
 
 function newSceneObject(title, url, hotspots) {
     return {
-            "title": title,
-            "hfov": 110,
-            "pitch": 0,
-            "yaw": 0,
-            "type": "equirectangular",
-            "panorama": url,
-            "hotSpots": hotspots
+        "title": title,
+        "hfov": 110,
+        "pitch": 0,
+        "yaw": 0,
+        "type": "equirectangular",
+        "panorama": url,
+        "hotSpots": hotspots
     }
 }
 
