@@ -117,8 +117,8 @@ async function setup360LevelTour(project, area, level) {
                     console.log("Internal Link");
                     console.log(pointInCurrLevel);
 
-                    console.log("Hospot Yaw", yaw);
                     let yaw = (point.image.north * findAngleBetweenPoints(point, pointInCurrLevel)) - degreeOffsetForPercentConvert; //0.5 means Yaw is 0 - i.e. middle of image is centre
+                    console.log("Hospot Yaw", yaw);
                     //Add Internal Link
                     hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id));
                 } else {
