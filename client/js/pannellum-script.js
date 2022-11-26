@@ -2,23 +2,23 @@ const SERVER_API_URL = API_PREFIX + '/api/';
 const SERVER_URL = API_PREFIX + "/";
 const EXTERNAL_POINT_PREFIX = 'external-' //allows us to identify external panos
 
-const hardcodedProject = "485b3c31c3d347ae84108de9";
+const DEFAULT_PROJECT = "485b3c31c3d347ae84108de9";
 //Slightly Better Tour of my house
-const hardcodedArea = "6ca3c2caaf5648c0839d2586";
-const hardcodedLevel = "06fc572a9afd4abf99af8f1b"
-
-const maxDegree = 360;
-const degreeOffsetForPercentConvert = 180; //0.5 is the default 'north' value, i.e. centre of image, thus -180 from the angles will return where it should face
+const DEFAULT_AREA = "6ca3c2caaf5648c0839d2586";
+const DEFAULT_LEVEL = "06fc572a9afd4abf99af8f1b"
+const DEFAULT_NORTH_PERCENTAGE = 0.5;
+const DEFAULT_IMAGE_PATH = API_PREFIX + "/images/default.jpg"; //Incase the image is empty/does not exist
 
 let target_yaw = 0;
 let levelObj;
 let viewer;
 
+//Localstorage config
 if (!localStorage.getItem(LOCALSTORAGE_PROJECT)) { //If the project is not set, should completely reset
-    localStorage.setItem(LOCALSTORAGE_PROJECT, hardcodedProject)
-    localStorage.setItem(LOCALSTORAGE_AREA, hardcodedArea)
-    localStorage.setItem(LOCALSTORAGE_LEVEL, hardcodedLevel)
-    localStorage.removeItem(LOCALSTORAGE_POINT); //starting location
+    localStorage.setItem(LOCALSTORAGE_PROJECT, DEFAULT_PROJECT)
+    localStorage.setItem(LOCALSTORAGE_AREA, DEFAULT_AREA)
+    localStorage.setItem(LOCALSTORAGE_LEVEL, DEFAULT_LEVEL)
+    localStorage.removeItem(LOCALSTORAGE_POINT); //starting point is set later
 }
 
 function id(id) { return document.getElementById(id); }
@@ -29,7 +29,7 @@ var onHotSpotClick = function(event, yaw) {
     target_yaw = yaw;
 };
 
-const emptyImagePath = API_PREFIX + "/images/default.jpg";
+
 
 setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
 
@@ -55,16 +55,14 @@ function configurePanoViewer(scenes, first_scene) {
 
         drawPoints(levelObj.payload.points, id);
 
-        if (id.startsWith(EXTERNAL_POINT_PREFIX)) {
-            //Object is in another level - move view over to new level & reload
+        if (id.startsWith(EXTERNAL_POINT_PREFIX)) {//Object is in another level - move view over to new level & reload
             console.log(id + " Is External")
             let restoredID = id.substring(EXTERNAL_POINT_PREFIX.length)
-            let info = await (await fetch(API_PREFIX + '/api/pointlocation/' + restoredID)).json();
+            let info = await (await fetch(API_PREFIX + '/api/' + localStorage.getItem(LOCALSTORAGE_PROJECT) + '/pointlocation/' + restoredID)).json();
             localStorage.setItem(LOCALSTORAGE_AREA, info.payload.area._id)
             localStorage.setItem(LOCALSTORAGE_LEVEL, info.payload.level._id)
             localStorage.setItem(LOCALSTORAGE_POINT, restoredID)
 
-            //Set up with latest variables
             setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
         }
     })
@@ -105,7 +103,7 @@ async function setup360LevelTour(project, area, level) {
 
             console.log("Links:", point.link_ids);
 
-            let url = emptyImagePath;
+            let url = DEFAULT_IMAGE_PATH;
             if (point.image.name != "") url = API_PREFIX + "/images/" + point.image.name;
 
             //For each link
@@ -113,30 +111,24 @@ async function setup360LevelTour(project, area, level) {
 
                 let pointInCurrLevel = findPointInLevelById(levelObj.payload.points, link_id);
                 
-                let northPercent = point.image.north || 0.5; //0.5 is middle of image/default centre
-                let preCheckNorthOffset = (degreeOffsetForPercentConvert * (1 + northPercent)) %  maxDegree;
-                let northOffset = northPercent > 0.5 ? -1 * (preCheckNorthOffset + maxDegree) : preCheckNorthOffset; //Add or invert based on if it is >halfway
+                let northPercent = point.image.north || DEFAULT_NORTH_PERCENTAGE;
+                let northOffset = findNorthOffset(northPercent, DEFAULT_NORTH_PERCENTAGE);
                 
-                if (pointInCurrLevel != null) {
-                    //Link was internal
-                    console.log("Internal Link");
-                    console.log(pointInCurrLevel);
-                    
-  
-                    let yaw =  findAngleBetweenPoints(point, pointInCurrLevel);// + northOffset; <---work in progress
-                    console.log("Hospot Yaw", yaw);
-                    //Add Internal Link
+                if (pointInCurrLevel != null) {//Point is internal to level
+                    let yaw =  findAngleBetweenPoints(point, pointInCurrLevel) + northOffset;
                     hotSpots.push(newHotSpot(0, yaw, point.type, pointInCurrLevel._id));
                 } else {
                     //Finds location of external point, and gets its information
                     let externalPointLocation = await (await fetch(API_PREFIX + "/api/" +
                         'project/' + project +
                         '/pointlocation/' + link_id)).json();
+
                     let externalPoint = await (await fetch(API_PREFIX + "/api/" +
                         'project/' + project +
                         '/area/' + externalPointLocation.area._id +
-                        '/level/' + externalPointLocation.level._id + '/point/' + link_id)).json(); //Bit hacky, e
-                    let yaw =  findAngleBetweenPoints(point, externalPoint);// + northOffset; <---work in progress//External point
+                        '/level/' + externalPointLocation.level._id + '/point/' + link_id)).json(); 
+
+                    let yaw =  findAngleBetweenPoints(point, externalPoint) + northOffset; //External point
                     hotSpots.push(newHotSpot(0, yaw, "External", EXTERNAL_POINT_PREFIX + link_id));
                     console.log("External Link");
                 }

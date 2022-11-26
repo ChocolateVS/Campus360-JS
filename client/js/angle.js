@@ -4,17 +4,19 @@
  */
  function angleBetweenPoints(currPoint, linkPoint) {    
     let rad = find_angle({x:currPoint.x, y: 10000},currPoint, linkPoint) //Angle
-    let arc = rad * (180 / (Math.PI)) //Find arc length of the 'north' facing angle differennce, to gi
-    return arc
-}
-
-/*
- function angleBetweenPoints(currPoint, linkPoint, widthOfMap, heightOfMap) {    
-    let rad = find_angle({x:currPoint.x*widthOfMap, y: 0}, {x:currPoint*widthOfMap, y:currPoint.y*heightOfMap}, {x:linkPoint.x * widthOfMap, y: linkPoint.y * heightOfMap}) //Angle
     let arc = rad * (180 / (Math.PI)) //Find arc length of the 'north' facing angle differennce
     return arc
 }
+
+
+/** 
+ * Finds degree northOffset from centre
 */
+function findNorthOffset(percent, defaultPercent = 0.5)
+{
+    return (percent - defaultPercent) * 360;
+}
+
 /**
  * Gets Radians between A & C, rotating about B  
  * A - point 1  
@@ -34,5 +36,5 @@ function findAngleBetweenPoints(currPoint, linkPoint) {
     let y1 = currPoint.y;
     let x2 = linkPoint.x;
     let y2 = linkPoint.y;
-    return 270 + Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+    return 270 + Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;//atan returns radians 
 }
