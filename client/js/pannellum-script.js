@@ -134,7 +134,7 @@ async function setup360LevelTour(project, area, level) {
                 }
             });
 
-            scenes[point._id] = newSceneObject("Waikato Virtual Tour!", url, hotSpots);
+            scenes[point._id] = newSceneObject("Level: " + levelObj.payload.name, url, hotSpots);
         }
     });
 
