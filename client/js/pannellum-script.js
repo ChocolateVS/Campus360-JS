@@ -72,8 +72,8 @@ async function setup360LevelTour(project, area, level) {
     let scenes = {}
 
     //Get Level
-    levelObj = await (await fetch(API_PREFIX + "/api/" +
-        'project/' + project +
+    levelObj = await (await fetch(API_PREFIX + 
+        "/api/project/" + project +
         '/area/' + area +
         '/level/' + level)).json();
 
