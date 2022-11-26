@@ -20,15 +20,15 @@ ALL non-get requests must have a 'auth' param in the BODY (i.e. not ?auth=) - AU
 
 ## AREA
 
-- GET /api/project/\<projectID>/area/\<optional ID for specific>
+- GET /api/project/\<projectID>/area/\<optional ObjectID - else, returns all>
 - POST /api/project/\<projectID>/area?id=\<optional>&name=\<required string>&description=\<default '' string>
 - PATCH /api/project/\<projectID>/area/\<areaID>?name=\<optional string>&description=\<default '' string>
 - DELETE /api/project/\<projectID>/area/\<areaID>
 
 ## LEVEL
 
-- GET /api/project/\<projectID>/area/\<areaID>/level/\<optional ID for specific>
-- POST /api/project/\<projectID>/area/\<areaID>/level?id=\<optional objectid>&name=\<required string>&image_scale=\<default 1 number>&local_directory=\<default './images' string>&filename=\<default '' string>&description=\<default '' string>
+- GET /api/project/\<projectID>/area/\<areaID>/level/\<optional ObjectID - else, returns all>
+- POST /api/project/\<projectID>/area/\<areaID>/level?id=\<optional ObjectId, else returns all>&name=\<required string>&image_scale=\<default 1 number>&local_directory=\<default './images' string>&filename=\<default '' string>&description=\<default '' string>
 - PATCH /api/project/\<projectID>/area/\<areaID>/level/\<levelID>?name=\<optional string>&image.scale=\<optional number>&image.directory=\<optional string>&image.name=\<optional string>&description=\<default '' string> 
 - DELETE /api/project/\<projectID>/area/\<areaID>/level/\<levelID>
 
@@ -42,15 +42,15 @@ ALL non-get requests must have a 'auth' param in the BODY (i.e. not ?auth=) - AU
 
 ## Room
 ```NOTE: Room and Point are referenced by LEVEL```
-- GET /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/room/\<optional ID for specific>
-- POST /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/room?id=\<optional objectid>&name=\<required string>&owner=\<default '' string>&type=\<default '' string>&description=\<default '' string>
+- GET /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/room/\<optional ObjectId - otherwise returns all>
+- POST /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/room?id=\<optional ObjectId>&name=\<required string>&owner=\<default '' string>&type=\<default '' string>&description=\<default '' string>
 - PATCH /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/room/\<roomID>?name=\<optional string>&owner=\<optional string>&type=\<optional string>&description=\<default '' string>
 - DELETE /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/room/\<roomID>
 
 ## Point
 ```NOTE: Room and Point are referenced by LEVEL```
-- GET /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/point/\<optional ID for specific>
-- POST /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/point?id=\<optional>&name=\<required string>&x=\<required number>&y=\<required number>&north=\<default 0.5 number>&type=\<default '' string>&local_directory=\<default '' string>&filename=\<default '' string>&description=\<default '' string> 
+- GET /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/point/\<optional ObjectId>
+- POST /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/point?id=\<optional ObjectId>&x=\<required number>&y=\<required number>&north=\<default 0.5 number>&type=\<default '' string>&local_directory=\<default '' string>&filename=\<default '' string>&description=\<default '' string> 
 - PATCH /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/point/\<pointID>?name=\<optional string>&x=\<optional number>&y=\<optional number>&type=\<optional string>&image.north=\<optional number>&image.directory=\<optional string>&image.name=\<optional string>&description=\<default '' string>
 - DELETE /api/project/\<projectID>/area/\<areaID>/level/\<levelID>/point/\<pointID>
 
