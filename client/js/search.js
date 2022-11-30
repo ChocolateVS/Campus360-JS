@@ -55,6 +55,7 @@ function filter(e) {
     ))
 }
 
+async function setupSearch(){
 let roomsRaw = await fetch(API_PREFIX + '/api/project/'+localStorage.getItem(LOCALSTORAGE_PROJECT)+'/rooms')
 let roomsJSON = await roomsRaw.json()
 roomSearchEntries = roomsJSON.payload.map(room =>{
@@ -69,4 +70,6 @@ roomSearchEntries = roomsJSON.payload.map(room =>{
 loadList(roomSearchEntries)
 
 search.addEventListener("input", filter);
+}
 
+setupSearch();
