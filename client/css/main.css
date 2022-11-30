@@ -25,7 +25,16 @@ body, html {
 .logo {
   position:absolute;
   top:0;
-  left:0;
+  right:0;
   margin:10px;
-  width:200px;
+  width:fit-content;
+  z-index: 10;
+  opacity: 0.8;
+}
+
+#project-select {
+  position: absolute;
+  bottom: 10px;
+  justify-content: center;
+  text-align: center;
 }

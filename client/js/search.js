@@ -63,7 +63,6 @@ roomSearchEntries = roomsJSON.payload.map(room =>{
     const owner = roomObj.querySelector('[template-room-owner]')
     name.textContent = room.name;
     owner.textContent = "Occupant:" + room.owner;
-    // roomEntryResults.append(roomObj)
     return {name: room.name, owner: room.owner, element: roomObj}
 })
 

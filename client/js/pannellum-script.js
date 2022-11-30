@@ -29,9 +29,43 @@ var onHotSpotClick = function(event, yaw) {
     target_yaw = yaw;
 };
 
+async function loadProjects(){
+
+    //Get Level
+    let projects = await (await fetch(API_PREFIX + 
+       "/api/project/")).json();
+   console.log(projects)
+   let select = document.getElementById('project-select');
+   select.innerHTML = '';//Clear previous entries
+   for (var proj of projects.payload){
+       var opt = document.createElement('option');
+       opt.value = proj._id;
+       opt.innerHTML = proj.name;
+       select.appendChild(opt);
+   }
+}
+
+
+loadProjects();
+//Set first item in selected project
+document.getElementById('project-select').addEventListener('change', async (e)=>{
+    localStorage.setItem(LOCALSTORAGE_PROJECT, e.target.value) 
+    firstAreaPayload = await (await fetch(API_PREFIX + 
+        "/api/project/" + e.target.value +
+        '/area')).json().payload;
+    if(firstAreaPayload.length <= 0) {window.alert("No areas associated with that project!"); return;}
+    localStorage.setItem(LOCALSTORAGE_AREA, firstAreaPayload[0]._id)
+    if(firstAreaPayload[0].level_ids.length <= 0) {window.alert("No levels associated with this area"); return;}
+    localStorage.setItem(LOCALSTORAGE_LEVEL, firstAreaPayload[0].level_ids[0])
+    localStorage.removeItem(LOCALSTORAGE_POINT); //starting point is set later
+    setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
+    
+}
+)
 
 
 setup360LevelTour(localStorage.getItem(LOCALSTORAGE_PROJECT), localStorage.getItem(LOCALSTORAGE_AREA), localStorage.getItem(LOCALSTORAGE_LEVEL))
+
 
 
 function configurePanoViewer(scenes, first_scene) {
@@ -85,9 +119,13 @@ async function setup360LevelTour(project, area, level) {
     }
 
     //Configure current point
-    if (!localStorage.getItem(LOCALSTORAGE_POINT))
+    if (!localStorage.getItem(LOCALSTORAGE_POINT)){
+        if(levelObj.payload.points.length <= 0) {
+            window.alert("No points found in this Level!"); 
+            return;
+        }
         localStorage.setItem(LOCALSTORAGE_POINT, levelObj.payload.points[0]._id);
-
+    }
     //Config map in bottom right corner
     setupMap(levelObj.payload.image.name);
     drawPoints(levelObj.payload.points, localStorage.getItem(LOCALSTORAGE_POINT));
